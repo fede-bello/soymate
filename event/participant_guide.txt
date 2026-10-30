@@ -1,0 +1,575 @@
+HACKATHON
+ PARIS 2026
+
+ PARTICIPANT
+    GUIDE
+Welcome to Hack the Fork Paris 2026!
+Dear participant,
+
+Congratulations, you are part of the Paris edition of Hack the Fork 2026!
+
+From October 30th to November 1st, you will join a multidisciplinary cohort of talented individuals
+from the Paris-Saclay campus, leading French universities, and industry, with backgrounds in
+engineering, data science, food science, law, management, and design. Over the course of a
+weekend, you will identify a problem, develop a concrete solution, and present it to a jury.
+
+This guide brings together everything you need to arrive ready and make the most of these three
+days on the Saclay plateau: practical organization (locations, times, meals), team composition,
+what you can prepare in advance and what needs to be done on site, the three challenges of this
+edition, the rules, the expected deliverables and the exact evaluation grid of the jury.
+
+Before your arrival, take the time to read through this guide and follow the few steps outlined in our
+email: they will save you valuable time on the day.
+
+The jury doesn't reward the most ambitious project on paper, but the one that proves its claims.
+Show a concrete result, however modest, and clearly state the limits of your solution. A focused
+project that works will always be more convincing than a grand but unfulfilled promise.
+
+A question, a doubt? We remain available at any time.
+
+Have a great hackathon everyone!
+
+Warmly,
+
+
+
+
+Morgane Paris​          ​       ​      ​       ​        Inès Mir-Moreaux
+Development Manager - HtF​       ​     ​       ​        Local Leaders Program Manager - HtF
+
+
+
+
+Lucie Avril​ ​          ​       ​      ​       ​        Hugo Lecoulant
+Local Leader - AgroParisTech​   ​      ​       ​        Local Leader - AgroParisTech
+Hack the Fork in brief
+The food system is at a turning point. Alternative proteins are among the most promising sectors of
+food technology, but slow research and development is hindering their growth.
+
+Our model rests on three pillars:
+
+Hackathons. We bring together high-calibre students and young professionals (engineers, data
+scientists, food and management experts, and business professionals) with food technology and
+foodtech companies to solve real-world industrial challenges. Artificial intelligence (AI) allows us to
+condense months of research into a single weekend. For our partners, it's also an opportunity to
+identify talented individuals comfortable with technology.
+
+Pre-incubation. The best prototypes don't necessarily end with hackathons. We help the most
+promising teams refine them through pre-incubation support and connect them with investors.
+
+Career mentoring. Whether you have a startup project or not, we can help you build a career in
+alternative proteins. Participating in the hackathon is a gateway to career support if you wish.
+
+Human ingenuity, AI-powered acceleration, and market-driven partnerships: this is how Hack the
+Fork transforms ideas into businesses that make food sustainable. In 2026, 11 editions are taking
+place in 8 countries. The Paris edition, hosted by AgroParisTech, carries out this mission with its
+own ecosystem, partners, and student community.
+
+This hackathon is not an academic exercise: the runner-up of the 2025 edition, ReaKt, is
+currently incubated at Genopole and is well on its way to launching its product on the market.
+
+
+The hackathon at a glance
+ Item                                                Detail
+
+ Dates and times                                     Friday, October 30: 5:30 p.m. to 11 p.m.
+                                                     Saturday, October 31: 8:30 a.m. to 6 p.m.
+                                                     Sunday, November 1st: 8am to 2pm.
+
+ Place                                               Agro Paris-Saclay Campus. Welcome at the
+                                                     Forum, working sessions and pitches in building
+                                                     C1, meals at the Canopée and the Forum. Address:
+                                                     22 Place de l’Agronomie, 91120 Palaiseau
+
+ Your AgroParisTech contacts                           •​     Hugo Lecoulant (+33 6 47 97 48 20)
+                                                       •​     Lucie Avril (+33 6 10 53 64 94)
+
+ Your Hack the Fork contacts                           •​     Inès Mir-Moreaux (+33 6 77 28 65 30)
+                                                              ines.mir-moreaux@hackthefork.org
+                                                       •​     Morgane Paris (+33 6 44 95 54 05)
+                                                              morgane.paris@hackthefork.org
+
+ Participants’ channel                               WhatsApp Link
+Logistics
+How it runs. The hackathon opens on Friday, October 30th at 5:30 PM and ends on Sunday,
+November 1st at 2 PM. Saturday is the day you will achieve the bulk of your work.
+
+Getting there. You will be welcomed on the Agro Paris-Saclay campus, at the Forum.
+
+Exact address: 22 Place de l’Agronomie, 91120 Palaiseau.
+
+By public transport (approximately 45 minutes to 1 hour from Paris)
+
+   ●​   RER B or RER C to Massy-Palaiseau, then bus 4606, towards Saint-Quentin-en-Yvelines or
+        Christ de Saclay, to the Palaiseau-Campus stop. Please note: on Sundays, train
+        frequencies are reduced and the RER B line may be undergoing maintenance. Check your
+        journey the day before on the Île-de-France Mobilités website and allow extra time.
+
+By car (approximately 25 minutes from Porte d'Orléans)
+
+   ●​   Take the N118, exit 8 “Jouy-en-Josas Saclay”, then follow the D36 towards Palaiseau. The
+        campus has a car park, accessible via 41 or 45 Cours Pierre Vasseur.
+
+The event takes place in three locations: the Forum for reception and meals, Building C1 for the
+amphitheater, the work rooms and the pitches, and the Canopée for cocktails.
+
+
+
+
+Welcome. Please present yourself at the Forum reception desk on Friday, October 30th, between
+5:30 pm and 6:00 pm. For signing in, bring your ID or student card. Make sure you have filled in
+the pre-hackathon form sent by email. It takes 10 minutes and is essential for campus access. It
+will only be shared with the Hack the Fork global organizing team and is used solely to understand
+your profile and expectations beforehand.
+One email address only. Use the email address you provided when applying to the hackathon.
+This is the one you will use to log in to your AWS account: do not change it.
+
+Food. All meals and snacks served during the event are 100% plant-based. The following are
+planned: the cocktail reception and dinner on Friday evening at the Canopée, breakfast and lunch
+on Saturday, breakfast on Sunday, and the closing cocktail reception on Sunday at noon. If you
+have allergies, please report them before October 28: ines.mir-moreaux@hackthefork.org.
+
+Nights. The campus closes at 11 p.m. on Fridays and 6 p.m. on Saturdays. Night work takes place
+off campus, and no accommodation is provided by the organizers: please make arrangements in
+advance. Before leaving each evening, be sure not to leave any valuables behind.
+
+WiFi. You have received an email with a guide explaining how to connect to the network.
+
+Photos and videos will be taken during the event for the communications of Hack the Fork and
+AgroParisTech. If you do not wish to appear on social media, please inform the organizing team.
+
+Accessibility and well-being. If you require any special arrangements, please do not hesitate to
+write to Inès Mir-Moreaux (ines.mir-moreaux@hackthefork.org) or to call her (+33 6 77 28 65 30).
+
+What you need to bring:
+
+   ●​   Laptop and charger
+   ●​   Phone and charger
+   ●​   USB drive to export your data
+   ●​   Reusable water bottle
+   ●​   Notebook and pens
+   ●​   Comfortable clothes and a warm layer
+   ●​   Identity document or student card
+   ●​   Medications and personal belongings
+
+
+Your schedule
+Friday, October 30
+
+ Time               Activity                                               Venue
+
+ 17h45-18h45        Welcome and team-building time                         Forum
+
+ 18h45-18h55        Words from the student organizers                      Building C1
+
+ 18h55-19h05        Message from the management of AgroParisTech           Building C1
+
+ 19h05-19h20        Words from the Hack the Fork association               Building C1
+
+ 19h20-19h35        Recorded presentation by Danone                        Building C1
+
+ 19h35-19h45        Presentation by Plant-Based Universities               Building C1
+
+ 19h45-20h          Program overview                                       Building C1
+
+ 20h00-20h45        Workshop #1 - The Alternative Protein Sector           Building C1
+ 20h45-23h00         Reception and team brainstorming                          Canopée and
+                                                                               Building C1
+
+
+Saturday, October 31
+ Time            Activity                                                      Venue
+
+ 8h30-9h         Welcome                                                       Forum
+
+ 9h-9h30         Breakfast                                                     Forum
+
+ 9h30-10h15      Workshop #2 - AI at the heart of innovation                   Building C1
+
+ 10h15-13h       Teamwork                                                      Building C1
+
+ 13h-14h         Lunch                                                         Forum
+
+ 14h-18h         Teamwork                                                      Building C1
+
+
+Sunday, November 1st
+ Time            Activity                                                      Venue
+
+ 8h-8h30         Welcome and breakfast                                         Forum
+
+ 8h30-10h        Teamwork, submission of pitch deck and of the project sheet   Building C1
+
+ 10h-10h15       Post-hackathon survey                                         Building C1
+
+ 10h15-12h       Pitches to the jury                                           Building C1
+
+ 12h00-12h30     Back up your projects (USB drive, hard drive, GitHub, etc.)   Building C1
+
+ 12h30-13h       Awards ceremony and official closing                          Building C1
+
+ 13h-14h15       Closing cocktail / Buffet                                     Canopée
+
+
+
+
+Your team, and what you can do now
+Size. Teams consist of 2 to 5 people. Teams that combine technical, scientific, and business
+profiles have a significant advantage: the jury's evaluation criteria assess scientific rigor, AI
+integration, economic viability, impact, and quality of execution. A team with a single profile
+struggles in four out of five areas.
+
+How teams are formed. A team spreadsheet has been shared with you. It contains the list of
+participants, their profiles, and those still looking for teammates. This will allow you to identify
+those you would like to work with and contact them before the event. Teams will meet on-site and
+begin working on Friday at 8:45 PM, following the first workshop. From 5:45 PM to 6:45 PM, there
+will be a networking session for participants to connect and identify potential partners.
+
+Challenge selection. On Friday evening, each team chooses one of the three challenges and
+declares it to the organizers before 11 p.m. Take the time to discuss it together and, if you are
+unsure, ask a mentor for advice: a well-chosen challenge from the start will save you time.
+What you can do before the hackathon starts. Read this guide and the challenge brief, research
+the sector, meet your teammates, discuss the problem, install your tools, and explore the open
+resources listed below. It's even recommended: a team that comes prepared with some knowledge
+of the sector saves several hours compared to others.
+
+Things you cannot do before the start of the hackathon. Build the solution, the code, the model,
+the prototype, the challenge-specific results, or the final pitch deck. All deliverables must be
+produced during the event, or the team will be disqualified.
+
+Pre-existing resources must be declared. If you use code, research, datasets, designs, or
+pre-trained models created before the hackathon, you must declare them when you submit your
+project. Open-source licenses remain the original ones. A completed project or a patented solution
+is not eligible.
+
+Before leaving on Sunday. Retrieve and save (to a USB drive, internal/external hard drive, GitHub,
+etc.) everything your team has produced using AWS tools. Note: accounts will be closed after the
+event and nothing will be recoverable afterward.
+
+At the end of the hackathon. Each participant will receive a personalized certificate of
+participation, attesting to their commitment during these three days. Hack the Fork also offers
+post-hackathon programs for those who wish to continue their project or build an impactful career
+in food. Access to these programs will be by selection.
+
+
+Mentoring
+Throughout the weekend, mentors from research, industry and entrepreneurship are there to
+support you: Friday evening, Saturday and Sunday morning.
+
+Their role. They help you define your problem, test your assumptions, compare your idea with
+industry realities, and refine your presentation. Rather than giving you answers, they ask the right
+questions: that's what moves a project forward.
+
+What they don't do. They don't write your code, your model, or your presentation: the project
+remains entirely yours. They also don't participate in the evaluation, which allows you to
+communicate with them freely, including about your doubts and difficulties.
+
+
+The challenges of this edition
+Before presenting the challenges, here is the context on which the framework is based. The jury is
+already aware of this: any team that ignores these points will be challenged during the Q&A.
+
+Plant-based proteins: the challenges facing the sector
+
+  •​ Price, the primary obstacle to adoption. A plant-based product often costs more than its
+     animal-based equivalent. To reduce this gap, action must be taken across the entire chain,
+     from sourcing to production, and not just by improving recipes.
+  •​ Institutional catering: an underutilized resource. The law sets several obligations for
+     institutional catering: in school canteens, at least one vegetarian menu per week; in all
+     institutional catering, at least 50% sustainable and high-quality products, including 20%
+     ​organic products; and since January 2024, at least 60% sustainable and high-quality meat
+     and fish in public institutional catering. Restaurants serving more than 200 meals per day
+     must also establish a multi-year protein diversification plan. However, there are still few
+     digital tools available to help them develop this plan.
+  •​ Consumer confidence in ultra-processed products. Consumers increasingly want short and
+     easy-to-read ingredient lists. The challenge is to shorten them without sacrificing texture,
+     taste, or consistency.
+  •​ Dependence on imports. France currently imports a large portion of the plant-based
+     proteins it consumes. Legumes occupy approximately 4% of its agricultural land, and the
+     goal is to double this share by 2030.
+  •​ Private label brands: a growth engine with limited resources. They operate in several
+     segments, such as plant-based drinks, but their research and development (R&D) budgets
+     are much lower than those of major brands.
+
+Precision fermentation: the challenges of the sector
+
+  •​ Scale-up, the first bottleneck. Moving from laboratory to factory remains slow, costly and
+     risky. To overcome this obstacle, Danone, Michelin and DMC Biotechnologies have invested
+     in a dedicated platform in Clermont-Ferrand, the Biotech Open Platform (BIOP).
+  •​ Few simulation tools are available. Tools such as digital twins are lacking to predict process
+     performance before launching costly physical trials. Those that do exist are often reserved
+     for large corporations.
+  •​ Very high capital requirements. Even a start-up that has already received funding needs to
+     raise tens of millions of euros to build a single factory.
+
+Cross-cutting issues
+
+   •​ Active but underfunded research. France ranks 7th in Europe for the number of
+      publications on alternative proteins, but its public funding remains far behind that of the
+      United Kingdom and the Netherlands.
+   •​ The transition of agricultural and livestock sectors. Livestock farmers fear competition
+      that would threaten their incomes, and this fear is hindering political support. Alternative
+      proteins must be developed with farmers, not against them.
+
+Three challenges are proposed. On Friday evening, your team chooses one and responds with a
+solution where AI plays a real role. Each challenge poses a deliberately broad question: it's up to
+you to narrow it down to a specific problem for a clearly identified user. Over to you!
+
+Track 1 · Precision fermentation, from the lab to the factory
+The problem. In France, research in precision fermentation exists, but industrialization is stalled.
+Moving from a high-performing strain in the laboratory to profitable production remains slow,
+expensive, and risky, and every large-scale error is very costly. Accessible simulation tools, such
+as digital twins, are lacking to predict process performance before investing in physical trials.
+
+The challenge. How can artificial intelligence reduce the risk and cost of scaling up precision
+fermentation?
+
+Track 2 · Plant-based foods on French plates
+The problem. Plant-based products remain more expensive than their animal-based counterparts.
+Institutional catering, which could significantly influence consumer habits, lacks the tools to
+implement its protein diversification obligations under the EGAlim law. Meanwhile, consumers are
+wary of overly long ingredient lists and processed foods.
+
+The challenge. How can artificial intelligence make plant-based proteins cheaper, simpler, and
+more present in everyday meals?
+
+Useful open resources:
+
+   •​ Nutritional composition table (ANSES)
+   •​ Agribalyse environmental database (ADEME)
+   •​ Open Food Facts (ingredient lists and compositions of commercial products)
+   •​ Government platform “Ma Cantine” and guides from the National Council for Collective
+      Catering (vegetarian menu, protein diversification plan)
+
+Track 3 · Protein sovereignty, from French fields to the proteins of tomorrow
+The problem. Approximately 4% of French agricultural land is dedicated to pulses, with the goal of
+doubling this share by 2030. For plant-based proteins to replace a growing proportion of animal
+proteins in the human diet, France needs to produce more pulses for human consumption, rather
+than livestock feed. This transition is hampered by farmers' and livestock breeders' fears of
+income loss in a highly competitive market.
+
+The challenge. How can artificial intelligence help farmers and regions to produce the plant-based
+proteins that the French will eat tomorrow, and to generate income from them?
+
+Useful open resources:
+
+   ●​    Agricultural statistics Agreste (Ministry of Agriculture)
+
+   ●​    Terres Inovia, the technical institute for oilseeds and pulses
+
+Important: List of topics excluded from the scope of the Hack the Fork hackathon
+
+  •​ Insects.
+  •​ Products containing ingredients of animal origin.
+  •​ Animal feed. The projects are aimed at direct human consumption: developing plant-based
+     proteins for livestock, including replacing imported soy, is outside the scope.
+  •​ Projects without functional demonstration, which show nothing concrete.
+
+A project that falls into these categories is not eligible, regardless of its quality.
+
+If you're unsure, ask a mentor or the organization early. A problem reported on Friday evening
+costs a few minutes; the same problem discovered on Sunday costs the whole weekend.
+
+
+Best practices
+Regardless of the challenge chosen, the jury looks for the same signs:
+
+    ●​    A specific user and a decision that your solution helps them make. "Manufacturers" are
+          not a user; "the purchasing manager of a central kitchen" is.
+    ●​    A demonstration that works, even partial. A mockup of screens is not enough.
+   ●​   An AI that can be understood. You can explain simply what it does, what data it relies on,
+        and what its margin of error is. It brings real value to the solution: if we removed it, your
+        project would lose most of its appeal.
+   ●​   Traceable data, by distinguishing what is measured, sourced, assumed or synthetic.
+   ●​   Acknowledged limits. Stating what your model cannot do is a sign of rigor.
+
+A useful test before pitching: what would your solution lose if the AI ​component were removed? If
+the answer is "not much", you have a problem with the Authentic Integration of AI dimension.
+
+
+AI, data and infrastructure
+Your AWS account. On Friday, October 30, each team will receive login codes for AWS tools,
+along with the associated credits, provided as part of our partnership. Access will be sent to the
+email address you provided on the application form, and you will use this same email address to
+log in. To get started with the tools, consult the AWS webinar guide and notes (sent via email), as
+well as this video. If you have any problems, contact Morgane Paris on WhatsApp (+33 6 44 95 54
+05). Please note that the account will be closed after the hackathon: be sure to save all your work.
+
+AI should carry the solution, not dress it up. A generic conversational layer is insufficient if the
+same result could be achieved without it. AI must contribute to analysis, prediction, optimization,
+simulation, computer vision, or evidence gathering.
+
+Approaches that count as real-world use. Predictive modeling, recommendation or ranking,
+optimization, computer vision, LLM and RAG on credible sources, simulation, segmentation. The
+list is not exhaustive: what matters is that AI changes the outcome.
+
+Data transparency. Clearly distinguish, in your pitch as well as in your submission, what is
+measured or sourced, what is based on a hypothesis, and what is synthetic or produced by a
+model. Synthetic data is permitted for demonstration purposes, provided it is clearly identified: it
+should never be presented as experimental results.
+
+Sources. Document the datasets, literature, models, and external tools you use. Check the
+references generated by a language model before displaying them: a fabricated citation is easily
+detected and negatively impacts the scientific and technical rigor dimension.
+
+Integrity. Fabricating results, falsifying a test, plagiarizing a project, or presenting someone else's
+work as your own can lead to the team's disqualification.
+
+
+Pitch and evaluation grid
+Format. Each team has 4 minutes for their presentation, followed by 2 minutes of questions from
+the jury. This time is the same for all teams and must be strictly adhered to: at the end of the 4
+minutes, the presentation stops, even if you haven't finished.
+
+Language. The pitches can be presented in French or English, at each team's choice.
+
+All teams follow the same structure: the problem, your solution, a live demonstration or prototype,
+and then your scaling strategy. We advise you to set aside time for the demonstration: it's often
+what convinces the jury.
+Each criterion in the grid is rated from 1 to 10 by each juror, then weighted according to its
+importance. Grades are assigned individually, before any deliberation.
+
+
+
+ Criterion            Weight        What is evaluated                              Score (1-10)
+
+
+
+ Scientific and       20 %          The foundations of the solution (data,
+ technical rigor                    scientific sources, quality of the
+                                    assumptions), the degree of intellectual
+                                    rigor, and the credibility of the technical
+                                    solution. The team also recognizes the
+                                    limitations of its approach and explains
+                                    them.
+
+
+
+ Appropriate use of   20 %          AI is essential to the solution and is not
+ AI                                 simply an add-on. The method is tailored to
+                                    the problem and the data, and the team
+                                    clearly explains what the model does.
+
+
+
+ Economic viability   20 %          The team identifies a user or customer. It
+                                    also proposes a plausible value proposition,
+                                    a coherent business model, and a realistic
+                                    path to adoption.
+
+
+
+ Impact and           30 %          Contributing to a more sustainable and
+ sustainability                     resilient food system. The benefits are
+                                    commensurate with the evidence provided.
+
+
+
+ Execution and        10 %          The quality and solidity of the
+ pitch quality                      demonstration, the coherence of the
+                                    narrative, a team that masters its subject
+                                    and answers questions solidly.
+
+
+
+ Total                100 %
+
+
+
+Running order and equipment. The order of presentation will be communicated by email and
+WhatsApp on Sunday morning. You will present from a shared computer connected to the room's
+projector. For the live demonstration, please test it before your presentation.
+Submitting your project
+Deadline: Sunday, November 1st, 9:30 AM, Paris time.
+
+The 8:30 to 9:30 time slot is reserved for finalizing and submitting your work to the Drive.
+
+Required for your project to be evaluated by the jury:
+
+   ●​   the project presentation (the template will be provided to you) in PDF format, for the jury,
+        containing the link to your code/demo if you have one;
+   ●​   the project sheet, to be completed online, allowing you to explain your project in a short
+        and non-confidential way (it may be shared with external parties by Hack the Fork).
+
+
+Rules, Intellectual Property and Code of Conduct
+Your intellectual property
+
+It belongs to you 100%. The intellectual property created during the hackathon remains the
+exclusive property of the team members who created it. Neither Hack the Fork, nor AgroParisTech,
+nor any partners acquire any rights to your work as a result of your participation.
+
+No automatic rights for partners. Some partners may have a right of first look: after the
+hackathon, they can offer the winning teams the opportunity to discuss a license, a research
+collaboration, or a partnership. This right does not transfer any ownership to them and does not
+obligate you in any way: you remain free to accept or decline.
+
+Continuing the project. You are not obligated to continue your project after the hackathon. If Hack
+the Fork wishes to take over a project you abandon, any transfer or license must be voluntary,
+written, and validated: nothing is transferred automatically.
+
+Knowledge sharing. Each team provides a short, non-confidential summary of its project,
+covering the problem addressed, the solution adopted, and the business model. This summary
+feeds into Hack the Fork's annual report and is one of the submission deliverables.
+
+Competition Integrity
+
+Produced during the event. The solution, code, model, prototype specific to the challenge and the
+final deck must be developed during the event.
+
+Previous work declared. Desk research, reusable generic libraries and pre-existing resources can
+be used, under the declaration conditions described above.
+
+Fairness. All teams are subject to the same rules, deadlines, and evaluation criteria, and have the
+same resources. To maintain this equality, use only the data, tools, infrastructure, and templates
+authorized by the rules. If you have any doubts, contact Hack the Fork before using them.
+
+Code of Conduct
+
+Hack the Fork aims to be an inclusive, supportive, and collaborative space. No form of
+discrimination, harassment, intimidation, or disrespectful behavior will be tolerated, whether
+towards participants, mentors, jury members, volunteers, or the organizing team. Any violation
+may result in exclusion from the event.
+
+If you witness or are a victim of such a situation, report it immediately to Inès Mir-Moreaux by
+email (ines.mir-moreaux@hackthefork.org) or by telephone (+33 6 77 28 65 30).
+
+Every report will be taken seriously.
+
+
+The prizes awarded to the winners
+🥇   1st place: 2000$
+
+
+🥈   2nd place: 1000$
+
+
+🥉   3rd place: 500$
+
+Projects selected by the jury are given priority for inclusion in Hack the Fork's pre-incubation
+program: an opportunity to grow your project well beyond the weekend!
+
+
+
+Contacts
+ Role                              Person                            Contact
+
+ AgroParisTech contacts            Hugo Lecoulant                    +33 6 47 97 48 20
+                                   Lucie Avril                       +33 6 10 53 64 94
+
+ Hack the Fork contact             Inès Mir-Moreaux, Head of         +33 6 77 28 65 30
+                                   Local Leaders program
+
+ Other Hack the Fork contact       Morgane Paris, Head of            +33 6 44 95 54 05
+                                   Development
+
+ Participants’ channel             Hack the Fork                     WhatsApp Link
+
+
+
+A question before, during or after the event? Don't hesitate to write to us!
+
+Best,
+
+The Hack the Fork team
+
