@@ -1,0 +1,53 @@
+[project]
+name = "soymate"
+version = "0.0.0"
+description = "SoyMate: pulse quality control from a single photo (Hack the Fork Paris 2026)"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    # core data
+    "numpy",
+    "pandas",
+    "pyarrow",
+    "scipy",
+    "scikit-learn",
+    "statsmodels",   # Wilson intervals: statsmodels.stats.proportion.proportion_confint
+    "tqdm",
+    # images and grain separation
+    "pillow",
+    "opencv-python-headless",
+    "scikit-image",
+    # frozen DINOv2 features
+    "torch",
+    "torchvision",
+    "transformers",
+    "huggingface_hub",
+    "safetensors",
+    # plots, demo, notebooks
+    "matplotlib",
+    "plotly",
+    "streamlit",
+    "jupyterlab",
+    "ipykernel",
+    "openpyxl",
+    # AWS and downloads
+    "boto3",
+    "requests",
+]
+
+[project.optional-dependencies]
+# Touching-grain separation without training (nice to have, see CONTEXT.md section 7).
+seg = ["cellpose"]
+
+[tool.uv]
+package = false
+
+# CPU-only torch on Linux (the sandbox has no GPU; the default PyPI wheel drags in CUDA libraries).
+# On macOS the default PyPI wheel is already CPU/MPS.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
