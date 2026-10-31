@@ -8,6 +8,7 @@ Writes data/raw/MANIFEST.json (file names, sizes, source URLs, licences) for the
 import json
 import os
 import sys
+import threading
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -25,13 +26,14 @@ def fetch(url: str, dest: Path, expected_size: int | None = None) -> Path:
     dest.parent.mkdir(parents=True, exist_ok=True)
     if dest.exists() and (expected_size is None or dest.stat().st_size == expected_size):
         return dest
-    tmp = dest.with_suffix(dest.suffix + ".part")
+    # Unique temp name: some Mendeley datasets list two files with the same path, fetched in parallel.
+    tmp = dest.with_name(f"{dest.name}.{os.getpid()}.{threading.get_ident()}.part")
     with requests.get(url, headers=UA, stream=True, timeout=120, allow_redirects=True) as r:
         r.raise_for_status()
         with open(tmp, "wb") as f:
             for chunk in r.iter_content(1 << 20):
                 f.write(chunk)
-    tmp.rename(dest)
+    os.replace(tmp, dest)
     return dest
 
 
