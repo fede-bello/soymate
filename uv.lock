@@ -1763,6 +1763,8 @@ dependencies = [
 
 [package.dev-dependencies]
 baseline = [
+    { name = "numpy" },
+    { name = "opencv-python" },
     { name = "ultralytics" },
 ]
 
@@ -1777,7 +1779,11 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-baseline = [{ name = "ultralytics", specifier = ">=8.4.194" }]
+baseline = [
+    { name = "numpy", specifier = ">=2.5.4" },
+    { name = "opencv-python", specifier = ">=5.0.0.93" },
+    { name = "ultralytics", specifier = ">=8.4.194" },
+]
 
 [[package]]
 name = "stack-data"

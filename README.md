@@ -111,3 +111,57 @@ YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl .venv/bin/python scripts
 ```
 
 Choose a review status and add notes for each image, then use **Export reviews as CSV** for a portable backup. The page reports whether local browser storage is available; if it is not, export before closing. Browser storage is tied to the browser, origin and gallery path: refreshing at the same path keeps the same storage key, but moving the file or switching between `file://` and a local server can make notes inaccessible. Export before moving or changing how you open it; the CSV is a backup, not an import mechanism. Browser data clearing can remove stored notes.
+
+### Separated-grain counting and visible-hole prototype
+
+The local prototype segments separated grains, runs the soybean Hole detector on
+padded crops or the full photo, and saves an inspection report. It is **experimental**:
+thresholds have not been calibrated on pea/lentil trays. Images must have one
+species, separated whole grains, a uniform contrasting background, and clear
+image borders. Inspect the numbered silhouettes before trusting a count.
+Touching grains may merge. See [the implementation and evaluation notes](docs/grain_pipeline_mvp.md)
+for the annotation format, capture protocol, limitations, and observed smoke results.
+
+Install the locked baseline group with `uv sync --locked --group baseline`.
+The checkpoint and datasets are ignored local files, so obtain them separately
+on another machine. From the repository root:
+
+```bash
+YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl \
+  .venv/bin/python scripts/analyze_grain_sample.py path/to/photo.jpg \
+  --species pea --provenance natural --device auto --mode compare \
+  --output outputs/pea-development-01
+```
+
+Open `outputs/pea-development-01/report.html`. Use a fresh output path for each
+run. The report links a machine-readable `sample.json`, per-mode grain CSVs,
+foreground/instance images, crops, and mapped detections. Excluded components
+are magenta; rejected predictions are red. `--mode crops` is the default; `full`
+provides a whole-image comparator, and `compare` records both independently.
+
+Default component area and colour thresholds, and the 0.40 flagging confidence,
+are initial development settings, not validated operating points. See `--help`
+for explicit segmentation and confidence options. A zero-grain image reports an
+undefined percentage. Candidate detections describe visible features only;
+this prototype cannot assess hidden infestation or food/feed suitability.
+
+To evaluate manually annotated photos, follow the JSON manifest schema in the
+implementation notes, then run:
+
+```bash
+.venv/bin/python scripts/evaluate_grain_samples.py path/to/manifest.json \
+  --mode crops --output outputs/pea-evaluation-01
+```
+
+The evaluator rejects physical-set IDs and identical image bytes shared across
+development/final, and checks consistent settings within each species. It cannot
+prove that differently named physical sets contain different grains or that bags
+are independent. Centre-only annotations cannot establish whether an extra
+instance is a split. Keep final physical sets aside while calibrating.
+
+Run the focused checks with:
+
+```bash
+YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl \
+  .venv/bin/python -m unittest discover -s tests -v
+```
