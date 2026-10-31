@@ -65,7 +65,7 @@ Run the unit tests with `uv run --with pytest pytest tests -q`.
 All numbers, CIs and caveats are in [`results/README.md`](results/README.md); sources per claim in [`results/provenance.md`](results/provenance.md). In short:
 
 - **The public soybean defect dataset leaks:** 229/274 published test images (83.6 %) share an original photo with published train. Leakage inflates macro F1 by about 0.03 to 0.06 (R1).
-- **Per-class F1 on clean grouped splits** (R2): soybean macro 0.88 [0.85, 0.93], Lin macro 0.91 [0.88, 0.93]. Holes vs sound on the only days with both classes give F1 0.975 [0.92, 0.99], and 0.96 when trained only on other sessions (7 hole bursts: indicative).
+- **Per-class F1 on clean grouped splits** (R2): soybean macro 0.83 [0.80, 0.85] and broken 0.67 [0.60, 0.74] (5-fold CV over 131 capture bursts; the fixed 19-burst test gave an optimistic 0.88), Lin macro 0.91 [0.88, 0.93]. Better FastSAM seed masks do not change this (paired CIs include 0). Holes vs sound on the only days with both classes give F1 0.975 [0.92, 0.99], and 0.96 when trained only on other sessions (7 hole bursts: indicative).
 - **The model can recognise the source dataset** with 100 % accuracy, so per-class numbers are reported within each dataset and the pooled demo model is uncalibrated on new camera setups.
 - **Another setup's data does not substitute for target labels** (R3): on Lin, 10 target labels per class beat ~1,000 pooled soybean images (0.89 vs 0.68).
 - **Seed counts on real phone photos** (R4a): MAPE 1.1 % [0.2, 2.3] against the 7 complete published counts.
