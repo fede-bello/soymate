@@ -151,3 +151,24 @@ disagreements by eye (the chroma mask cuts bright seed areas and the hilum, and 
 Paired bootstrap over bursts; the fixed 19-burst split agrees (all CIs include 0). **No measurable gain:** the broken
 errors come from the classifier and the labels (testa cracking is the noisiest class), not from seed borders. The
 demo keeps the chroma mask (no AGPL dependency added).
+
+### Bulk segmentation: packed seeds (`experiments/bulk_segmentation/`, `bulk_segmentation.json`, `__images.csv`)
+
+Can a zero-shot instance segmenter find seeds in packed bulk photos? Mechanical-harvest soybean hwdtghttp7, scored
+against the dataset's own per-seed masks (greedy one-to-one match at IoU >= 0.5); settings chosen on the 28 train
+originals, headline on the 6 test originals (95 % CIs over images; all 40 originals in brackets, fair because
+no method was trained on them).
+
+| Method | Count MAPE | Instance F1 | s / image (CPU) |
+|---|---|---|---|
+| FastSAM-s + post-processing (chosen on train) | 5.0 % [2.8, 7.2] (5.3) | 0.944 [0.936, 0.953] (0.945) | 0.34 |
+| Cellpose-SAM, diameter 130 | 4.4 % [1.0, 8.0] (6.6) | 0.954 (0.938) | 32 |
+| Watershed | 6.7 % (10.5) | 0.873 (0.887) | 0.30 |
+| FastSAM, previous default settings | 14.8 % | 0.893 | 0.25 |
+| Our spread-seed segmenter | fails (one merged blob) | 0.06 | 0.02 |
+
+FastSAM finds crushed seeds as reliably as intact ones (recall 1.00 vs 0.95) but misses most stems and pods
+(impurity recall 0.40); matched-mask IoU 0.91. On the spread Ghana photos it counts like our segmenter
+(165/186/259 vs 164/186/259). The pre-set bar for a demo bulk mode (MAPE <= 5 %, F1 >= 0.85) is missed by
+0.03 pp on MAPE; the demo offers it as **"Bulk (experimental)"** with these numbers shown. Cellpose's
+full-resolution auto-diameter setting was not run (cut for time). FastSAM/Ultralytics are AGPL-3.0.
