@@ -1,0 +1,101 @@
+[
+ {
+  "id": "ghana_g17",
+  "label": "Ghana farmer-saved lot (164 seeds)",
+  "kind": "batch",
+  "dataset": "Ghana soybean seeds t94nzy4ptz, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/ghana_g17.jpg",
+  "note": "Evaluation-only phone photo; complete published count available.",
+  "ground_truth": {
+   "n_seeds": 164
+  },
+  "source": "seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_135711992.jpg"
+ },
+ {
+  "id": "ghana_favor",
+  "label": "Ghana Favor lot (186 seeds)",
+  "kind": "batch",
+  "dataset": "Ghana soybean seeds t94nzy4ptz, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/ghana_favor.jpg",
+  "note": "Evaluation-only phone photo; complete published count available.",
+  "ground_truth": {
+   "n_seeds": 186
+  },
+  "source": "seed_data/Soyabean/group_capture/Favor/PXL_20260314_144204670.jpg"
+ },
+ {
+  "id": "ghana_afayak_shadow",
+  "label": "Ghana Afayak lot in hard shadow",
+  "kind": "batch",
+  "dataset": "Ghana soybean seeds t94nzy4ptz, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/ghana_afayak_shadow.jpg",
+  "note": "Evaluation-only phone photo with hard shadow; the published boxes miss seeds in shadow (semi-automatic estimate about 257 seeds, not ground truth).",
+  "ground_truth": null,
+  "source": "seed_data/Soyabean/group_capture/Afayak/PXL_20260315_115049863.jpg"
+ },
+ {
+  "id": "soy_sound",
+  "label": "Single soybean seed, labelled sound",
+  "kind": "single",
+  "dataset": "Soybean seed defects d97rjyk2tz v2, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/soy_sound.jpg",
+  "note": "Test-split image (dataset label: Healthy).",
+  "ground_truth": {
+   "class": "sound",
+   "n_seeds": 1
+  },
+  "source": "test/images/test_0015.jpg"
+ },
+ {
+  "id": "soy_broken",
+  "label": "Single soybean seed, labelled broken",
+  "kind": "single",
+  "dataset": "Soybean seed defects d97rjyk2tz v2, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/soy_broken.jpg",
+  "note": "Test-split image (dataset label: Testa cracking).",
+  "ground_truth": {
+   "class": "broken",
+   "n_seeds": 1
+  },
+  "source": "test/images/test_0004.jpg"
+ },
+ {
+  "id": "soy_insect_hole",
+  "label": "Single soybean seed, labelled insect hole",
+  "kind": "single",
+  "dataset": "Soybean seed defects d97rjyk2tz v2, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/soy_insect_hole.jpg",
+  "note": "Test-split image (dataset label: Egg|Hole).",
+  "ground_truth": {
+   "class": "insect_hole",
+   "n_seeds": 1
+  },
+  "source": "test/images/test_0020.jpg"
+ },
+ {
+  "id": "lin_stained",
+  "label": "Single soybean seed (Lin), labelled stained",
+  "kind": "single",
+  "dataset": "Soybean seeds 5 classes (Lin) v6vzvfszj6, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/lin_stained.jpg",
+  "note": "Test-split crop (dataset label: spotted).",
+  "ground_truth": {
+   "class": "stained",
+   "n_seeds": 1
+  },
+  "source": "Spotted soybeans/1001.jpg"
+ },
+ {
+  "id": "lin_immature",
+  "label": "Single soybean seed (Lin), labelled immature",
+  "kind": "single",
+  "dataset": "Soybean seeds 5 classes (Lin) v6vzvfszj6, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/lin_immature.jpg",
+  "note": "Test-split crop (dataset label: immature).",
+  "ground_truth": {
+   "class": "immature",
+   "n_seeds": 1
+  },
+  "source": "Immature soybeans/101.jpg"
+ }
+]

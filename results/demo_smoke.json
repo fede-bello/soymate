@@ -1,0 +1,157 @@
+{
+  "name": "demo_smoke",
+  "how": "app/api/pipeline.analyze (the code behind POST /api/analyze) run in-process on the box with model soymate-pooled-v1. Ghana: the 7 gt_status=ok photos at original resolution, mode auto, count = summary.n_seeds vs the complete published box count. Soybean d97rjyk2tz: 20 test-split images (eval_rep, not multi-seed), 7 sound / 7 broken / 6 insect_hole sampled with random_state=0; prediction = class of the largest returned seed, in mode auto and mode single; Wilson 95 % CI (ignores burst clustering). Seconds are wall-clock per call including JPEG decode, on c7i.4xlarge. Re-encode check: the same Ghana photo downscaled to 2000 px (INTER_AREA) and saved as JPEG q95, like the demo examples; defect share = any class except sound.",
+  "created_utc": "2026-10-31T14:14:30+00:00",
+  "code_rev": "unknown (box copy is not a git checkout)",
+  "result": {
+    "ghana_gt_ok": {
+      "n_photos": 7,
+      "mae_seeds": 1.71,
+      "mean_signed_error": 1.71,
+      "mape_pct": 1.13,
+      "max_abs_error": 5,
+      "modes": {
+        "batch": 7
+      },
+      "median_seconds": 3.14,
+      "reencode_abs_change_defect_pp": {
+        "mean": 5.47,
+        "max": 10.3
+      },
+      "reencode_count_changes": 1,
+      "photos": [
+        {
+          "photo": "seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_135711992.jpg",
+          "published_count": 164,
+          "api_count": 164,
+          "mode": "batch",
+          "n_instances": 164,
+          "defect_pct": 11.0,
+          "verdict": "fail",
+          "seconds": 2.97,
+          "reencoded_count": 164,
+          "reencoded_defect_pct": 6.7
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_140519746.jpg",
+          "published_count": 127,
+          "api_count": 132,
+          "mode": "batch",
+          "n_instances": 132,
+          "defect_pct": 15.9,
+          "verdict": "fail",
+          "seconds": 2.47,
+          "reencoded_count": 132,
+          "reencoded_defect_pct": 6.8
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_140527445.jpg",
+          "published_count": 143,
+          "api_count": 143,
+          "mode": "batch",
+          "n_instances": 143,
+          "defect_pct": 9.8,
+          "verdict": "fail",
+          "seconds": 2.67,
+          "reencoded_count": 144,
+          "reencoded_defect_pct": 4.9
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/Favor/PXL_20260314_142758752.jpg",
+          "published_count": 195,
+          "api_count": 196,
+          "mode": "batch",
+          "n_instances": 196,
+          "defect_pct": 18.4,
+          "verdict": "fail",
+          "seconds": 3.58,
+          "reencoded_count": 196,
+          "reencoded_defect_pct": 18.9
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/Favor/PXL_20260314_144204670.jpg",
+          "published_count": 186,
+          "api_count": 186,
+          "mode": "batch",
+          "n_instances": 186,
+          "defect_pct": 31.2,
+          "verdict": "fail",
+          "seconds": 3.55,
+          "reencoded_count": 186,
+          "reencoded_defect_pct": 23.7
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/Favor/PXL_20260314_144245222.jpg",
+          "published_count": 172,
+          "api_count": 175,
+          "mode": "batch",
+          "n_instances": 175,
+          "defect_pct": 36.0,
+          "verdict": "fail",
+          "seconds": 3.14,
+          "reencoded_count": 175,
+          "reencoded_defect_pct": 25.7
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/Favor/PXL_20260314_144258573.jpg",
+          "published_count": 172,
+          "api_count": 175,
+          "mode": "batch",
+          "n_instances": 175,
+          "defect_pct": 10.3,
+          "verdict": "fail",
+          "seconds": 3.22,
+          "reencoded_count": 175,
+          "reencoded_defect_pct": 8.6
+        }
+      ]
+    },
+    "soybean_test_single": {
+      "n_images": 20,
+      "per_class": {
+        "sound": 7,
+        "broken": 7,
+        "insect_hole": 6
+      },
+      "auto": {
+        "correct": 16,
+        "n": 20,
+        "accuracy": 0.8,
+        "wilson95": [
+          0.584,
+          0.919
+        ]
+      },
+      "single": {
+        "correct": 16,
+        "n": 20,
+        "accuracy": 0.8,
+        "wilson95": [
+          0.584,
+          0.919
+        ]
+      },
+      "auto_mode_counts": {
+        "single": 20
+      },
+      "median_seconds_auto": 0.066,
+      "confusion_auto": {
+        "broken": {
+          "broken": 6,
+          "insect_hole": 0,
+          "sound": 3
+        },
+        "insect_hole": {
+          "broken": 0,
+          "insect_hole": 6,
+          "sound": 0
+        },
+        "sound": {
+          "broken": 1,
+          "insect_hole": 0,
+          "sound": 4
+        }
+      }
+    }
+  }
+}
