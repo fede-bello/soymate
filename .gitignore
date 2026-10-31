@@ -4,3 +4,10 @@ data/
 __pycache__/
 .venv/
 .env
+
+# Generated model artifacts and experiment outputs
+*.pt
+*.pth
+*.onnx
+runs/
+outputs/

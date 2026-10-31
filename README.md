@@ -64,6 +64,10 @@ Datasets are downloaded at the event, never committed (`data/` is git-ignored). 
 | Radio_lentille (Terres Inovia, Hugging Face) | X-rays of bruchid-damaged French lentils, validation | MIT |
 | Our own photos | French peas and lentils, transfer evaluation | Ours |
 
+## Dataset review setup
+
+Install [uv](https://docs.astral.sh/uv/), then run `uv sync --locked` from the repository root (Python 3.14). Start JupyterLab with `uv run jupyter lab` and open `notebooks/01_soybean_data_review.ipynb` using the environment's Python 3 kernel. Extract the soybean dataset under `data/raw/Soybean_Seed_Dataset/` first. The local `.venv/` and data are ignored by Git.
+
 ## Team
 
 Three people, Hack the Fork Paris 2026. Repository is private.
