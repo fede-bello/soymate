@@ -1,30 +1,15 @@
 <section id="trust" data-transition="fade" style="background:#F7F5EE;color:#18301F;font-family:'DM Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
 <p style="font-size:24px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#2E7D32">What we built</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;color:#18301F">How much you can trust it</h2>
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
-<div style="display:flex;flex-direction:column;gap:16px;background:#FFFFFF;border:1px solid #DCE3D8;border-radius:20px;padding:36px">
-<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#18301F">We found a flaw in the public data</h3>
-<p style="font-size:26px;line-height:1.4;color:#44564A">most of its test photos were copies of its training photos, so scores looked better than they were. We fixed it.</p>
-</div>
-<div style="display:flex;flex-direction:column;gap:16px;background:#FBF3E6;border:3px dashed #9A5B00;border-radius:20px;padding:36px">
-<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#9A5B00">[TO FILL] Tested on real photos</h3>
-<p style="font-size:26px;line-height:1.4;color:#7A4A00">off by [X] points on [N] seeds we checked by hand</p>
-</div>
-<div style="display:flex;flex-direction:column;gap:16px;background:#FBF3E6;border:3px dashed #9A5B00;border-radius:20px;padding:36px">
-<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#9A5B00">[TO FILL] Is it really looking at the damage?</h3>
-<p style="font-size:26px;line-height:1.4;color:#7A4A00">[result of our check that it doesn’t just recognise where a photo came from]</p>
-</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px">
+<div style="display:flex;flex-direction:column;gap:14px;background:#FFFFFF;border:1px solid #DCE3D8;border-radius:20px;padding:32px"><h3 style="font-size:30px;font-weight:700;line-height:1.2;color:#18301F">The public data leaked</h3><p style="font-size:25px;line-height:1.4;color:#44564A">84 % of its test photos came from the same original photos as its training set. Split by capture session, the score falls from 0.89 to 0.85.</p></div>
+<div style="display:flex;flex-direction:column;gap:14px;background:#FFFFFF;border:1px solid #DCE3D8;border-radius:20px;padding:32px"><h3 style="font-size:30px;font-weight:700;line-height:1.2;color:#18301F">Tested on real photos</h3><p style="font-size:25px;line-height:1.4;color:#44564A">Counting: off by 1.7 seeds per photo (1.1 %) on farmer photos. Packed lots: 94 % of seeds found; once seeds are located, % broken within 1.5 points on 6 lots it never saw.</p></div>
+<div style="display:flex;flex-direction:column;gap:14px;background:#FFFFFF;border:1px solid #DCE3D8;border-radius:20px;padding:32px"><h3 style="font-size:30px;font-weight:700;line-height:1.2;color:#18301F">Is it seeing the damage?</h3><p style="font-size:25px;line-height:1.4;color:#44564A">A test can tell which dataset a seed came from every time, so we score each dataset on its own. Holes are still found on the days with both classes (F1 0.97).</p></div>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
-<div style="display:flex;flex-direction:column;gap:12px;border-left:6px solid #2E7D32;padding:8px 8px 8px 28px">
-<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#18301F">What a photo can’t see</h3>
-<p style="font-size:26px;line-height:1.4;color:#44564A">a larva still inside a seed, before it makes its hole. Cutting pea seeds open found about 3 times more damage than looking.</p>
+<div style="display:flex;flex-direction:column;gap:12px;border-left:6px solid #2E7D32;padding:8px 8px 8px 28px"><h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#18301F">What a photo can’t see</h3><p style="font-size:25px;line-height:1.4;color:#44564A">a larva still inside a seed, before it makes its hole. Cutting pea seeds open found about 3 times more damage than looking.</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;border-left:6px solid #2E7D32;padding:8px 8px 8px 28px"><h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#18301F">How many seeds are enough</h3><p style="font-size:25px;line-height:1.4;color:#44564A">200 seeds can be off by up to 6 points; about 1,000 (a few photos) by less than 3. Single seeds are often wrong, so we always show the range.</p></div>
 </div>
-<div style="display:flex;flex-direction:column;gap:12px;border-left:6px solid #2E7D32;padding:8px 8px 8px 28px">
-<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#18301F">How many seeds are enough</h3>
-<p style="font-size:26px;line-height:1.4;color:#44564A">200 seeds can be off by up to 6 points; about 1,000 (a few photos) by less than 3. When it’s unsure, the app asks for more.</p>
-</div>
-</div>
-<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5E6E63">Sources: our audit of Mendeley d97rjyk2tz (80-84 % of test images leaked; done before the event, declared); LABOSEM 2022 (pea ~4 % visual vs 11.8-13.5 % dissected); binomial 95 % ranges at 25 % damage.</p>
-<aside>How much can you trust it? First, we found a flaw in the best public data: most of its test photos were copies of its training photos, so everyone's scores looked better than they were. We fixed that. On real photos we checked by hand, it's off by [X] points. And we're clear about the limits: a photo can't see a larva still inside a seed, and a single photo of 200 seeds is too few to be precise, so the app asks for more. (~25 s)</aside>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5E6E63">Sources: our results at the event (results/README.md: R1, R2, R4a, R4b, dataset-ID check; Mendeley d97rjyk2tz, v6vzvfszj6, t94nzy4ptz, hwdtghttp7); LABOSEM 2022; binomial 95 % ranges at 25 % damage.</p>
+<aside>Can you trust it? First, the best public dataset leaked: most test photos came from the same originals as training, so scores looked better than they were. We fixed that and report the honest number. On real farmer photos it counts within about 2 seeds. On packed lots it never saw, it finds 94 % of the seeds, and once seeds are located the share of broken ones is within 1.5 points. And we say what we can't do: a model can tell which dataset a photo came from, so we never mix them in one score, and a photo can't see a larva inside a seed. (~30 s)</aside>
 </section>
