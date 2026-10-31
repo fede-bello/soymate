@@ -1,0 +1,13 @@
+<View>
+  <Header value="One point per seed: centre inside the image, at least half visible. Keys 1-7 pick the class."/>
+  <KeyPointLabels name="seed" toName="img" strokeWidth="2">
+    <Label value="sound" background="#2e7d32" hotkey="1"/>
+    <Label value="broken" background="#ef6c00" hotkey="2"/>
+    <Label value="stained" background="#6a1b9a" hotkey="3"/>
+    <Label value="immature" background="#9e9d24" hotkey="4"/>
+    <Label value="insect_hole" background="#c62828" hotkey="5"/>
+    <Label value="unsure" background="#757575" hotkey="6"/>
+    <Label value="not_a_seed" background="#000000" hotkey="7"/>
+  </KeyPointLabels>
+  <Image name="img" value="$image" zoom="true" zoomControl="true"/>
+</View>
