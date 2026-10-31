@@ -55,7 +55,12 @@ def analyze_endpoint(file: UploadFile = File(...), mode: str = Form("auto"), thr
 @app.get("/api/examples")
 def examples():
     p = EXAMPLES / "examples.json"
-    return json.loads(p.read_text()) if p.exists() else []
+    items = json.loads(p.read_text()) if p.exists() else []
+    for ex in items:  # gallery thumbnail from make_thumbs.py, when present; analysis still uses ex["url"]
+        stem = Path(ex["url"].rsplit("/", 1)[-1]).stem
+        if (EXAMPLES / f"{stem}.thumb.jpg").exists():
+            ex["thumb_url"] = f"/api/examples/files/{stem}.thumb.jpg"
+    return items
 
 
 @app.get("/api/evidence")

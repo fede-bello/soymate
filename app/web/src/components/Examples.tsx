@@ -58,7 +58,7 @@ export default function Examples({ onPick, loadingId, disabled }: Props) {
               >
                 <span className="example-thumb">
                   <img
-                    src={ex.url}
+                    src={ex.thumb_url ?? ex.url}
                     alt=""
                     loading="lazy"
                     decoding="async"

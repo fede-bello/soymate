@@ -44,6 +44,8 @@ export interface Example {
   kind: "batch" | "single";
   dataset: string;
   url: string;
+  /** ~480 px gallery thumbnail; analysis always uses `url`. */
+  thumb_url?: string;
   note?: string;
   source?: string;
   /** Batch: {n_seeds} hand count. Single seed: {class, n_seeds: 1} dataset label. Null when unknown. */

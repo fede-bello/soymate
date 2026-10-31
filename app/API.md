@@ -53,6 +53,8 @@ Response 200:
    "dataset": "Ghana t94nzy4ptz (CC BY 4.0)", "url": "/api/examples/files/ghana_g17.jpg",
    "note": "Held-out photo; hand count available", "ground_truth": {"n_seeds": 164} }]`
 Only test-split or evaluation-only images, never training images.
+Optional `thumb_url` (about 480 px JPEG, from `app/api/make_thumbs.py`) is added when the thumbnail exists; the
+gallery shows it, analysis always uses `url`.
 
 ## `GET /api/evidence`
 Curated from `results/*.json` (numbers copied by code, never typed by hand):
