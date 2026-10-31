@@ -4,7 +4,7 @@
 
 # SoyMate
 
-**A seed grade from a phone photo, that the farmer can check too.** At grain intake, someone at the cooperative counts damaged seeds by eye, and that count sets what the farmer is paid. SoyMate finds every seed in a few phone photos, classifies it (sound, broken, stained, unripe, insect hole), and gives the share of each defect with its uncertainty and a verdict: pass, take more photos, or fail.
+**An inspectable grain-photo prototype for quality review.** The current demo finds grain candidates in a pea photo and lets a person reject false candidates. A separate soybean image demonstrates a visible-hole detector. The pea image has no reference hole labels; damage detection on pea or lentil, grading and lot decisions are not validated.
 
 Project for **Hack the Fork Paris 2026** (AgroParisTech, Palaiseau, 30 October to 1 November 2026), **Track 3: Protein sovereignty, from French fields to the proteins of tomorrow**.
 
@@ -24,12 +24,12 @@ Project for **Hack the Fork Paris 2026** (AgroParisTech, Palaiseau, 30 October t
 - **Lentil** is where the value is: ~550 €/t between food and feed outlets. Taking the tool there needs French lentil photos labelled by graders, ~1,000 seeds per grade, calibration against the visual reference count, and a pilot with one cooperative.
 - AI grading of pulses already sells in Australia (Cropify). Nobody publicly covers French soy or pulses. Full analysis: [`docs/soymate_viability_brief.pdf`](docs/soymate_viability_brief.pdf).
 
-## How
+## How: current prototype and longer-term vision
 
-1. **Photo:** phone, plain matte background, a few photos per sample.
-2. **Find:** threshold and contours (a pretrained segmenter such as SAM if seeds touch).
-3. **Classify:** frozen pretrained features (DINOv2) plus a small linear classifier, trained on CPU.
-4. **Grade:** percentage per class with a Wilson interval; "take more photos" when the interval crosses the threshold.
+1. **Photo:** read a locally available sample image.
+2. **Find and review:** FastSAM proposes masks; a reviewer can reject false candidates. A contour-based alternative handles separated grains.
+3. **Flag:** a soybean-trained YOLO detector proposes visible-hole boxes. The current demonstration uses a different soybean photo for this component.
+4. **Future work:** validate on representative, labelled samples before considering other classes, sampling intervals or grading decisions.
 
 The public soybean defect dataset leaks (80-84 % of its test images are copies of training images), so we re-split it. Results to produce at the event: leaky vs clean split, per-class F1, a check that the model is not recognising the source dataset, transfer between soybean datasets, and lot-level error on real hand-labelled photos.
 

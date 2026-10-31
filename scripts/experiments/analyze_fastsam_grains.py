@@ -35,6 +35,7 @@ def render_review(output, summary):
 article{border:1px solid #aaa;padding:.6rem} article img{display:block;width:100%;margin-top:.5rem}
 article:has(input:not(:checked)){opacity:.45} button{padding:.5rem}</style></head><body>
 <h1>FastSAM candidate review</h1><p>Uncheck obvious false candidates. Inspect all outlines and crops; missed or merged grains cannot be added here.</p>
+<p><strong>Original model output: MODEL_COUNTS</strong></p>
 <p><strong id="totals"></strong></p><p id="storage"></p>
 <button id="export" type="button">Download review decisions</button>
 <p>Flags are experimental visible-hole predictions, not confirmed damage. Associations were computed before review: rejecting a mask does not reassign detections. A detection whose centre overlaps masks remains rejected even if one mask is unchecked. Inspect the annotated image and manifest for rejected boxes and warnings.</p>
@@ -56,7 +57,7 @@ function update() {
   const kept = boxes.filter(box => box.checked);
   const rejected = boxes.filter(box => !box.checked).map(box => Number(box.dataset.id));
   const flagged = kept.filter(box => box.closest('article').dataset.flagged === 'true').length;
-  document.querySelector('#totals').textContent = `${kept.length} retained candidates · ${flagged} retained with visible-hole flags · ${rejected.length} rejected`;
+  document.querySelector('#totals').textContent = `Human review: ${kept.length} retained candidates · ${flagged} retained with model visible-hole flags · ${rejected.length} rejected`;
   if (persistent) {
     try { localStorage.setItem(storageKey, JSON.stringify(rejected)); storage.textContent = 'Review stored in this browser at this report location. Download a backup before moving or clearing browser data.'; }
     catch (error) { persistent = false; storage.textContent = 'Browser storage unavailable; download decisions before closing.'; }
@@ -70,6 +71,8 @@ document.querySelector('#export').addEventListener('click', () => {
 });
 update();</script></body></html>'''
     page = page.replace('WARNINGS', html.escape(', '.join(summary['warnings']) or 'none'))
+    page = page.replace('MODEL_COUNTS', f"{len(summary['components'])} grain candidates · "
+                        f"{sum(component['flagged'] for component in summary['components'])} visible-hole flags")
     page = page.replace('ROWS', '\n'.join(rows)).replace('INPUT_HASH', json.dumps(summary['input']['sha256']))
     (output/'review.html').write_text(page, encoding='utf-8')
 
