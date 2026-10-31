@@ -77,3 +77,21 @@ seed surface alone (camera, magnification, lighting). Consequences: per-class nu
 each dataset**; a pooled 5-class model is not evidence of defect recognition across setups, and is
 uncalibrated on third-party photos. The pooled model flags 8.3 % [4.7, 14.2] of Lin sound seeds and 13.0 %
 [6.4, 24.4] of soybean sound seeds as defective (never as the other dataset's classes).
+
+### R3: transfer between soybean datasets (`eval/r3_transfer.py`, `r3_transfer.json`, `__curve.csv`, `r3_transfer.png`)
+
+Shared classes sound vs broken, dinov2-small + logistic regression, k labelled target seeds per class (one per
+photo), 10 random draws per k (mean shown), CIs from a bootstrap over target groups. Soybean "broken" is testa
+cracking; Lin "broken" is (a) broken + skin-damaged or (b) skin-damaged only.
+
+| Direction | k=0 (source only) | k=10: source+k / target only | k=50: source+k / target only | target ceiling |
+|---|---|---|---|---|
+| soybean -> Lin, (a) | 0.52 | 0.68 / 0.89 | 0.83 / 0.93 | 0.98 |
+| soybean -> Lin, (b) | 0.59 | 0.74 / 0.90 | 0.86 / 0.93 | 0.97 |
+| Lin -> soybean, (a) | 0.37 | 0.68 / 0.63 | 0.74 / 0.71 | 0.79 [0.72, 0.87] |
+| Lin -> soybean, (b) | 0.55 | 0.67 / 0.63 | 0.73 / 0.71 | 0.79 |
+
+Macro F1. **Another setup's data does not substitute for target labels:** on Lin, 10 target labels per class
+alone beat ~1,000 pooled soybean images (0.89 vs 0.68); on soybean, adding Lin gives +0.02 to +0.05, inside the
+CIs (soybean test: 11 bursts). Part of the zero-shot drop is label shift (definition (b) is closer to testa
+cracking and scores higher). For a new crop or capture setup, budget for labelled target data.
