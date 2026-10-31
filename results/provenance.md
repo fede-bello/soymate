@@ -12,7 +12,7 @@ Tags: **measured** = computed at the event by a committed script in this repo (r
 | Macro F1, published split, full image (dinov2-small + logreg) | 0.885 [0.832, 0.932] | measured | R1, `results/r1_leaky_vs_clean.json` |
 | Macro F1, our burst split, masked crop | 0.852 [0.801, 0.900] | measured | R1 |
 | insect_hole vs sound, same days and background (13-14/08, light) | F1 0.975 [0.92, 0.99]; 0.96 when trained only on other sessions (7 hole bursts: indicative) | measured | R2 session control (the 1.00 on the fixed test is not quotable) |
-| Per-class F1 within each dataset, with grouped CIs | soybean broken 0.82, sound 0.82; Lin macro 0.91 | measured | R2 |
+| Per-class F1 within each dataset, with grouped CIs | soybean (5-fold CV over 131 bursts) broken 0.67 [0.60, 0.74], sound 0.82, macro 0.83; Lin macro 0.91 | measured | R2, `experiments/mask_quality/evaluate.py` |
 | Dataset-ID probe accuracy on sound seeds | 100 %, also texture-only | measured | `experiments/dataset_id.py` |
 | Transfer soybean <-> Lin with 0/10/50 labels | 10 target labels beat ~1,000 other-setup images | measured | R3 |
 | Seed-count error on real Ghana photos | MAPE 1.1 % on 7 complete photos | measured | R4a |

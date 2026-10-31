@@ -4,6 +4,7 @@ Run on the box:  cd ~/soymate-next && uv run uvicorn demo.api.main:app --host 12
 """
 import json
 import os
+import threading
 from datetime import date
 from pathlib import Path
 
@@ -17,9 +18,18 @@ from demo.api.pipeline import MODEL_NAME, Pipeline, analyze
 HERE = Path(__file__).resolve().parent
 EXAMPLES = HERE / "examples"
 MAX_BYTES = 15 * 1024 * 1024
-MODES = {"auto", "single", "batch"}
+MODES = {"auto", "single", "batch", "bulk"}
 
 pipe = Pipeline()
+if os.environ.get("SOYMATE_BULK_WARM", "1") == "1":  # load FastSAM in the background so the first bulk call is fast
+    def _warm_bulk():
+        try:
+            from demo.api import bulk
+            bulk.warm()
+            print("bulk: FastSAM loaded", flush=True)
+        except Exception as e:  # bulk mode then fails per request with a 503; other modes are unaffected
+            print(f"bulk: warm-up failed: {e!r}", flush=True)
+    threading.Thread(target=_warm_bulk, daemon=True).start()
 EVIDENCE = evidence.build()
 VERSION = os.environ.get("SOYMATE_VERSION", date.today().isoformat())
 
@@ -48,6 +58,10 @@ def analyze_endpoint(file: UploadFile = File(...), mode: str = Form("auto"), thr
         return analyze(pipe, data, mode, threshold_pct, defect)
     except ValueError as e:
         raise HTTPException(400, str(e))
+    except (ImportError, AssertionError, FileNotFoundError) as e:
+        if mode == "bulk":
+            raise HTTPException(503, f"Bulk mode is not available on this server: {e}")
+        raise
     except OSError:
         raise HTTPException(400, "Could not read the image (JPEG or PNG expected).")
 

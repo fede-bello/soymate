@@ -18,3 +18,11 @@ cd ~/soymate-next && uv run python models/train_models.py
 The pickle refers to `harness.FrozenLogReg`, so anything that loads it must have `experiments/` on `sys.path`
 (the demo API does). The pooled model is a demo, not evidence of cross-dataset defect recognition: see the
 dataset-ID check in `results/README.md`.
+
+## Checkpoints in git
+
+`checkpoints/soybean-hole-yolo11n-2026-10-31/`: JP's YOLO11n soybean hole detectors (8-epoch baseline and
+40-epoch run, `best.pt` / `last.pt`, args and per-epoch results); see its README and
+`experiments/yolo_holes/`. They are whitelisted in `.gitignore`; other `*.pt` files stay ignored. The demo model
+(`soymate-pooled-v1.joblib`) and FastSAM-s weights are not in git: they live on the box under `data/models/` and
+in `s3://fb-soymate-team4-258601136235/derived/models/`.

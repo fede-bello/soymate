@@ -1,0 +1,4 @@
+example,photo,gt_status,published_count,semi_auto_estimate,segment_multi,bulk_method,bulk_raw_masks,bulk_secs
+ghana_g17,seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_135711992.jpg,ok,164,164,164,165,189,0.9
+ghana_favor,seed_data/Soyabean/group_capture/Favor/PXL_20260314_144204670.jpg,ok,186,186,186,186,300,1.49
+ghana_afayak_shadow,seed_data/Soyabean/group_capture/Afayak/PXL_20260315_115049863.jpg,missing_seeds,89,257,259,259,283,1.2

@@ -205,10 +205,14 @@ def analyze(pipe: Pipeline, data: bytes, mode: str = "auto", threshold_pct: floa
     orig = load_image(data)
     rgb, s = downscale(orig)
     t1 = time.perf_counter()
-    inst, auto = None, mode == "auto"
-    if auto:
+    inst, auto, extra_warnings = None, mode == "auto", []
+    if auto:  # never picks bulk: bulk is experimental and only on request
         mode, inst = pick_mode(rgb)
-    found = find_single(rgb, s) if mode == "single" else find_batch(rgb, s, inst)
+    if mode == "bulk":
+        from demo.api.bulk import find_bulk  # lazy: needs ultralytics and the FastSAM weights
+        found, extra_warnings = find_bulk(rgb, s)
+    else:
+        found = find_single(rgb, s) if mode == "single" else find_batch(rgb, s, inst)
     if not found and auto and mode == "single":
         mode, found = "batch", find_batch(rgb, s, inst)
     if not found:
@@ -222,7 +226,9 @@ def analyze(pipe: Pipeline, data: bytes, mode: str = "auto", threshold_pct: floa
         seeds.append({"id": j, **f, "class": pipe.classes[c], "confidence": round(float(p[c]), 3),
                       "probs": {k: round(float(v), 3) for k, v in zip(pipe.classes, p)}})
     summary, verdict = summarize(seeds, pipe.classes, defect, threshold_pct)
+    info = pipe.model_info()
+    info["warnings"] = extra_warnings + info["warnings"]
     return {"mode": mode, "image": {"width": int(orig.shape[1]), "height": int(orig.shape[0])},
-            "model": pipe.model_info(), "seeds": seeds, "summary": summary, "verdict": verdict,
+            "model": info, "seeds": seeds, "summary": summary, "verdict": verdict,
             "timing_ms": {"segment": round(1000 * (t2 - t1)), "classify": round(1000 * (t3 - t2)),
                           "total": round(1000 * (time.perf_counter() - t0))}}

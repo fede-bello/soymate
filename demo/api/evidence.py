@@ -5,6 +5,8 @@ Headlines and caveats follow the wording of results/README.md; every number in t
 import json
 from pathlib import Path
 
+import pandas as pd
+
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS = ROOT / "results"
 PROVENANCE_URL = "https://github.com/fede-bello/soymate/blob/main/results/README.md"
@@ -12,6 +14,18 @@ PROVENANCE_URL = "https://github.com/fede-bello/soymate/blob/main/results/README
 
 def res(name: str) -> dict:
     return json.loads((RESULTS / f"{name}.json").read_text())["result"]
+
+
+def csv(name: str) -> pd.DataFrame:
+    return pd.read_csv(RESULTS / f"{name}.csv")
+
+
+def f2(x) -> str:
+    return f"{x:.2f}"
+
+
+def sf2(x) -> str:
+    return f"{x:+.2f}"
 
 
 def f3(x) -> str:
@@ -54,18 +68,69 @@ def card_r1() -> dict:
 def card_r2() -> dict:
     r = res("r2_per_class")["dinov2-small"]
     s, l = r["soybean"], r["lin"]
-    nums = [num(f"soybean {c.replace('_', ' ')} F1", f3(s["f1"][c]["f1"]), ci(s["f1"][c]["ci95"]))
-            for c in ("broken", "sound", "insect_hole")]
-    nums += [num("soybean macro F1", f3(s["f1"]["macro"]["f1"]), ci(s["f1"]["macro"]["ci95"])),
+    f = csv("mask_quality__f1")
+    cv = f[(f["arm"] == "current") & (f["protocol"] == "cv5_bursts")].set_index("class")
+    fx = f[(f["arm"] == "current") & (f["protocol"] == "r2_fixed_split")].set_index("class")
+    b, m = cv.loc["broken"], cv.loc["macro"]
+    nums = [num(f"soybean {c.replace('_', ' ')} F1, 5-fold CV", f2(cv.loc[c, "f1"]),
+                ci([cv.loc[c, "ci_lo"], cv.loc[c, "ci_hi"]], f2)) for c in ("broken", "sound", "insect_hole")]
+    nums += [num("soybean macro F1, 5-fold CV", f2(m["f1"]), ci([m["ci_lo"], m["ci_hi"]], f2)),
+             num(f"soybean broken F1, fixed split ({int(fx.loc['broken', 'n_groups'])} test bursts)",
+                 f2(fx.loc["broken", "f1"]), ci([fx.loc["broken", "ci_lo"], fx.loc["broken", "ci_hi"]], f2)),
+             num("soybean macro F1, fixed split", f2(fx.loc["macro", "f1"]),
+                 ci([fx.loc["macro", "ci_lo"], fx.loc["macro", "ci_hi"]], f2)),
              num("Lin macro F1", f3(l["f1"]["macro"]["f1"]), ci(l["f1"]["macro"]["ci95"]))]
     return {"id": "r2", "title": "Per-class accuracy, within each dataset",
-            "headline": f"On a clean split, broken vs sound reaches F1 {f3(s['f1']['broken']['f1'])} on soybean "
-                        f"({s['n_test_reps']} test seeds, {s['f1']['n_groups']} bursts) and macro F1 "
-                        f"{f3(l['f1']['macro']['f1'])} on Lin's four classes.",
+            "headline": f"Over 5-fold cross-validation on all {int(b['n_groups'])} soybean bursts, broken vs sound "
+                        f"reaches F1 {f2(b['f1'])} [{f2(b['ci_lo'])}, {f2(b['ci_hi'])}] and macro F1 {f2(m['f1'])}; "
+                        f"the fixed {int(fx.loc['broken', 'n_groups'])}-burst test split gave "
+                        f"{f2(fx.loc['broken', 'f1'])}. Lin's four classes reach macro F1 {f3(l['f1']['macro']['f1'])}.",
             "numbers": nums,
-            "caveat": "Soybean test has only " + str(s["f1"]["n_groups"]) + " independent bursts, so intervals are "
-                      "wide. Errors are mostly sound seeds called broken.",
-            "source": "results/r2_per_class.json"}
+            "caveat": f"The fixed split has only {int(fx.loc['broken', 'n_groups'])} independent bursts and flattered "
+                      "broken; the cross-validated number is the one to quote. Errors are mostly sound seeds called "
+                      "broken.",
+            "source": "results/mask_quality__f1.csv, results/r2_per_class.json"}
+
+
+def card_mask_quality() -> dict:
+    p = csv("mask_quality__paired")
+    p = p[(p["arm"] == "fastsam") & (p["vs"] == "current") & (p["protocol"] == "cv5_bursts")].set_index("class")
+    b, m = p.loc["broken"], p.loc["macro"]
+    f = csv("mask_quality__f1")
+    n_bursts = int(f[(f["protocol"] == "cv5_bursts")]["n_groups"].iloc[0])
+    return {"id": "mask_quality", "title": "Better seed outlines do not fix broken",
+            "headline": f"Cropping soybean seeds with FastSAM outlines instead of our colour mask changes broken F1 by "
+                        f"{sf2(b['diff'])} [{sf2(b['ci_lo'])}, {sf2(b['ci_hi'])}] and macro F1 by {sf2(m['diff'])} "
+                        f"(5-fold CV over {n_bursts} bursts): no measurable gain.",
+            "numbers": [num("broken F1 change, FastSAM vs current mask", sf2(b["diff"]),
+                            ci([b["ci_lo"], b["ci_hi"]], sf2)),
+                        num("macro F1 change", sf2(m["diff"]), ci([m["ci_lo"], m["ci_hi"]], sf2)),
+                        num("McNemar p (paired predictions)", f2(m["mcnemar_p"])),
+                        num("seeds right only with FastSAM / only with current mask",
+                            f"{int(m['a_right_b_wrong'])} / {int(m['a_wrong_b_right'])}")],
+            "caveat": "The broken errors come from the classifier and the labels (testa cracking is the noisiest "
+                      "class), not from seed borders. The demo keeps the colour mask for spread seeds.",
+            "source": "results/mask_quality__paired.csv"}
+
+
+def card_bulk() -> dict:
+    r = res("bulk_segmentation")
+    pr, fs = r["protocol"], r["methods"]["fastsam"]
+    t, a = fs["test_6"], fs["all_40"]
+    p1 = lambda lo_hi: f"[{lo_hi[0]:.1f}, {lo_hi[1]:.1f}]"
+    return {"id": "bulk", "title": "Finding seeds in packed bulk",
+            "headline": f"On {pr['n_test']} held-out harvester-camera photos with seeds packed edge to edge, FastSAM-s "
+                        f"plus our post-processing counts within {t['mape_all']:.1f} % on average and matches "
+                        f"individual seeds with F1 {f3(t['f1'])}, in {t['secs_per_image']:.2f} s per photo on CPU.",
+            "numbers": [num("count error, mean absolute %", pct(t["mape_all"]), p1(t["mape_all_ci95"])),
+                        num("per-seed match F1 (IoU >= 0.5)", f3(t["f1"]), ci(t["f1_ci95"])),
+                        num("recall, crushed / intact / impurity",
+                            f"{t['recall_crushed']:.2f} / {t['recall_intact']:.2f} / {t['recall_impurity']:.2f}"),
+                        num(f"count error, all {pr['n_all']} originals", pct(a["mape_all"]), p1(a["mape_all_ci95"]))],
+            "caveat": f"Settings were chosen on {pr['n_train']} train photos of one dataset and one camera. The pre-set "
+                      "bar (count error at most 5 %) is missed by a hair, so the demo offers bulk mode as "
+                      "experimental. Only the top layer of a lot is visible; stems and pods are often missed.",
+            "source": "results/bulk_segmentation.json"}
 
 
 def card_session() -> dict:
@@ -191,7 +256,8 @@ def card_robustness() -> dict:
 
 def build() -> dict:
     cards = []
-    for fn in (card_r1, card_r2, card_session, card_dataset_id, card_r3, card_r4a, card_r4b, card_robustness):
+    for fn in (card_r1, card_r2, card_mask_quality, card_session, card_dataset_id, card_r3, card_r4a, card_r4b,
+               card_bulk, card_robustness):
         try:
             cards.append(fn())
         except (KeyError, FileNotFoundError) as e:

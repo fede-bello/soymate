@@ -4,6 +4,10 @@
 # Usage (repo root, AWS credentials for the team account):
 #   AWS_PROFILE=soymate demo/deploy/deploy.sh               # build + deploy
 #   AWS_PROFILE=soymate demo/deploy/deploy.sh --skip-build  # deploy the existing demo/web/dist
+#   APP_DIR=soymate-next AWS_PROFILE=soymate demo/deploy/deploy.sh ...  # target another code dir on the box
+# The code dir must already hold the repo, its data -> ~/soymate/data symlink and a .venv (see README.md); the
+# unit file is rewritten for APP_DIR. Before switching, it saves ~/rollback-soymate.sh on the box (previous unit
+# and web release), so a rollback is one command (README.md, Rollback).
 # Does not touch security groups or any network exposure (see demo/deploy/README.md).
 set -euo pipefail
 export AWS_DEFAULT_REGION=us-east-1
@@ -11,8 +15,9 @@ cd "$(dirname "$0")/../.."  # repo root
 
 BUCKET="s3://fb-soymate-team4-258601136235/code"
 REL="$(date -u +%Y%m%dT%H%M%SZ)"
-APP_DIR="soymate-next"  # code dir under /home/ec2-user on the box; must match demo/deploy/soymate-api.service
-BACKEND_FILES=(demo/api/main.py demo/api/make_thumbs.py demo/API.md)
+APP_DIR="${APP_DIR:-soymate-rel2}"  # code dir under /home/ec2-user on the box (the unit is rewritten to match)
+BACKEND_FILES=(demo/api/main.py demo/api/pipeline.py demo/api/bulk.py demo/api/evidence.py demo/api/make_thumbs.py
+               demo/api/build_examples.py experiments/bulk_segmentation/bulk_segmentation.py demo/API.md)
 
 if [ "${1:-}" != "--skip-build" ]; then
   (cd demo/web && npm ci && npm run build)
@@ -31,6 +36,21 @@ scripts/aws/run_remote.sh "$(cat <<REMOTE
 set -euo pipefail
 B=$BUCKET; REL=$REL
 cd ~/$APP_DIR
+[ -x .venv/bin/uvicorn ] || { echo "~/$APP_DIR/.venv missing: build the release first" >&2; exit 1; }
+
+# Rollback script: restores the unit and web release that are live right now (written once per deploy).
+PREV_WEB=\$(readlink /var/www/soymate/current || true)
+sudo cp /etc/systemd/system/soymate-api.service ~/soymate-api.service.prev-\$REL
+cat > ~/rollback-soymate.sh <<RB
+set -e
+sudo install -m 644 ~/soymate-api.service.prev-\$REL /etc/systemd/system/soymate-api.service
+sudo ln -sfn \$PREV_WEB /var/www/soymate/current
+sudo systemctl daemon-reload && sudo systemctl restart soymate-api
+for i in \\\$(seq 1 60); do curl -sf 127.0.0.1:8000/api/health && break; sleep 2; done
+echo; grep WorkingDirectory /etc/systemd/system/soymate-api.service; readlink /var/www/soymate/current
+RB
+echo "rollback script: ~/rollback-soymate.sh (unit from before \$REL, web \$PREV_WEB)"
+
 for f in ${BACKEND_FILES[*]}; do aws s3 cp --only-show-errors "\$B/\$f" "\$f"; done
 
 # Web release: /var/www/soymate/releases/<ts>, served through the 'current' symlink; keep the last 5.
@@ -39,16 +59,18 @@ aws s3 cp --only-show-errors "\$B/deploy/releases/web-\$REL.tgz" /tmp/web-\$REL.
 sudo tar -C /var/www/soymate/releases/\$REL -xzf /tmp/web-\$REL.tgz && rm -f /tmp/web-\$REL.tgz
 sudo chmod -R a+rX /var/www/soymate
 sudo ln -sfn releases/\$REL /var/www/soymate/current
-ls -1d /var/www/soymate/releases/* | head -n -5 | xargs -r sudo rm -rf
+ls -1d /var/www/soymate/releases/* | head -n -5 | { grep -v "\$PREV_WEB" || true; } | xargs -r sudo rm -rf
 
 # Gallery thumbnails (originals untouched), then install the unit, restart the API and wait for it.
 .venv/bin/python demo/api/make_thumbs.py
 aws s3 cp --only-show-errors "\$B/deploy/soymate-api.service" /tmp/soymate-api.service
+sed -i "s#/home/ec2-user/soymate-[a-z0-9]*#/home/ec2-user/$APP_DIR#g" /tmp/soymate-api.service
 sudo install -m 644 /tmp/soymate-api.service /etc/systemd/system/soymate-api.service && rm -f /tmp/soymate-api.service
 sudo systemctl daemon-reload
 sudo systemctl enable soymate-api
 sudo systemctl restart soymate-api
 for i in \$(seq 1 60); do curl -sf 127.0.0.1:8000/api/health >/dev/null && break; sleep 2; done
+curl -sf 127.0.0.1:8000/api/health >/dev/null || { echo "API not healthy after restart: run ~/rollback-soymate.sh" >&2; exit 1; }
 
 # nginx
 rpm -q nginx >/dev/null || sudo dnf install -y -q nginx
