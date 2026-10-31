@@ -1,0 +1,8 @@
+photo,published_count,api_count,mode,n_instances,defect_pct,verdict,seconds,reencoded_count,reencoded_defect_pct
+seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_135711992.jpg,164,164,batch,164,11.0,fail,2.97,164,6.7
+seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_140519746.jpg,127,132,batch,132,15.9,fail,2.47,132,6.8
+seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_140527445.jpg,143,143,batch,143,9.8,fail,2.67,144,4.9
+seed_data/Soyabean/group_capture/Favor/PXL_20260314_142758752.jpg,195,196,batch,196,18.4,fail,3.58,196,18.9
+seed_data/Soyabean/group_capture/Favor/PXL_20260314_144204670.jpg,186,186,batch,186,31.2,fail,3.55,186,23.7
+seed_data/Soyabean/group_capture/Favor/PXL_20260314_144245222.jpg,172,175,batch,175,36.0,fail,3.14,175,25.7
+seed_data/Soyabean/group_capture/Favor/PXL_20260314_144258573.jpg,172,175,batch,175,10.3,fail,3.22,175,8.6

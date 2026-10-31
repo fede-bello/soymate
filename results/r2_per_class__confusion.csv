@@ -1,0 +1,13 @@
+features,scope,true,broken,insect_hole,sound,immature,stained
+dinov2-small,soybean,broken,41,0.0,4,,
+dinov2-small,soybean,insect_hole,0,33.0,0,,
+dinov2-small,soybean,sound,14,0.0,40,,
+dinov2-small,lin,broken,291,,6,3.0,18.0
+dinov2-small,lin,immature,3,,10,139.0,4.0
+dinov2-small,lin,sound,4,,125,4.0,0.0
+dinov2-small,lin,stained,12,,2,2.0,142.0
+dinov2-small,pooled_5class,broken,315,0.0,23,3.0,22.0
+dinov2-small,pooled_5class,immature,3,0.0,9,140.0,4.0
+dinov2-small,pooled_5class,insect_hole,0,33.0,0,0.0,0.0
+dinov2-small,pooled_5class,sound,11,0.0,169,6.0,1.0
+dinov2-small,pooled_5class,stained,9,0.0,4,2.0,143.0

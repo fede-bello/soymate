@@ -1,0 +1,7 @@
+group,n_seeds,n_crushed_true,n_crushed_pred,true_pct,true_pct_count_index,true_pct_area,raw_pct,raw_wilson_lo,raw_wilson_hi,rg_pct,rg_wilson_lo,rg_wilson_hi,rg_boot_lo,rg_boot_hi,abs_err_raw_pp,abs_err_rg_pp,true_in_raw_wilson,true_in_rg_boot,decision_true,decision_raw,decision_rg,decision_rg_boot,seeds_needed_rg
+0004,80,3,3,3.75,3.75,5.18,3.75,1.283,10.455,1.519,0.0,12.758,0.0,9.647,0.0,2.231,True,True,pass,inconclusive,inconclusive,inconclusive,484
+0009,79,8,4,10.127,10.13,13.7,5.063,1.986,12.308,3.721,0.0,15.864,0.0,13.697,5.063,6.406,True,True,fail,inconclusive,inconclusive,inconclusive,3603
+0015,73,9,8,12.329,12.33,12.1,10.959,5.659,20.163,13.603,4.719,29.031,2.025,29.698,1.37,1.275,True,True,fail,fail,inconclusive,inconclusive,70
+0018,70,6,6,8.571,8.57,11.37,8.571,3.988,17.466,9.601,1.918,24.51,0.0,22.427,0.0,1.03,True,True,fail,inconclusive,inconclusive,inconclusive,264
+0034,69,7,8,10.145,10.14,10.53,11.594,5.993,21.246,14.668,5.28,30.847,2.131,29.968,1.449,4.523,True,True,fail,fail,fail,inconclusive,48
+0037,73,3,2,4.11,4.11,5.63,2.74,0.755,9.45,0.0,0.0,11.074,0.0,7.084,1.37,4.11,True,True,pass,inconclusive,inconclusive,inconclusive,197

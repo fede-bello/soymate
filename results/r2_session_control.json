@@ -1,0 +1,1323 @@
+{
+  "name": "r2_session_control",
+  "how": "Frozen dinov2-small features (CLS + mean patch) of masked seed crops (data/crops/manifest.csv), harness.FrozenLogReg (StandardScaler + balanced multinomial logistic regression). Fit on split=train (all crops), C chosen from [0.01, 0.03, 0.1, 0.3, 1.0, 3.0] by macro F1 on split=val eval_rep crops, refit on train, scored once on split=test eval_rep crops (one per original photo for soybean, one per near-duplicate cluster for Lin). 95% CIs: percentile bootstrap over groups, 2000 resamples, seed 0. Groups: soybean = 30 s capture bursts (split is burst-level), Lin = near-duplicate clusters. Rows with multi_seed=True are excluded from val and test scoring (kept in train). SESSION CONTROL OVERRIDES THE SPLIT: soybean insect_hole vs sound only, binary, evaluated by grouped 5-fold CV over bursts (StratifiedGroupKFold, seed 0; C from [0.01, 0.1, 1] by inner grouped 3-fold CV), out-of-fold predictions on eval_rep crops pooled, burst bootstrap CIs. Arms: all backgrounds; white/light background; light background and capture days 13-14/08 only (the only days with both classes: the honest hole result); the same two arms restricted to mask_frac >= 0.2 (zoomed-out black-background photos give upsampled, blurrier crops); every arm also reports soybean_by_mask_frac (< 0.2 vs >= 0.2); cross-session (train holes from 9-11/08 only, test holes from 13-14/08 only, light background; 9-11/08 training holes from any background; sound light background, burst folds). date_probe: within one class and light background, binary probe predicting capture session, same grouped CV, AUC with grouped bootstrap CI.",
+  "created_utc": "2026-10-31T13:07:53+00:00",
+  "code_rev": "unknown (box copy is not a git checkout)",
+  "result": {
+    "dinov2-small": {
+      "subset_sizes": {
+        "all_backgrounds": {
+          "crops_by_class": {
+            "sound": 923,
+            "insect_hole": 749
+          },
+          "bursts_by_class": {
+            "insect_hole": 82,
+            "sound": 46
+          }
+        },
+        "light_background": {
+          "crops_by_class": {
+            "sound": 920,
+            "insect_hole": 343
+          },
+          "bursts_by_class": {
+            "insect_hole": 44,
+            "sound": 46
+          }
+        },
+        "light_background_same_days_13_14": {
+          "crops_by_class": {
+            "sound": 895,
+            "insect_hole": 297
+          },
+          "bursts_by_class": {
+            "insect_hole": 7,
+            "sound": 43
+          }
+        },
+        "all_backgrounds_mask_frac_ge_0.2": {
+          "crops_by_class": {
+            "sound": 914,
+            "insect_hole": 418
+          },
+          "bursts_by_class": {
+            "insect_hole": 60,
+            "sound": 46
+          }
+        },
+        "light_background_same_days_13_14_mask_frac_ge_0.2": {
+          "crops_by_class": {
+            "sound": 886,
+            "insect_hole": 285
+          },
+          "bursts_by_class": {
+            "insect_hole": 7,
+            "sound": 43
+          }
+        }
+      },
+      "all_backgrounds": {
+        "protocol": "grouped 5-fold CV over bursts, inner 3-fold C selection from [0.01, 0.1, 1.0]",
+        "C_per_fold": [
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "n_eval_reps": 775,
+        "eval_counts": {
+          "sound": 415,
+          "insect_hole": 360
+        },
+        "eval_bursts_per_class": {
+          "insect_hole": 82,
+          "sound": 46
+        },
+        "f1": {
+          "insect_hole": {
+            "f1": 0.9917,
+            "ci95": [
+              0.983,
+              0.9986
+            ]
+          },
+          "sound": {
+            "f1": 0.9928,
+            "ci95": [
+              0.9839,
+              0.999
+            ]
+          },
+          "macro": {
+            "f1": 0.9922,
+            "ci95": [
+              0.9842,
+              0.9987
+            ]
+          },
+          "n_items": 775,
+          "n_groups": 124,
+          "n_boot": 2000
+        },
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              358,
+              2
+            ],
+            [
+              4,
+              411
+            ]
+          ]
+        },
+        "auc_positive_sound": {
+          "auc": 0.9908,
+          "ci95": [
+            0.9791,
+            0.9996
+          ]
+        },
+        "soybean_by_mask_frac": {
+          "mask_frac_lt_0.2": {
+            "insect_hole": {
+              "f1": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "sound": {
+              "f1": 1.0,
+              "ci95": [
+                0.0,
+                1.0
+              ]
+            },
+            "macro": {
+              "f1": 1.0,
+              "ci95": [
+                0.5,
+                1.0
+              ]
+            },
+            "n_items": 158,
+            "n_groups": 46,
+            "n_boot": 2000,
+            "counts": {
+              "insect_hole": 154,
+              "sound": 4
+            },
+            "confusion": {
+              "labels": [
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  154,
+                  0
+                ],
+                [
+                  0,
+                  4
+                ]
+              ]
+            }
+          },
+          "mask_frac_ge_0.2": {
+            "insect_hole": {
+              "f1": 0.9855,
+              "ci95": [
+                0.9711,
+                0.9979
+              ]
+            },
+            "sound": {
+              "f1": 0.9927,
+              "ci95": [
+                0.9827,
+                0.9991
+              ]
+            },
+            "macro": {
+              "f1": 0.9891,
+              "ci95": [
+                0.9785,
+                0.9982
+              ]
+            },
+            "n_items": 617,
+            "n_groups": 102,
+            "n_boot": 2000,
+            "counts": {
+              "sound": 411,
+              "insect_hole": 206
+            },
+            "confusion": {
+              "labels": [
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  204,
+                  2
+                ],
+                [
+                  4,
+                  407
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "light_background": {
+        "protocol": "grouped 5-fold CV over bursts, inner 3-fold C selection from [0.01, 0.1, 1.0]",
+        "C_per_fold": [
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "n_eval_reps": 580,
+        "eval_counts": {
+          "sound": 414,
+          "insect_hole": 166
+        },
+        "eval_bursts_per_class": {
+          "insect_hole": 44,
+          "sound": 46
+        },
+        "f1": {
+          "insect_hole": {
+            "f1": 0.982,
+            "ci95": [
+              0.9594,
+              0.9969
+            ]
+          },
+          "sound": {
+            "f1": 0.9927,
+            "ci95": [
+              0.9838,
+              0.999
+            ]
+          },
+          "macro": {
+            "f1": 0.9874,
+            "ci95": [
+              0.9735,
+              0.9977
+            ]
+          },
+          "n_items": 580,
+          "n_groups": 86,
+          "n_boot": 2000
+        },
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              164,
+              2
+            ],
+            [
+              4,
+              410
+            ]
+          ]
+        },
+        "auc_positive_sound": {
+          "auc": 0.9885,
+          "ci95": [
+            0.9722,
+            0.9996
+          ]
+        },
+        "soybean_by_mask_frac": {
+          "mask_frac_lt_0.2": {
+            "insect_hole": {
+              "f1": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "sound": {
+              "f1": 1.0,
+              "ci95": [
+                0.0,
+                1.0
+              ]
+            },
+            "macro": {
+              "f1": 1.0,
+              "ci95": [
+                0.5,
+                1.0
+              ]
+            },
+            "n_items": 22,
+            "n_groups": 15,
+            "n_boot": 2000,
+            "counts": {
+              "insect_hole": 18,
+              "sound": 4
+            },
+            "confusion": {
+              "labels": [
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  18,
+                  0
+                ],
+                [
+                  0,
+                  4
+                ]
+              ]
+            }
+          },
+          "mask_frac_ge_0.2": {
+            "insect_hole": {
+              "f1": 0.9799,
+              "ci95": [
+                0.9531,
+                0.9962
+              ]
+            },
+            "sound": {
+              "f1": 0.9927,
+              "ci95": [
+                0.9833,
+                0.9989
+              ]
+            },
+            "macro": {
+              "f1": 0.9863,
+              "ci95": [
+                0.9712,
+                0.9974
+              ]
+            },
+            "n_items": 558,
+            "n_groups": 76,
+            "n_boot": 2000,
+            "counts": {
+              "sound": 410,
+              "insect_hole": 148
+            },
+            "confusion": {
+              "labels": [
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  146,
+                  2
+                ],
+                [
+                  4,
+                  406
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "light_background_same_days_13_14": {
+        "protocol": "grouped 5-fold CV over bursts, inner 3-fold C selection from [0.01, 0.1, 1.0]",
+        "C_per_fold": [
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "n_eval_reps": 509,
+        "eval_counts": {
+          "sound": 389,
+          "insect_hole": 120
+        },
+        "eval_bursts_per_class": {
+          "insect_hole": 7,
+          "sound": 43
+        },
+        "f1": {
+          "insect_hole": {
+            "f1": 0.9752,
+            "ci95": [
+              0.9213,
+              0.9946
+            ]
+          },
+          "sound": {
+            "f1": 0.9923,
+            "ci95": [
+              0.9816,
+              0.9989
+            ]
+          },
+          "macro": {
+            "f1": 0.9837,
+            "ci95": [
+              0.9553,
+              0.9966
+            ]
+          },
+          "n_items": 509,
+          "n_groups": 46,
+          "n_boot": 2000
+        },
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              118,
+              2
+            ],
+            [
+              4,
+              385
+            ]
+          ]
+        },
+        "auc_positive_sound": {
+          "auc": 0.9846,
+          "ci95": [
+            0.9512,
+            0.9988
+          ]
+        },
+        "soybean_by_mask_frac": {
+          "mask_frac_lt_0.2": {
+            "insect_hole": {
+              "f1": 1.0,
+              "ci95": [
+                0.0,
+                1.0
+              ]
+            },
+            "sound": {
+              "f1": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "macro": {
+              "f1": 1.0,
+              "ci95": [
+                0.5,
+                1.0
+              ]
+            },
+            "n_items": 9,
+            "n_groups": 5,
+            "n_boot": 2000,
+            "counts": {
+              "insect_hole": 5,
+              "sound": 4
+            },
+            "confusion": {
+              "labels": [
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  5,
+                  0
+                ],
+                [
+                  0,
+                  4
+                ]
+              ]
+            }
+          },
+          "mask_frac_ge_0.2": {
+            "insect_hole": {
+              "f1": 0.9741,
+              "ci95": [
+                0.9189,
+                0.9942
+              ]
+            },
+            "sound": {
+              "f1": 0.9922,
+              "ci95": [
+                0.9813,
+                0.9988
+              ]
+            },
+            "macro": {
+              "f1": 0.9832,
+              "ci95": [
+                0.954,
+                0.9964
+              ]
+            },
+            "n_items": 500,
+            "n_groups": 46,
+            "n_boot": 2000,
+            "counts": {
+              "sound": 385,
+              "insect_hole": 115
+            },
+            "confusion": {
+              "labels": [
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  113,
+                  2
+                ],
+                [
+                  4,
+                  381
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "all_backgrounds_mask_frac_ge_0.2": {
+        "protocol": "grouped 5-fold CV over bursts, inner 3-fold C selection from [0.01, 0.1, 1.0]",
+        "C_per_fold": [
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "n_eval_reps": 617,
+        "eval_counts": {
+          "sound": 411,
+          "insect_hole": 206
+        },
+        "eval_bursts_per_class": {
+          "insect_hole": 60,
+          "sound": 46
+        },
+        "f1": {
+          "insect_hole": {
+            "f1": 0.9855,
+            "ci95": [
+              0.9711,
+              0.9979
+            ]
+          },
+          "sound": {
+            "f1": 0.9927,
+            "ci95": [
+              0.9827,
+              0.9991
+            ]
+          },
+          "macro": {
+            "f1": 0.9891,
+            "ci95": [
+              0.9785,
+              0.9982
+            ]
+          },
+          "n_items": 617,
+          "n_groups": 102,
+          "n_boot": 2000
+        },
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              204,
+              2
+            ],
+            [
+              4,
+              407
+            ]
+          ]
+        },
+        "auc_positive_sound": {
+          "auc": 0.9924,
+          "ci95": [
+            0.9824,
+            0.9993
+          ]
+        },
+        "soybean_by_mask_frac": {
+          "mask_frac_ge_0.2": {
+            "insect_hole": {
+              "f1": 0.9855,
+              "ci95": [
+                0.9711,
+                0.9979
+              ]
+            },
+            "sound": {
+              "f1": 0.9927,
+              "ci95": [
+                0.9827,
+                0.9991
+              ]
+            },
+            "macro": {
+              "f1": 0.9891,
+              "ci95": [
+                0.9785,
+                0.9982
+              ]
+            },
+            "n_items": 617,
+            "n_groups": 102,
+            "n_boot": 2000,
+            "counts": {
+              "sound": 411,
+              "insect_hole": 206
+            },
+            "confusion": {
+              "labels": [
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  204,
+                  2
+                ],
+                [
+                  4,
+                  407
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "light_background_same_days_13_14_mask_frac_ge_0.2": {
+        "protocol": "grouped 5-fold CV over bursts, inner 3-fold C selection from [0.01, 0.1, 1.0]",
+        "C_per_fold": [
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "n_eval_reps": 500,
+        "eval_counts": {
+          "sound": 385,
+          "insect_hole": 115
+        },
+        "eval_bursts_per_class": {
+          "insect_hole": 7,
+          "sound": 43
+        },
+        "f1": {
+          "insect_hole": {
+            "f1": 0.9741,
+            "ci95": [
+              0.9189,
+              0.9942
+            ]
+          },
+          "sound": {
+            "f1": 0.9922,
+            "ci95": [
+              0.9813,
+              0.9988
+            ]
+          },
+          "macro": {
+            "f1": 0.9832,
+            "ci95": [
+              0.954,
+              0.9964
+            ]
+          },
+          "n_items": 500,
+          "n_groups": 46,
+          "n_boot": 2000
+        },
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              113,
+              2
+            ],
+            [
+              4,
+              381
+            ]
+          ]
+        },
+        "auc_positive_sound": {
+          "auc": 0.9892,
+          "ci95": [
+            0.9725,
+            0.9986
+          ]
+        },
+        "soybean_by_mask_frac": {
+          "mask_frac_ge_0.2": {
+            "insect_hole": {
+              "f1": 0.9741,
+              "ci95": [
+                0.9189,
+                0.9942
+              ]
+            },
+            "sound": {
+              "f1": 0.9922,
+              "ci95": [
+                0.9813,
+                0.9988
+              ]
+            },
+            "macro": {
+              "f1": 0.9832,
+              "ci95": [
+                0.954,
+                0.9964
+              ]
+            },
+            "n_items": 500,
+            "n_groups": 46,
+            "n_boot": 2000,
+            "counts": {
+              "sound": 385,
+              "insect_hole": 115
+            },
+            "confusion": {
+              "labels": [
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  113,
+                  2
+                ],
+                [
+                  4,
+                  381
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "cross_session_train_holes_9_11_test_holes_13_14": {
+        "protocol": "grouped 5-fold CV over bursts, inner 3-fold C selection from [0.01, 0.1, 1.0]",
+        "C_per_fold": [
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "n_eval_reps": 534,
+        "eval_counts": {
+          "sound": 414,
+          "insect_hole": 120
+        },
+        "eval_bursts_per_class": {
+          "insect_hole": 7,
+          "sound": 46
+        },
+        "f1": {
+          "insect_hole": {
+            "f1": 0.9623,
+            "ci95": [
+              0.913,
+              0.9778
+            ]
+          },
+          "sound": {
+            "f1": 0.9891,
+            "ci95": [
+              0.9764,
+              0.9978
+            ]
+          },
+          "macro": {
+            "f1": 0.9757,
+            "ci95": [
+              0.9521,
+              0.9869
+            ]
+          },
+          "n_items": 534,
+          "n_groups": 49,
+          "n_boot": 2000
+        },
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              115,
+              5
+            ],
+            [
+              4,
+              410
+            ]
+          ]
+        },
+        "auc_positive_sound": {
+          "auc": 0.9856,
+          "ci95": [
+            0.9462,
+            0.9992
+          ]
+        },
+        "soybean_by_mask_frac": {
+          "mask_frac_lt_0.2": {
+            "insect_hole": {
+              "f1": 1.0,
+              "ci95": [
+                0.0,
+                1.0
+              ]
+            },
+            "sound": {
+              "f1": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "macro": {
+              "f1": 1.0,
+              "ci95": [
+                0.5,
+                1.0
+              ]
+            },
+            "n_items": 9,
+            "n_groups": 5,
+            "n_boot": 2000,
+            "counts": {
+              "insect_hole": 5,
+              "sound": 4
+            },
+            "confusion": {
+              "labels": [
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  5,
+                  0
+                ],
+                [
+                  0,
+                  4
+                ]
+              ]
+            }
+          },
+          "mask_frac_ge_0.2": {
+            "insect_hole": {
+              "f1": 0.9607,
+              "ci95": [
+                0.913,
+                0.9773
+              ]
+            },
+            "sound": {
+              "f1": 0.989,
+              "ci95": [
+                0.9761,
+                0.9977
+              ]
+            },
+            "macro": {
+              "f1": 0.9749,
+              "ci95": [
+                0.9518,
+                0.9863
+              ]
+            },
+            "n_items": 525,
+            "n_groups": 49,
+            "n_boot": 2000,
+            "counts": {
+              "sound": 410,
+              "insect_hole": 115
+            },
+            "confusion": {
+              "labels": [
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  110,
+                  5
+                ],
+                [
+                  4,
+                  406
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "date_probe": {
+        "insect_hole_9_11_vs_13_14_light": {
+          "protocol": "grouped 5-fold CV over bursts, inner 3-fold C selection from [0.01, 0.1, 1.0]",
+          "C_per_fold": [
+            1.0,
+            0.01,
+            0.1,
+            0.01,
+            0.1
+          ],
+          "n_eval_reps": 165,
+          "eval_counts": {
+            "13/14-08": 120,
+            "9/10/11-08": 45
+          },
+          "eval_bursts_per_class": {
+            "13/14-08": 7,
+            "9/10/11-08": 36
+          },
+          "f1": {
+            "13/14-08": {
+              "f1": 0.8485,
+              "ci95": [
+                0.6741,
+                0.9027
+              ]
+            },
+            "9/10/11-08": {
+              "f1": 0.6465,
+              "ci95": [
+                0.4646,
+                0.8333
+              ]
+            },
+            "macro": {
+              "f1": 0.7475,
+              "ci95": [
+                0.6415,
+                0.8381
+              ]
+            },
+            "n_items": 165,
+            "n_groups": 43,
+            "n_boot": 2000
+          },
+          "confusion": {
+            "labels": [
+              "13/14-08",
+              "9/10/11-08"
+            ],
+            "rows_true_cols_pred": [
+              [
+                98,
+                22
+              ],
+              [
+                13,
+                32
+              ]
+            ]
+          },
+          "auc_positive_9/10/11-08": {
+            "auc": 0.8528,
+            "ci95": [
+              0.7809,
+              0.9307
+            ]
+          },
+          "bursts_per_session": {
+            "13/14-08": 7,
+            "9/10/11-08": 36
+          }
+        },
+        "insect_hole_13_vs_14_light": {
+          "protocol": "grouped 5-fold CV over bursts, inner 3-fold C selection from [0.01, 0.1, 1.0]",
+          "C_per_fold": [
+            0.01,
+            0.01,
+            1.0,
+            0.1,
+            0.1
+          ],
+          "n_eval_reps": 120,
+          "eval_counts": {
+            "14-08": 82,
+            "13-08": 38
+          },
+          "eval_bursts_per_class": {
+            "13-08": 2,
+            "14-08": 5
+          },
+          "f1": {
+            "13-08": {
+              "f1": 0.093,
+              "ci95": [
+                0.0,
+                0.9231
+              ]
+            },
+            "14-08": {
+              "f1": 0.802,
+              "ci95": [
+                0.3793,
+                0.993
+              ]
+            },
+            "macro": {
+              "f1": 0.4475,
+              "ci95": [
+                0.2227,
+                0.9566
+              ]
+            },
+            "n_items": 120,
+            "n_groups": 7,
+            "n_boot": 2000
+          },
+          "confusion": {
+            "labels": [
+              "13-08",
+              "14-08"
+            ],
+            "rows_true_cols_pred": [
+              [
+                2,
+                36
+              ],
+              [
+                3,
+                79
+              ]
+            ]
+          },
+          "auc_positive_14-08": {
+            "auc": 0.6033,
+            "ci95": [
+              0.3483,
+              1.0
+            ]
+          },
+          "bursts_per_session": {
+            "13-08": 2,
+            "14-08": 5
+          }
+        },
+        "sound_13_vs_14_light": {
+          "protocol": "grouped 5-fold CV over bursts, inner 3-fold C selection from [0.01, 0.1, 1.0]",
+          "C_per_fold": [
+            0.1,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "n_eval_reps": 389,
+          "eval_counts": {
+            "14-08": 209,
+            "13-08": 180
+          },
+          "eval_bursts_per_class": {
+            "13-08": 20,
+            "14-08": 23
+          },
+          "f1": {
+            "13-08": {
+              "f1": 0.9644,
+              "ci95": [
+                0.9054,
+                0.9917
+              ]
+            },
+            "14-08": {
+              "f1": 0.9685,
+              "ci95": [
+                0.9342,
+                0.9921
+              ]
+            },
+            "macro": {
+              "f1": 0.9665,
+              "ci95": [
+                0.9274,
+                0.9915
+              ]
+            },
+            "n_items": 389,
+            "n_groups": 43,
+            "n_boot": 2000
+          },
+          "confusion": {
+            "labels": [
+              "13-08",
+              "14-08"
+            ],
+            "rows_true_cols_pred": [
+              [
+                176,
+                4
+              ],
+              [
+                9,
+                200
+              ]
+            ]
+          },
+          "auc_positive_14-08": {
+            "auc": 0.9929,
+            "ci95": [
+              0.9819,
+              0.9997
+            ]
+          },
+          "bursts_per_session": {
+            "13-08": 20,
+            "14-08": 23
+          }
+        },
+        "sound_13_14_vs_18_light": {
+          "protocol": "grouped 5-fold CV over bursts, inner 3-fold C selection from [0.01, 0.1, 1.0]",
+          "C_per_fold": [
+            0.1,
+            0.01,
+            1.0,
+            0.01,
+            0.1
+          ],
+          "n_eval_reps": 414,
+          "eval_counts": {
+            "13/14-08": 389,
+            "18-08": 25
+          },
+          "eval_bursts_per_class": {
+            "13/14-08": 43,
+            "18-08": 3
+          },
+          "f1": {
+            "13/14-08": {
+              "f1": 0.9819,
+              "ci95": [
+                0.9688,
+                0.9917
+              ]
+            },
+            "18-08": {
+              "f1": 0.7407,
+              "ci95": [
+                0.0,
+                0.8547
+              ]
+            },
+            "macro": {
+              "f1": 0.8613,
+              "ci95": [
+                0.4949,
+                0.9175
+              ]
+            },
+            "n_items": 414,
+            "n_groups": 46,
+            "n_boot": 2000
+          },
+          "confusion": {
+            "labels": [
+              "13/14-08",
+              "18-08"
+            ],
+            "rows_true_cols_pred": [
+              [
+                380,
+                9
+              ],
+              [
+                5,
+                20
+              ]
+            ]
+          },
+          "auc_positive_18-08": {
+            "auc": 0.983,
+            "ci95": [
+              0.9686,
+              0.9931
+            ]
+          },
+          "bursts_per_session": {
+            "13/14-08": 43,
+            "18-08": 3
+          }
+        }
+      }
+    },
+    "capture_date_x_class": {
+      "broken": {
+        "20250809.0": 0,
+        "20250810.0": 0,
+        "20250811.0": 0,
+        "20250813.0": 200,
+        "20250814.0": 206,
+        "20250818.0": 43,
+        "missing": 0
+      },
+      "insect_hole": {
+        "20250809.0": 10,
+        "20250810.0": 219,
+        "20250811.0": 222,
+        "20250813.0": 89,
+        "20250814.0": 208,
+        "20250818.0": 0,
+        "missing": 1
+      },
+      "sound": {
+        "20250809.0": 0,
+        "20250810.0": 0,
+        "20250811.0": 0,
+        "20250813.0": 376,
+        "20250814.0": 522,
+        "20250818.0": 25,
+        "missing": 0
+      }
+    },
+    "capture_date_background_x_class": {
+      "|white/light": {
+        "broken": 0,
+        "insect_hole": 1,
+        "sound": 0
+      },
+      "20250809.0|white/light": {
+        "broken": 0,
+        "insect_hole": 10,
+        "sound": 0
+      },
+      "20250810.0|black": {
+        "broken": 0,
+        "insect_hole": 163,
+        "sound": 0
+      },
+      "20250810.0|intermediate": {
+        "broken": 0,
+        "insect_hole": 21,
+        "sound": 0
+      },
+      "20250810.0|white/light": {
+        "broken": 0,
+        "insect_hole": 35,
+        "sound": 0
+      },
+      "20250811.0|black": {
+        "broken": 0,
+        "insect_hole": 217,
+        "sound": 0
+      },
+      "20250811.0|intermediate": {
+        "broken": 0,
+        "insect_hole": 5,
+        "sound": 0
+      },
+      "20250813.0|intermediate": {
+        "broken": 8,
+        "insect_hole": 0,
+        "sound": 3
+      },
+      "20250813.0|white/light": {
+        "broken": 192,
+        "insect_hole": 89,
+        "sound": 373
+      },
+      "20250814.0|intermediate": {
+        "broken": 2,
+        "insect_hole": 0,
+        "sound": 0
+      },
+      "20250814.0|white/light": {
+        "broken": 204,
+        "insect_hole": 208,
+        "sound": 522
+      },
+      "20250818.0|white/light": {
+        "broken": 43,
+        "insect_hole": 0,
+        "sound": 25
+      }
+    }
+  }
+}

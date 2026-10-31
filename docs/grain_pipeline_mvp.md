@@ -2,7 +2,7 @@
 
 ## What it does
 
-`scripts/analyze_grain_sample.py` reads one EXIF-upright photo, estimates a
+`experiments/grain_counting/analyze_grain_sample.py` reads one EXIF-upright photo, estimates a
 background colour from the border in Lab colour space, thresholds distance from
 that colour, and labels filled foreground components. It excludes small objects
 and objects crossing an image edge. It preserves original RGB pixels for detector
@@ -155,7 +155,7 @@ To reproduce them with fresh output names:
 
 ```bash
 YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl \
-  .venv/bin/python scripts/analyze_grain_sample.py \
+  .venv/bin/python experiments/grain_counting/analyze_grain_sample.py \
   data/processed/soybean_hole/validation/images/test_0013.jpg \
   --species soybean --provenance natural-source --mode compare --device cpu \
   --min-area-fraction 0.005 --distance-threshold 20 \

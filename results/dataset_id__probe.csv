@@ -1,0 +1,4 @@
+features,class,n_test,accuracy,acc_lo,acc_hi,auc,auc_lo,auc_hi
+dinov2-small,sound,187,1.0,1.0,1.0,1.0,1.0,1.0
+dinov2-small,broken,363,1.0,1.0,1.0,1.0,1.0,1.0
+dinov2-small,sound_texture_center50,187,1.0,1.0,1.0,1.0,1.0,1.0

@@ -1,0 +1,216 @@
+{
+  "name": "dataset_id",
+  "how": "Frozen dinov2-small features of masked seed crops, harness.FrozenLogReg. Probe: binary source label (soybean_d97rjyk2tz vs lin_v6vzvfszj6) using only crops of one shared class (sound; broken as a second check); texture-only variant: sound crops cut to their central 50%x50% patch (outline and frame contact removed), re-embedded with the same DINOv2 recipe (CLS + mean patch); fit on split=train, C from {C_GRID} by macro F1 on split=val eval_rep, refit on train, scored on split=test eval_rep (one crop per group). Accuracy with Wilson 95% CI and a group bootstrap CI (soybean groups = 30 s bursts); AUC with percentile bootstrap over groups (2000, seed 0). Cross-dataset false positives: pooled 5-class model (same protocol as r2_per_class pooled_5class) applied to test eval_rep sound crops of each dataset; % predicted as any non-sound class and % predicted as a class that exists only in the other dataset, Wilson 95% CIs. multi_seed=True rows excluded from val/test scoring.",
+  "created_utc": "2026-10-31T13:07:15+00:00",
+  "code_rev": "unknown (box copy is not a git checkout)",
+  "result": {
+    "dinov2-small": {
+      "probe_sound": {
+        "C": 0.01,
+        "val_macro_f1_by_C": {
+          "0.01": 1.0,
+          "0.03": 1.0,
+          "0.1": 1.0,
+          "0.3": 1.0,
+          "1.0": 1.0,
+          "3.0": 1.0
+        },
+        "n_test_reps": 187,
+        "test_counts": {
+          "lin_v6vzvfszj6": 133,
+          "soybean_d97rjyk2tz": 54
+        },
+        "accuracy": 1.0,
+        "accuracy_wilson95": [
+          0.9799,
+          1.0
+        ],
+        "accuracy_grouped_boot95": [
+          1.0,
+          1.0
+        ],
+        "n_test_groups": 143,
+        "auc": {
+          "auc": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "confusion": {
+          "labels": [
+            "soybean_d97rjyk2tz",
+            "lin_v6vzvfszj6"
+          ],
+          "rows_true_cols_pred": [
+            [
+              54,
+              0
+            ],
+            [
+              0,
+              133
+            ]
+          ]
+        }
+      },
+      "probe_broken": {
+        "C": 0.01,
+        "val_macro_f1_by_C": {
+          "0.01": 1.0,
+          "0.03": 1.0,
+          "0.1": 1.0,
+          "0.3": 1.0,
+          "1.0": 1.0,
+          "3.0": 1.0
+        },
+        "n_test_reps": 363,
+        "test_counts": {
+          "lin_v6vzvfszj6": 318,
+          "soybean_d97rjyk2tz": 45
+        },
+        "accuracy": 1.0,
+        "accuracy_wilson95": [
+          0.9895,
+          1.0
+        ],
+        "accuracy_grouped_boot95": [
+          1.0,
+          1.0
+        ],
+        "n_test_groups": 327,
+        "auc": {
+          "auc": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "confusion": {
+          "labels": [
+            "soybean_d97rjyk2tz",
+            "lin_v6vzvfszj6"
+          ],
+          "rows_true_cols_pred": [
+            [
+              45,
+              0
+            ],
+            [
+              0,
+              318
+            ]
+          ]
+        }
+      },
+      "probe_sound_texture_center50": {
+        "C": 0.01,
+        "val_macro_f1_by_C": {
+          "0.01": 1.0,
+          "0.03": 1.0,
+          "0.1": 1.0,
+          "0.3": 1.0,
+          "1.0": 1.0,
+          "3.0": 1.0
+        },
+        "n_test_reps": 187,
+        "test_counts": {
+          "lin_v6vzvfszj6": 133,
+          "soybean_d97rjyk2tz": 54
+        },
+        "accuracy": 1.0,
+        "accuracy_wilson95": [
+          0.9799,
+          1.0
+        ],
+        "accuracy_grouped_boot95": [
+          1.0,
+          1.0
+        ],
+        "n_test_groups": 143,
+        "auc": {
+          "auc": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "confusion": {
+          "labels": [
+            "soybean_d97rjyk2tz",
+            "lin_v6vzvfszj6"
+          ],
+          "rows_true_cols_pred": [
+            [
+              54,
+              0
+            ],
+            [
+              0,
+              133
+            ]
+          ]
+        },
+        "central_patch_seed_fraction_test": {
+          "lin_v6vzvfszj6": {
+            "mean": 1.0,
+            "min": 0.9995
+          },
+          "soybean_d97rjyk2tz": {
+            "mean": 0.9839,
+            "min": 0.8371
+          }
+        }
+      },
+      "cross_dataset_false_positive": {
+        "C": 0.01,
+        "lin_v6vzvfszj6": {
+          "n_sound_test_reps": 133,
+          "pct_pred_defect": 8.27,
+          "pct_pred_defect_wilson95": [
+            4.68,
+            14.2
+          ],
+          "pct_pred_defect_grouped_boot95": [
+            3.76,
+            13.53
+          ],
+          "n_groups": 133,
+          "pct_pred_other_dataset_only_class": 0.0,
+          "pct_pred_other_dataset_only_class_wilson95": [
+            0.0,
+            2.81
+          ],
+          "pred_counts": {
+            "sound": 122,
+            "immature": 6,
+            "broken": 4,
+            "stained": 1
+          }
+        },
+        "soybean_d97rjyk2tz": {
+          "n_sound_test_reps": 54,
+          "pct_pred_defect": 12.96,
+          "pct_pred_defect_wilson95": [
+            6.42,
+            24.42
+          ],
+          "pct_pred_defect_grouped_boot95": [
+            3.12,
+            22.45
+          ],
+          "n_groups": 10,
+          "pct_pred_other_dataset_only_class": 0.0,
+          "pct_pred_other_dataset_only_class_wilson95": [
+            0.0,
+            6.64
+          ],
+          "pred_counts": {
+            "sound": 47,
+            "broken": 7
+          }
+        }
+      }
+    }
+  }
+}

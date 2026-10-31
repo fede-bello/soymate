@@ -1,0 +1,708 @@
+{
+  "name": "r2_per_class",
+  "how": "Frozen dinov2-small features (CLS + mean patch) of masked seed crops (data/crops/manifest.csv), harness.FrozenLogReg (StandardScaler + balanced multinomial logistic regression). Fit on split=train (all crops), C chosen from [0.01, 0.03, 0.1, 0.3, 1.0, 3.0] by macro F1 on split=val eval_rep crops, refit on train, scored once on split=test eval_rep crops (one per original photo for soybean, one per near-duplicate cluster for Lin). 95% CIs: percentile bootstrap over groups, 2000 resamples, seed 0. Groups: soybean = 30 s capture bursts (split is burst-level), Lin = near-duplicate clusters. Rows with multi_seed=True are excluded from val and test scoring (kept in train). Scopes: soybean only (insect_hole/broken/sound), Lin only (sound/broken/stained/immature, broken includes skin-damaged), pooled 5-class model trained on both (by_dataset = pooled predictions scored inside each source).",
+  "created_utc": "2026-10-31T13:07:53+00:00",
+  "code_rev": "unknown (box copy is not a git checkout)",
+  "result": {
+    "dinov2-small": {
+      "soybean": {
+        "C": 0.03,
+        "val_macro_f1_by_C": {
+          "0.01": 0.7433,
+          "0.03": 0.7558,
+          "0.1": 0.7289,
+          "0.3": 0.7224,
+          "1.0": 0.7254,
+          "3.0": 0.7254
+        },
+        "n_train": 1544,
+        "n_test_reps": 132,
+        "test_counts": {
+          "sound": 54,
+          "broken": 45,
+          "insect_hole": 33
+        },
+        "f1": {
+          "broken": {
+            "f1": 0.82,
+            "ci95": [
+              0.7659,
+              0.875
+            ]
+          },
+          "insect_hole": {
+            "f1": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "sound": {
+            "f1": 0.8163,
+            "ci95": [
+              0.7333,
+              0.9263
+            ]
+          },
+          "macro": {
+            "f1": 0.8788,
+            "ci95": [
+              0.8518,
+              0.9293
+            ]
+          },
+          "n_items": 132,
+          "n_groups": 19,
+          "n_boot": 2000
+        },
+        "confusion": {
+          "labels": [
+            "broken",
+            "insect_hole",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              41,
+              0,
+              4
+            ],
+            [
+              0,
+              33,
+              0
+            ],
+            [
+              14,
+              0,
+              40
+            ]
+          ]
+        },
+        "soybean_by_mask_frac": {
+          "mask_frac_lt_0.2": {
+            "broken": {
+              "f1": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "insect_hole": {
+              "f1": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "sound": {
+              "f1": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "macro": {
+              "f1": 0.3333,
+              "ci95": [
+                0.3333,
+                0.3333
+              ]
+            },
+            "n_items": 18,
+            "n_groups": 4,
+            "n_boot": 2000,
+            "counts": {
+              "insect_hole": 17,
+              "sound": 1
+            },
+            "confusion": {
+              "labels": [
+                "broken",
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  17,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0
+                ]
+              ]
+            }
+          },
+          "mask_frac_ge_0.2": {
+            "broken": {
+              "f1": 0.8283,
+              "ci95": [
+                0.7752,
+                0.8889
+              ]
+            },
+            "insect_hole": {
+              "f1": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "sound": {
+              "f1": 0.8247,
+              "ci95": [
+                0.75,
+                0.9358
+              ]
+            },
+            "macro": {
+              "f1": 0.8843,
+              "ci95": [
+                0.8578,
+                0.9378
+              ]
+            },
+            "n_items": 114,
+            "n_groups": 18,
+            "n_boot": 2000,
+            "counts": {
+              "sound": 53,
+              "broken": 45,
+              "insect_hole": 16
+            },
+            "confusion": {
+              "labels": [
+                "broken",
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  41,
+                  0,
+                  4
+                ],
+                [
+                  0,
+                  16,
+                  0
+                ],
+                [
+                  13,
+                  0,
+                  40
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "lin": {
+        "C": 0.03,
+        "val_macro_f1_by_C": {
+          "0.01": 0.9313,
+          "0.03": 0.9381,
+          "0.1": 0.9332,
+          "0.3": 0.9347,
+          "1.0": 0.9245,
+          "3.0": 0.9232
+        },
+        "n_train": 3632,
+        "n_test_reps": 765,
+        "test_counts": {
+          "broken": 318,
+          "stained": 158,
+          "immature": 156,
+          "sound": 133
+        },
+        "f1": {
+          "broken": {
+            "f1": 0.9268,
+            "ci95": [
+              0.9034,
+              0.947
+            ]
+          },
+          "immature": {
+            "f1": 0.9145,
+            "ci95": [
+              0.8808,
+              0.9448
+            ]
+          },
+          "sound": {
+            "f1": 0.9058,
+            "ci95": [
+              0.8659,
+              0.9392
+            ]
+          },
+          "stained": {
+            "f1": 0.882,
+            "ci95": [
+              0.8391,
+              0.9182
+            ]
+          },
+          "macro": {
+            "f1": 0.9073,
+            "ci95": [
+              0.8848,
+              0.9274
+            ]
+          },
+          "n_items": 765,
+          "n_groups": 765,
+          "n_boot": 2000
+        },
+        "confusion": {
+          "labels": [
+            "broken",
+            "immature",
+            "sound",
+            "stained"
+          ],
+          "rows_true_cols_pred": [
+            [
+              291,
+              3,
+              6,
+              18
+            ],
+            [
+              3,
+              139,
+              10,
+              4
+            ],
+            [
+              4,
+              4,
+              125,
+              0
+            ],
+            [
+              12,
+              2,
+              2,
+              142
+            ]
+          ]
+        }
+      },
+      "pooled_5class": {
+        "C": 0.01,
+        "val_macro_f1_by_C": {
+          "0.01": 0.9211,
+          "0.03": 0.9204,
+          "0.1": 0.9187,
+          "0.3": 0.9106,
+          "1.0": 0.9038,
+          "3.0": 0.8968
+        },
+        "n_train": 5176,
+        "n_test_reps": 897,
+        "test_counts": {
+          "broken": 363,
+          "sound": 187,
+          "stained": 158,
+          "immature": 156,
+          "insect_hole": 33
+        },
+        "f1": {
+          "broken": {
+            "f1": 0.8987,
+            "ci95": [
+              0.8677,
+              0.9257
+            ]
+          },
+          "immature": {
+            "f1": 0.9121,
+            "ci95": [
+              0.878,
+              0.9433
+            ]
+          },
+          "insect_hole": {
+            "f1": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "sound": {
+            "f1": 0.8622,
+            "ci95": [
+              0.8261,
+              0.8983
+            ]
+          },
+          "stained": {
+            "f1": 0.872,
+            "ci95": [
+              0.8311,
+              0.9091
+            ]
+          },
+          "macro": {
+            "f1": 0.909,
+            "ci95": [
+              0.8896,
+              0.9263
+            ]
+          },
+          "n_items": 897,
+          "n_groups": 784,
+          "n_boot": 2000
+        },
+        "confusion": {
+          "labels": [
+            "broken",
+            "immature",
+            "insect_hole",
+            "sound",
+            "stained"
+          ],
+          "rows_true_cols_pred": [
+            [
+              315,
+              3,
+              0,
+              23,
+              22
+            ],
+            [
+              3,
+              140,
+              0,
+              9,
+              4
+            ],
+            [
+              0,
+              0,
+              33,
+              0,
+              0
+            ],
+            [
+              11,
+              6,
+              0,
+              169,
+              1
+            ],
+            [
+              9,
+              2,
+              0,
+              4,
+              143
+            ]
+          ]
+        },
+        "soybean_by_mask_frac": {
+          "mask_frac_lt_0.2": {
+            "broken": {
+              "f1": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "insect_hole": {
+              "f1": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "sound": {
+              "f1": 1.0,
+              "ci95": [
+                0.0,
+                1.0
+              ]
+            },
+            "macro": {
+              "f1": 0.6667,
+              "ci95": [
+                0.3333,
+                0.6667
+              ]
+            },
+            "n_items": 18,
+            "n_groups": 4,
+            "n_boot": 2000,
+            "counts": {
+              "insect_hole": 17,
+              "sound": 1
+            },
+            "confusion": {
+              "labels": [
+                "broken",
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  17,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  1
+                ]
+              ]
+            }
+          },
+          "mask_frac_ge_0.2": {
+            "broken": {
+              "f1": 0.716,
+              "ci95": [
+                0.4,
+                0.855
+              ]
+            },
+            "insect_hole": {
+              "f1": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "sound": {
+              "f1": 0.8,
+              "ci95": [
+                0.7521,
+                0.8732
+              ]
+            },
+            "macro": {
+              "f1": 0.8387,
+              "ci95": [
+                0.7313,
+                0.9013
+              ]
+            },
+            "n_items": 114,
+            "n_groups": 18,
+            "n_boot": 2000,
+            "counts": {
+              "sound": 53,
+              "broken": 45,
+              "insect_hole": 16
+            },
+            "confusion": {
+              "labels": [
+                "broken",
+                "insect_hole",
+                "sound"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  29,
+                  0,
+                  16
+                ],
+                [
+                  0,
+                  16,
+                  0
+                ],
+                [
+                  7,
+                  0,
+                  46
+                ]
+              ]
+            }
+          }
+        },
+        "by_dataset": {
+          "lin_v6vzvfszj6": {
+            "broken": {
+              "f1": 0.9226,
+              "ci95": [
+                0.8991,
+                0.9439
+              ]
+            },
+            "immature": {
+              "f1": 0.9121,
+              "ci95": [
+                0.878,
+                0.9429
+              ]
+            },
+            "sound": {
+              "f1": 0.8873,
+              "ci95": [
+                0.8441,
+                0.9241
+              ]
+            },
+            "stained": {
+              "f1": 0.872,
+              "ci95": [
+                0.831,
+                0.9091
+              ]
+            },
+            "macro": {
+              "f1": 0.8985,
+              "ci95": [
+                0.8753,
+                0.9208
+              ]
+            },
+            "n_items": 765,
+            "n_groups": 765,
+            "n_boot": 2000,
+            "confusion": {
+              "labels": [
+                "broken",
+                "immature",
+                "insect_hole",
+                "sound",
+                "stained"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  286,
+                  3,
+                  0,
+                  7,
+                  22
+                ],
+                [
+                  3,
+                  140,
+                  0,
+                  9,
+                  4
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  4,
+                  6,
+                  0,
+                  122,
+                  1
+                ],
+                [
+                  9,
+                  2,
+                  0,
+                  4,
+                  143
+                ]
+              ]
+            }
+          },
+          "soybean_d97rjyk2tz": {
+            "broken": {
+              "f1": 0.716,
+              "ci95": [
+                0.4082,
+                0.8545
+              ]
+            },
+            "insect_hole": {
+              "f1": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "sound": {
+              "f1": 0.8034,
+              "ci95": [
+                0.7519,
+                0.8831
+              ]
+            },
+            "macro": {
+              "f1": 0.8398,
+              "ci95": [
+                0.7354,
+                0.9074
+              ]
+            },
+            "n_items": 132,
+            "n_groups": 19,
+            "n_boot": 2000,
+            "confusion": {
+              "labels": [
+                "broken",
+                "immature",
+                "insect_hole",
+                "sound",
+                "stained"
+              ],
+              "rows_true_cols_pred": [
+                [
+                  29,
+                  0,
+                  0,
+                  16,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  33,
+                  0,
+                  0
+                ],
+                [
+                  7,
+                  0,
+                  0,
+                  47,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

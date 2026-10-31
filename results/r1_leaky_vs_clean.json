@@ -1,0 +1,690 @@
+{
+  "name": "r1_leaky_vs_clean",
+  "how": "Soybean d97rjyk2tz v2, classes from make_crops.soy_class on soybean.csv labels (Hole->insect_hole; else Egg->dropped; else Testa cracking->broken; Healthy-only->sound; others dropped). Image set: non-dropped rows (md5 duplicates and unlabeled removed) with a defined class and a single-seed masked crop (manifest multi_seed=True excluded), n=2083, identical in all arms. Model: logreg (FrozenLogReg, default params) on frozen dinov2-small features (CLS + mean patch); full image = data/features/dinov2-small__soybean_full.parquet, crop = dinov2-small__crops.parquet. Splits: published_split (A,B), split_photo = photo-level grouped split (C,D), split = 30 s capture-burst-level grouped split (E,F); trained on train only. Test: one image per original photo (eval_rep, else first by name); published arms also all test images. Metric: per-class and macro F1, 95% percentile CI from 2000 grouped bootstrap resamples, seed 0, resampling photos (A-D, A_raw) or bursts (E,F). A_raw: published split as distributed (md5 duplicates kept). Leak share: published-test images whose photo / burst also appears in published train, Wilson 95% CI.",
+  "created_utc": "2026-10-31T13:04:31+00:00",
+  "code_rev": "unknown (box copy is not a git checkout)",
+  "result": {
+    "A": {
+      "input": "full",
+      "split_col": "published_split",
+      "bootstrap_unit": "photo",
+      "n_train": 1698,
+      "n_train_photos": 925,
+      "n_train_bursts": 124,
+      "one_per_photo": {
+        "insect_hole": {
+          "f1": 0.993,
+          "ci95": [
+            0.975,
+            1.0
+          ]
+        },
+        "broken": {
+          "f1": 0.7848,
+          "ci95": [
+            0.6769,
+            0.875
+          ]
+        },
+        "sound": {
+          "f1": 0.8769,
+          "ci95": [
+            0.8136,
+            0.9298
+          ]
+        },
+        "macro": {
+          "f1": 0.8849,
+          "ci95": [
+            0.8319,
+            0.932
+          ]
+        },
+        "n_items": 176,
+        "n_groups": 176,
+        "n_boot": 2000,
+        "n_test_bursts": 65,
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "broken",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              71,
+              1,
+              0
+            ],
+            [
+              0,
+              31,
+              6
+            ],
+            [
+              0,
+              10,
+              57
+            ]
+          ]
+        }
+      },
+      "all_test": {
+        "insect_hole": {
+          "f1": 0.9937,
+          "ci95": [
+            0.9771,
+            1.0
+          ]
+        },
+        "broken": {
+          "f1": 0.7952,
+          "ci95": [
+            0.6923,
+            0.881
+          ]
+        },
+        "sound": {
+          "f1": 0.8857,
+          "ci95": [
+            0.8254,
+            0.9362
+          ]
+        },
+        "macro": {
+          "f1": 0.8915,
+          "ci95": [
+            0.8389,
+            0.9361
+          ]
+        },
+        "n_items": 191,
+        "n_groups": 176,
+        "n_boot": 2000,
+        "n_test_bursts": 65,
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "broken",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              79,
+              1,
+              0
+            ],
+            [
+              0,
+              33,
+              6
+            ],
+            [
+              0,
+              10,
+              62
+            ]
+          ]
+        }
+      }
+    },
+    "B": {
+      "input": "crop",
+      "split_col": "published_split",
+      "bootstrap_unit": "photo",
+      "n_train": 1698,
+      "n_train_photos": 925,
+      "n_train_bursts": 124,
+      "one_per_photo": {
+        "insect_hole": {
+          "f1": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "broken": {
+          "f1": 0.7671,
+          "ci95": [
+            0.6441,
+            0.8608
+          ]
+        },
+        "sound": {
+          "f1": 0.8741,
+          "ci95": [
+            0.8095,
+            0.9275
+          ]
+        },
+        "macro": {
+          "f1": 0.8804,
+          "ci95": [
+            0.8255,
+            0.9271
+          ]
+        },
+        "n_items": 176,
+        "n_groups": 176,
+        "n_boot": 2000,
+        "n_test_bursts": 65,
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "broken",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              72,
+              0,
+              0
+            ],
+            [
+              0,
+              28,
+              9
+            ],
+            [
+              0,
+              8,
+              59
+            ]
+          ]
+        }
+      },
+      "all_test": {
+        "insect_hole": {
+          "f1": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "broken": {
+          "f1": 0.7273,
+          "ci95": [
+            0.5974,
+            0.8354
+          ]
+        },
+        "sound": {
+          "f1": 0.8552,
+          "ci95": [
+            0.7869,
+            0.9139
+          ]
+        },
+        "macro": {
+          "f1": 0.8608,
+          "ci95": [
+            0.8025,
+            0.9147
+          ]
+        },
+        "n_items": 191,
+        "n_groups": 176,
+        "n_boot": 2000,
+        "n_test_bursts": 65,
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "broken",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              80,
+              0,
+              0
+            ],
+            [
+              0,
+              28,
+              11
+            ],
+            [
+              0,
+              10,
+              62
+            ]
+          ]
+        }
+      }
+    },
+    "C": {
+      "input": "full",
+      "split_col": "split_photo",
+      "bootstrap_unit": "photo",
+      "n_train": 1497,
+      "n_train_photos": 699,
+      "n_train_bursts": 114,
+      "one_per_photo": {
+        "insect_hole": {
+          "f1": 0.9905,
+          "ci95": [
+            0.9677,
+            1.0
+          ]
+        },
+        "broken": {
+          "f1": 0.6154,
+          "ci95": [
+            0.439,
+            0.7547
+          ]
+        },
+        "sound": {
+          "f1": 0.8527,
+          "ci95": [
+            0.7818,
+            0.9155
+          ]
+        },
+        "macro": {
+          "f1": 0.8195,
+          "ci95": [
+            0.748,
+            0.8838
+          ]
+        },
+        "n_items": 143,
+        "n_groups": 143,
+        "n_boot": 2000,
+        "n_test_bursts": 71,
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "broken",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              52,
+              1,
+              0
+            ],
+            [
+              0,
+              16,
+              10
+            ],
+            [
+              0,
+              9,
+              55
+            ]
+          ]
+        }
+      }
+    },
+    "D": {
+      "input": "crop",
+      "split_col": "split_photo",
+      "bootstrap_unit": "photo",
+      "n_train": 1497,
+      "n_train_photos": 699,
+      "n_train_bursts": 114,
+      "one_per_photo": {
+        "insect_hole": {
+          "f1": 0.9905,
+          "ci95": [
+            0.9677,
+            1.0
+          ]
+        },
+        "broken": {
+          "f1": 0.7037,
+          "ci95": [
+            0.5417,
+            0.8235
+          ]
+        },
+        "sound": {
+          "f1": 0.8819,
+          "ci95": [
+            0.816,
+            0.9355
+          ]
+        },
+        "macro": {
+          "f1": 0.8587,
+          "ci95": [
+            0.7876,
+            0.9148
+          ]
+        },
+        "n_items": 143,
+        "n_groups": 143,
+        "n_boot": 2000,
+        "n_test_bursts": 71,
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "broken",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              52,
+              1,
+              0
+            ],
+            [
+              0,
+              19,
+              7
+            ],
+            [
+              0,
+              8,
+              56
+            ]
+          ]
+        }
+      }
+    },
+    "E": {
+      "input": "full",
+      "split_col": "split",
+      "bootstrap_unit": "burst",
+      "n_train": 1520,
+      "n_train_photos": 727,
+      "n_train_bursts": 99,
+      "one_per_photo": {
+        "insect_hole": {
+          "f1": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "broken": {
+          "f1": 0.7033,
+          "ci95": [
+            0.6101,
+            0.8293
+          ]
+        },
+        "sound": {
+          "f1": 0.7477,
+          "ci95": [
+            0.5921,
+            0.8919
+          ]
+        },
+        "macro": {
+          "f1": 0.817,
+          "ci95": [
+            0.7505,
+            0.8967
+          ]
+        },
+        "n_items": 132,
+        "n_groups": 19,
+        "n_boot": 2000,
+        "n_test_bursts": 19,
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "broken",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              33,
+              0,
+              0
+            ],
+            [
+              0,
+              32,
+              13
+            ],
+            [
+              0,
+              14,
+              40
+            ]
+          ]
+        }
+      }
+    },
+    "F": {
+      "input": "crop",
+      "split_col": "split",
+      "bootstrap_unit": "burst",
+      "n_train": 1520,
+      "n_train_photos": 727,
+      "n_train_bursts": 99,
+      "one_per_photo": {
+        "insect_hole": {
+          "f1": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "broken": {
+          "f1": 0.7708,
+          "ci95": [
+            0.625,
+            0.8451
+          ]
+        },
+        "sound": {
+          "f1": 0.7843,
+          "ci95": [
+            0.72,
+            0.8824
+          ]
+        },
+        "macro": {
+          "f1": 0.8517,
+          "ci95": [
+            0.8014,
+            0.9
+          ]
+        },
+        "n_items": 132,
+        "n_groups": 19,
+        "n_boot": 2000,
+        "n_test_bursts": 19,
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "broken",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              33,
+              0,
+              0
+            ],
+            [
+              0,
+              37,
+              8
+            ],
+            [
+              0,
+              14,
+              40
+            ]
+          ]
+        }
+      }
+    },
+    "A_raw": {
+      "input": "full",
+      "split_col": "published_split (as distributed, md5 duplicates kept)",
+      "bootstrap_unit": "photo",
+      "n_train": 1861,
+      "n_train_photos": 939,
+      "n_train_bursts": 124,
+      "one_per_photo": {
+        "insect_hole": {
+          "f1": 0.9943,
+          "ci95": [
+            0.9809,
+            1.0
+          ]
+        },
+        "broken": {
+          "f1": 0.8317,
+          "ci95": [
+            0.7473,
+            0.9032
+          ]
+        },
+        "sound": {
+          "f1": 0.9,
+          "ci95": [
+            0.8461,
+            0.9444
+          ]
+        },
+        "macro": {
+          "f1": 0.9087,
+          "ci95": [
+            0.8651,
+            0.9477
+          ]
+        },
+        "n_items": 218,
+        "n_groups": 218,
+        "n_boot": 2000,
+        "n_test_bursts": 68,
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "broken",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              87,
+              1,
+              0
+            ],
+            [
+              0,
+              42,
+              6
+            ],
+            [
+              0,
+              10,
+              72
+            ]
+          ]
+        }
+      },
+      "all_test": {
+        "insect_hole": {
+          "f1": 0.9951,
+          "ci95": [
+            0.983,
+            1.0
+          ]
+        },
+        "broken": {
+          "f1": 0.8381,
+          "ci95": [
+            0.7527,
+            0.9091
+          ]
+        },
+        "sound": {
+          "f1": 0.907,
+          "ci95": [
+            0.855,
+            0.948
+          ]
+        },
+        "macro": {
+          "f1": 0.9134,
+          "ci95": [
+            0.872,
+            0.9511
+          ]
+        },
+        "n_items": 240,
+        "n_groups": 218,
+        "n_boot": 2000,
+        "n_test_bursts": 68,
+        "confusion": {
+          "labels": [
+            "insect_hole",
+            "broken",
+            "sound"
+          ],
+          "rows_true_cols_pred": [
+            [
+              101,
+              1,
+              0
+            ],
+            [
+              0,
+              44,
+              6
+            ],
+            [
+              0,
+              10,
+              78
+            ]
+          ]
+        }
+      }
+    },
+    "published_test_in_train": {
+      "all_v2_images__by_photo": {
+        "k": 229,
+        "n": 274,
+        "share": 0.8358,
+        "wilson95": [
+          0.7873,
+          0.8749
+        ]
+      },
+      "all_v2_images__by_burst": {
+        "k": 266,
+        "n": 274,
+        "share": 0.9708,
+        "wilson95": [
+          0.9435,
+          0.9851
+        ]
+      },
+      "r1_image_set__by_photo": {
+        "k": 155,
+        "n": 191,
+        "share": 0.8115,
+        "wilson95": [
+          0.7501,
+          0.8606
+        ]
+      },
+      "r1_image_set__by_burst": {
+        "k": 186,
+        "n": 191,
+        "share": 0.9738,
+        "wilson95": [
+          0.9402,
+          0.9888
+        ]
+      }
+    },
+    "n_images": 2083,
+    "class_counts": {
+      "sound": 909,
+      "insect_hole": 731,
+      "broken": 443
+    },
+    "n_photos": 986,
+    "n_bursts": 131
+  }
+}

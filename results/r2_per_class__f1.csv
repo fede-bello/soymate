@@ -1,0 +1,16 @@
+features,scope,class,f1,ci_lo,ci_hi,n_eval,n_groups
+dinov2-small,soybean,broken,0.82,0.7659,0.875,45,19
+dinov2-small,soybean,insect_hole,1.0,1.0,1.0,33,19
+dinov2-small,soybean,sound,0.8163,0.7333,0.9263,54,19
+dinov2-small,soybean,macro,0.8788,0.8518,0.9293,,19
+dinov2-small,lin,broken,0.9268,0.9034,0.947,318,765
+dinov2-small,lin,immature,0.9145,0.8808,0.9448,156,765
+dinov2-small,lin,sound,0.9058,0.8659,0.9392,133,765
+dinov2-small,lin,stained,0.882,0.8391,0.9182,158,765
+dinov2-small,lin,macro,0.9073,0.8848,0.9274,,765
+dinov2-small,pooled_5class,broken,0.8987,0.8677,0.9257,363,784
+dinov2-small,pooled_5class,immature,0.9121,0.878,0.9433,156,784
+dinov2-small,pooled_5class,insect_hole,1.0,1.0,1.0,33,784
+dinov2-small,pooled_5class,sound,0.8622,0.8261,0.8983,187,784
+dinov2-small,pooled_5class,stained,0.872,0.8311,0.9091,158,784
+dinov2-small,pooled_5class,macro,0.909,0.8896,0.9263,,784

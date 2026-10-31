@@ -4,9 +4,9 @@ Prepared for the other Codex chat. The main application was not modified by this
 
 ## What is available
 
-The experimental CLI is `scripts/experiments/analyze_fastsam_grains.py`; it calls FastSAM-small and the existing `grain_pipeline.YoloDetector` on CPU. It writes `annotated.png`, `numbered_masks.png`, `manifest.json`, padded `crops/grain-NNNN.png`, and aligned crop-space `masks/grain-NNNN.png`. The existing threshold/contour pipeline remains `scripts/analyze_grain_sample.py`. The separate evaluator is `scripts/experiments/evaluate_pea_fastsam.py`; historical comparison scripts are `pea_fastsam_comparison.py`, `pea_initial_comparison.py` and `pea_watershed_comparison.py` under the same directory. Geometry/association tests are in `tests/test_fastsam_experiment.py`. The more complete setup, prior results and licensing notes are in `docs/fastsam_grain_experiment.md`; `README.md` contains its link.
+The experimental CLI is `experiments/fastsam/analyze_fastsam_grains.py`; it calls FastSAM-small and the existing `grain_pipeline.YoloDetector` on CPU. It writes `annotated.png`, `numbered_masks.png`, `manifest.json`, padded `crops/grain-NNNN.png`, and aligned crop-space `masks/grain-NNNN.png`. The existing threshold/contour pipeline remains `experiments/grain_counting/analyze_grain_sample.py`. The separate evaluator is `experiments/fastsam/evaluate_pea_fastsam.py`; historical comparison scripts are `pea_fastsam_comparison.py`, `pea_initial_comparison.py` and `pea_watershed_comparison.py` under the same directory. Geometry/association tests are in `tests/test_fastsam_experiment.py`. The more complete setup, prior results and licensing notes are in `docs/fastsam_grain_experiment.md`; `README.md` contains its link.
 
-At the start of this handoff, the above `scripts/experiments/` files, the focused test, and `docs/fastsam_grain_experiment.md` were untracked; `README.md` was modified. This handoff document is also new and trackable. No files were staged. The worktree belongs to branch `jp/soybean-baseline`; no other worktree was present. `data/`, `runs/`, `outputs/` and `*.pt` are Git-ignored. In particular, **neither checkpoint, images, generated crops, nor review overlays will travel with a commit**.
+At the start of this handoff, the above `experiments/fastsam/` files, the focused test, and `docs/fastsam_grain_experiment.md` were untracked; `README.md` was modified. This handoff document is also new and trackable. No files were staged. The worktree belongs to branch `jp/soybean-baseline`; no other worktree was present. `data/`, `runs/`, `outputs/` and `*.pt` are Git-ignored. In particular, **neither checkpoint, images, generated crops, nor review overlays will travel with a commit**.
 
 Local required checkpoints:
 
@@ -19,7 +19,7 @@ Use `uv sync --locked --group baseline`; observed versions were Python 3.14.6, U
 
 ```sh
 /usr/bin/time -p env YOLO_CONFIG_DIR=/private/tmp/soy-yolo MPLCONFIGDIR=/private/tmp/soy-mpl \
-  .venv/bin/python scripts/experiments/analyze_fastsam_grains.py \
+  .venv/bin/python experiments/fastsam/analyze_fastsam_grains.py \
   data/raw/pea_zenodo_21110940/images/20210406_145931.jpg \
   --output outputs/fastsam-demo/pea-40 --confidence 0.4 --compare-masked 0
 ```
