@@ -23,8 +23,9 @@ the tables. Re-run everything on the box from `~/soymate` (see `docs/aws_setup.m
   kept as `split_photo`. The published split leaks: 229/274 test images (83.6 %) share an original photo with
   published train, 266/274 (97.1 %) share a burst. Photo grouping agrees with the declared pre-event
   `resplit_by_original.csv` on 98.8 % of images.
-- **Lin v6vzvfszj6:** 5,513 crops; 290 exact duplicates and 7 near-duplicate label conflicts dropped; groups
-  are near-duplicate clusters (16x16 dHash, 8 dihedral variants, Hamming <= 10/256).
+- **Lin v6vzvfszj6:** 5,513 crops; 290 exact duplicates and 33 near-duplicate label conflicts dropped (5,190
+  kept); groups are near-duplicate clusters (16x16 dHash, 8 dihedral variants, Hamming <= 12/256 in both
+  directions; pairs at 11-12 were checked by eye and included same-image pairs).
 - **harvest hwdtghttp7:** split by 4-digit id prefix (40 originals).
 - **Ghana t94nzy4ptz:** 105 group photos, evaluation only.
 
@@ -44,6 +45,7 @@ grouped bootstrap resamples (over photos, or over bursts for the burst split).
 | F (ours) | burst-level | masked crop | 0.852 [0.801, 0.900] (19 test bursts) | 0.771 |
 
 Leakage inflates macro F1 by about 0.03 to 0.06; the intervals overlap. **insect_hole F1 is 0.99 to 1.00 in
-every arm, including F: not credible as hole detection.** Every bruchid seed was photographed in its own
-sessions (9-11/08, black or light background), so the model can read the session; see R2 session control.
+every arm, including F: not credible as hole detection yet.** 452 of the hole crops were shot on 9-11/08, when
+no other class was photographed (380 on black background, zoomed out so the crop is upsampled); only ~297 holes
+share days and background with sound seeds (13-14/08, light). See R2 session control.
 
