@@ -15,7 +15,8 @@ Harvest seeds come from the dataset's own masks; Ghana seeds from its per-seed b
 
 Class mapping (CONTEXT.md 0 and 7): sound, broken (broken / seed-coat damage), stained, immature,
 insect_hole. d97rjyk2tz: Hole -> insect_hole; else Testa cracking -> broken; Healthy -> sound only when the
-image has no other box; Egg-only and Normal_Damage-only images are dropped. Lin: intact -> sound,
+image has no other box; images with Egg but no Hole, and Normal_Damage-only images, are dropped. Images with
+more than one seed region get `multi_seed=True` (the label belongs to the image, not the kept region). Lin: intact -> sound,
 broken and skin-damaged -> broken, spotted -> stained, immature -> immature (the original label is kept).
 """
 import json
@@ -108,6 +109,8 @@ def soy_class(labels: str) -> str | None:
     s = set(labels.split("|")) if labels else set()
     if "Hole" in s:
         return "insect_hole"
+    if "Egg" in s:
+        return None  # infested without an exit hole: neither sound nor broken
     if "Testa cracking" in s:
         return "broken"
     if s == {"Healthy"}:
@@ -166,9 +169,10 @@ def soybean() -> pd.DataFrame:
     m = sp.merge(res, left_on="image", right_on="source_image")
     return pd.DataFrame({
         "crop": m["crop"], "dataset": "soybean_d97rjyk2tz", "source_image": m["image"], "group": m["group"],
-        "split": m["split"], "class": m["class"], "source_label": m["labels"], "eval_rep": m["eval_rep"],
+        "photo": m["photo"], "split": m["split"], "split_photo": m["split_photo"], "class": m["class"], "source_label": m["labels"], "eval_rep": m["eval_rep"],
         "background": m["background"], "capture_date": m["capture_date"], "published_split": m["published_split"],
-        "n_components": m["n_components"], "mask_frac": m.get("mask_frac"), "seg_note": m["seg_note"]})
+        "n_components": m["n_components"], "mask_frac": m.get("mask_frac"), "seg_note": m["seg_note"],
+        "multi_seed": m["n_components"] > 1})
 
 
 def lin() -> pd.DataFrame:

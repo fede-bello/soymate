@@ -4,8 +4,9 @@ Run on the box:  cd ~/soymate && uv run python scripts/data/make_splits.py [soyb
 Reads data/raw/, writes data/splits/<dataset>.csv and data/splits/SUMMARY.json.
 
 Rules (see research/critique.md C1/M6 and research/soybean_bruchid/findings.md):
-- soybean (Mendeley d97rjyk2tz): v2 images are matched to v1 by md5; the group is the original photo
-  (IMG_YYYYMMDD_HHMMSS prefix of the v1 Roboflow name). Exact duplicates (same md5, keep one) and images
+- soybean (Mendeley d97rjyk2tz): v2 images are matched to v1 by md5 to get the original photo
+  (IMG_YYYYMMDD_HHMMSS prefix of the v1 Roboflow name); the group is the capture burst (photos chained while
+  consecutive gaps are <= BURST_GAP_S), because photos seconds apart are not independent. Exact duplicates (same md5, keep one) and images
   without labels are dropped. Groups are split 70/15/15, stratified by image type and background.
   The published v2 split is kept as `published_split` for the leaky arm of R1.
 - lin (Mendeley v6vzvfszj6): groups are near-duplicate clusters (16x16 dHash under the 8 flips/rotations,
@@ -32,7 +33,8 @@ RAW = ROOT / "data" / "raw"
 OUT = ROOT / "data" / "splits"
 SEED = 42
 FRACTIONS = {"train": 0.70, "val": 0.15, "test": 0.15}
-LIN_DHASH_MAX = 10  # of 256 bits; nearest-neighbour distances show a near-duplicate tail at 1-10, then a continuum
+BURST_GAP_S = 30  # median gap between consecutive photos is 6 s, 75th percentile 14 s
+LIN_DHASH_MAX = 12  # of 256 bits; review found same-image pairs at 11-12 and only distinct seeds at 13-16
 SOY_CLASSES = {0: "Egg", 1: "Hole", 2: "Testa cracking", 3: "Normal_Damage", 4: "Healthy"}
 SUMMARY: dict = {}
 
@@ -42,17 +44,23 @@ def md5(path: Path) -> str:
 
 
 def group_split(groups: pd.DataFrame, strata_col: str, seed: int = SEED) -> dict:
-    """Assign each group to train/val/test, 70/15/15 within each stratum. groups: one row per group."""
+    """Assign each group to train/val/test, ~70/15/15 of images within each stratum.
+
+    groups: one row per group; optional column `size` (images in the group, default 1). Groups are shuffled,
+    then each goes to the split furthest below its target share, so uneven group sizes (capture bursts) still
+    give balanced image counts.
+    """
     rng = np.random.default_rng(seed)
     assign = {}
     for _, g in groups.groupby(strata_col, sort=True):
         ids = g.index.to_numpy().copy()
         rng.shuffle(ids)
-        n = len(ids)
-        n_val = int(round(n * FRACTIONS["val"]))
-        n_test = int(round(n * FRACTIONS["test"]))
-        for i, gid in enumerate(ids):
-            assign[gid] = "test" if i < n_test else "val" if i < n_test + n_val else "train"
+        sizes = g["size"] if "size" in g else pd.Series(1, index=g.index)
+        total, filled = float(sizes.sum()), dict.fromkeys(FRACTIONS, 0.0)
+        for gid in ids:
+            split = max(FRACTIONS, key=lambda k: FRACTIONS[k] * total - filled[k])
+            assign[gid] = split
+            filled[split] += sizes[gid]
     return assign
 
 
@@ -106,7 +114,7 @@ def soybean() -> None:
             rows.append({
                 "image": f"{split_dir}/images/{img.name}", "published_split": {"validation": "val"}.get(split_dir, split_dir),
                 "md5": h, "v1_name": v1_names[0] if v1_names else "",
-                "group": m.group(1) if m else f"v2only_{img.stem}",
+                "photo": m.group(1) if m else f"v2only_{img.stem}",
                 "labels": "|".join(sorted(names)), "n_boxes": len(cls), "type": typ,
                 "background": border_background(np.asarray(Image.open(img).convert("L"))),
                 "capture_date": m.group(1)[4:12] if m else "",
@@ -115,28 +123,51 @@ def soybean() -> None:
     df["drop_reason"] = ""
     df.loc[df.duplicated("md5", keep="first"), "drop_reason"] = "exact duplicate (md5)"
     df.loc[(df["n_boxes"] == 0) & (df["drop_reason"] == ""), "drop_reason"] = "unlabeled"
+    # Group = capture burst: photos chained while consecutive gaps are <= BURST_GAP_S. With a photo-level split,
+    # the nearest train neighbour (DINOv2 cosine) of 15/291 test crops was a photo taken within 10 s, against
+    # 0.9 expected by chance (same seed from another side, or the same burst); the burst split brings it to 0.
+    df["group"] = burst_groups(df["photo"])
     kept = df[df["drop_reason"] == ""]
-    # Group stratum: most severe type in the group, plus its majority background.
     order = {"bruchid-damaged": 0, "Testa/Normal": 1, "Healthy only": 2}
-    g = kept.groupby("group").agg(type=("type", lambda s: min(s, key=order.get)),
-                                  background=("background", lambda s: s.mode().iloc[0]))
-    g["stratum"] = g["type"] + "/" + g["background"]
-    assign = group_split(g, "stratum")
-    df["split"] = df["group"].map(assign).where(df["drop_reason"] == "")
-    # One image per group for val/test reporting (first by name), so augmented variants count once.
-    first = df[df["split"].notna()].sort_values("image").drop_duplicates("group").index
+
+    def split_by(key: str) -> pd.Series:
+        """Stratum: most severe type in the group plus its majority background."""
+        g = kept.groupby(key).agg(type=("type", lambda s: min(s, key=order.get)),
+                                  background=("background", lambda s: s.mode().iloc[0]), size=("image", "size"))
+        g["stratum"] = g["type"] + "/" + g["background"]
+        return df[key].map(group_split(g, "stratum")).where(df["drop_reason"] == "")
+
+    df["split"] = split_by("group")
+    df["split_photo"] = split_by("photo")  # the weaker photo-level split, kept for R1
+    # One image per original photo for val/test reporting (first by name), so augmented variants count once.
+    first = df[df["split"].notna()].sort_values("image").drop_duplicates("photo").index
     df["eval_rep"] = df.index.isin(first)
     check_no_leak(df, "soybean")
+    assert (df[df["split_photo"].notna()].groupby("photo")["split_photo"].nunique() == 1).all()
     published_leak = {}
-    pub_train_groups = set(df.loc[df["published_split"] == "train", "group"])
-    for s in ("val", "test"):
-        sub = df[df["published_split"] == s]
-        published_leak[s] = {"images": len(sub), "group_also_in_published_train": int(sub["group"].isin(pub_train_groups).sum())}
+    for key in ("photo", "group"):
+        pub_train = set(df.loc[df["published_split"] == "train", key])
+        for s in ("val", "test"):
+            sub = df[df["published_split"] == s]
+            published_leak[f"{s}_by_{key}"] = {"images": len(sub), "also_in_published_train": int(sub[key].isin(pub_train).sum())}
     df.to_csv(OUT / "soybean.csv", index=False)
     summarise(df, "soybean", "labels")
     SUMMARY["soybean"]["n_v2_without_v1_match"] = int((df["v1_name"] == "").sum())
     SUMMARY["soybean"]["published_split_leakage"] = published_leak
     SUMMARY["soybean"]["agreement_with_pre_event_csv"] = compare_pre_event(df)
+    SUMMARY["soybean"]["burst_gap_s"] = BURST_GAP_S
+    SUMMARY["soybean"]["n_photos_kept"] = int(kept["photo"].nunique())
+
+
+def burst_groups(photo: pd.Series) -> pd.Series:
+    """Map each IMG_YYYYMMDD_HHMMSS photo id to a burst id; v2-only images stay their own group."""
+    ids = pd.Series(photo.unique())
+    t = pd.to_datetime(ids.str[4:19], format="%Y%m%d_%H%M%S", errors="coerce")
+    order = t.sort_values().index
+    timed = ids[order][t[order].notna()]
+    gaps = t[timed.index].diff().dt.total_seconds()
+    burst = dict(zip(timed, [f"burst_{b:04d}" for b in (gaps > BURST_GAP_S).cumsum()]))
+    return photo.map(lambda p: burst.get(p, p))
 
 
 def compare_pre_event(df: pd.DataFrame) -> dict:
@@ -147,10 +178,10 @@ def compare_pre_event(df: pd.DataFrame) -> dict:
     pre = pd.read_csv(pre_path)
     cur = df.assign(image_v2=df["image"].str.split("/").str[-1]).set_index("image_v2")
     pre = pre.set_index("image_v2").reindex(cur.index)
-    same_group = (pre["group"].fillna("") == cur["group"].where(~cur["group"].str.startswith("v2only_"), "")).mean()
+    same_group = (pre["group"].fillna("") == cur["photo"].where(~cur["photo"].str.startswith("v2only_"), "")).mean()
     same_drop = (pre["discard"].notna() == (cur["drop_reason"] != "")).mean()
     return {"available": True, "same_group_frac": round(float(same_group), 4), "same_drop_frac": round(float(same_drop), 4),
-            "n_groups_now": int(cur.loc[cur["drop_reason"] == "", "group"].nunique()),
+            "n_photos_now": int(cur.loc[cur["drop_reason"] == "", "photo"].nunique()),
             "n_groups_pre": int(pre.loc[pre["discard"].isna(), "group"].nunique())}
 
 
@@ -186,8 +217,10 @@ def lin() -> None:
             i = parent[i]
         return i
 
-    for i in range(n):  # min Hamming over the 8 variants of j against the base hash of i
-        d = (allv[i + 1:] != base[i][None, None, :]).sum(axis=2).min(axis=1)
+    for i in range(n):  # min Hamming over the 8 variants, both directions (variants of j vs i, of i vs j)
+        d1 = (allv[i + 1:] != base[i][None, None, :]).sum(axis=2).min(axis=1)
+        d2 = (allv[i][None, :, :] != base[i + 1:][:, None, :]).sum(axis=2).min(axis=1)
+        d = np.minimum(d1, d2)
         for j in np.nonzero(d <= LIN_DHASH_MAX)[0] + i + 1:
             parent[find(int(j))] = find(i)
     roots = [find(i) for i in range(n)]
