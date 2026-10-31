@@ -9,10 +9,9 @@ self-contained: slides, images and the demo video are in `deck/` (`deck/assets/`
 Keys: ← → (or click) to move, `N` speaker notes, `F` full screen; `#8` in the URL opens slide 8. Print to PDF from
 the browser (one slide per page, 1920×1080) for the submission.
 
-To edit: change the slide in `slides/` (one `<section>` per slide, all styles inline; `slides/deck.json` gives the
-order), then rebuild with `python3 pitch/build_deck.py` from the repo root. The same `slides/` files are what the
-online deck holds, so they can be pasted back into it. A new image goes in `deck/assets/` and in `ASSETS` at the
-top of `build_deck.py`.
+**To edit it** (text, slides, images, the demo video, keeping the online deck in sync): see
+[`EDITING.md`](EDITING.md). In short: change the slide in `slides/`, run `python3 pitch/build_deck.py` from the
+repo root, reload `deck/index.html`, commit both.
 
 ## Outline (11 slides, ~4:00 spoken)
 
