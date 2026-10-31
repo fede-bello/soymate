@@ -1,0 +1,242 @@
+{
+ "cards": [
+  {
+   "id": "r1",
+   "title": "The published split leaks",
+   "headline": "229/274 published test images (83.6 %) share an original photo with published train (97.1 % share a capture burst). A clean burst-level split drops macro F1 from 0.913 to 0.852.",
+   "numbers": [
+    {
+     "label": "macro F1, as distributed (published split, duplicates kept)",
+     "value": "0.913",
+     "ci95": "[0.872, 0.951]"
+    },
+    {
+     "label": "macro F1, published split, full image",
+     "value": "0.885",
+     "ci95": "[0.832, 0.932]"
+    },
+    {
+     "label": "macro F1, burst-level split, masked crop (ours)",
+     "value": "0.852",
+     "ci95": "[0.801, 0.900]"
+    },
+    {
+     "label": "insect_hole F1, ours",
+     "value": "1.000",
+     "ci95": "[1.000, 1.000]"
+    }
+   ],
+   "caveat": "Leakage inflates macro F1 by a few points and the intervals overlap. insect_hole F1 near 1.00 in every arm is not credible as hole detection on its own: most hole photos come from sessions with no other class (see the session control).",
+   "source": "results/r1_leaky_vs_clean.json"
+  },
+  {
+   "id": "r2",
+   "title": "Per-class accuracy, within each dataset",
+   "headline": "On a clean split, broken vs sound reaches F1 0.820 on soybean (132 test seeds, 19 bursts) and macro F1 0.907 on Lin's four classes.",
+   "numbers": [
+    {
+     "label": "soybean broken F1",
+     "value": "0.820",
+     "ci95": "[0.766, 0.875]"
+    },
+    {
+     "label": "soybean sound F1",
+     "value": "0.816",
+     "ci95": "[0.733, 0.926]"
+    },
+    {
+     "label": "soybean insect hole F1",
+     "value": "1.000",
+     "ci95": "[1.000, 1.000]"
+    },
+    {
+     "label": "soybean macro F1",
+     "value": "0.879",
+     "ci95": "[0.852, 0.929]"
+    },
+    {
+     "label": "Lin macro F1",
+     "value": "0.907",
+     "ci95": "[0.885, 0.927]"
+    }
+   ],
+   "caveat": "Soybean test has only 19 independent bursts, so intervals are wide. Errors are mostly sound seeds called broken.",
+   "source": "results/r2_per_class.json"
+  },
+  {
+   "id": "r2_session",
+   "title": "Is hole detection real? Session control",
+   "headline": "On the only days with both holes and sound seeds, hole F1 is 0.975; a model that never saw a hole from those days still finds them (F1 0.962).",
+   "numbers": [
+    {
+     "label": "hole F1, same days and background",
+     "value": "0.975",
+     "ci95": "[0.921, 0.995]"
+    },
+    {
+     "label": "hole F1, trained on other sessions only",
+     "value": "0.962",
+     "ci95": "[0.913, 0.978]"
+    },
+    {
+     "label": "hole bursts evaluated",
+     "value": "7",
+     "ci95": null
+    }
+   ],
+   "caveat": "Features do encode the capture session. With 7 hole bursts this is indicative, not conclusive.",
+   "source": "results/r2_session_control.json"
+  },
+  {
+   "id": "dataset_id",
+   "title": "A model can tell which dataset a seed came from",
+   "headline": "A probe tells soybean d97rjyk2tz from Lin with 100 % accuracy on sound seeds, also from a texture-only central patch (100 %). Pooled class shares are uncalibrated on a new camera setup.",
+   "numbers": [
+    {
+     "label": "accuracy, sound seeds",
+     "value": "1.000",
+     "ci95": "[0.980, 1.000]"
+    },
+    {
+     "label": "accuracy, broken seeds",
+     "value": "1.000",
+     "ci95": "[0.990, 1.000]"
+    },
+    {
+     "label": "accuracy, central texture patch",
+     "value": "1.000",
+     "ci95": "[0.980, 1.000]"
+    },
+    {
+     "label": "Lin sound seeds flagged defective by the pooled model",
+     "value": "8.3 %",
+     "ci95": "[4.7, 14.2]"
+    },
+    {
+     "label": "soybean sound seeds flagged defective",
+     "value": "13.0 %",
+     "ci95": "[6.4, 24.4]"
+    }
+   ],
+   "caveat": "Per-class numbers are reported within each dataset; a pooled model is not evidence of defect recognition across setups.",
+   "source": "results/dataset_id.json"
+  },
+  {
+   "id": "r3",
+   "title": "Another setup's data does not replace local labels",
+   "headline": "On Lin, 10 local labels per class alone reach macro F1 0.89, against 0.68 for ~1,000 soybean images plus the same 10 labels.",
+   "numbers": [
+    {
+     "label": "soybean -> Lin, no target labels",
+     "value": "0.52",
+     "ci95": "[0.47, 0.56]"
+    },
+    {
+     "label": "soybean -> Lin, source + 10 per class",
+     "value": "0.68",
+     "ci95": null
+    },
+    {
+     "label": "Lin, 10 per class only",
+     "value": "0.89",
+     "ci95": null
+    },
+    {
+     "label": "Lin, all target labels (ceiling)",
+     "value": "0.98",
+     "ci95": "[0.96, 0.99]"
+    },
+    {
+     "label": "Lin -> soybean, no target labels",
+     "value": "0.37",
+     "ci95": null
+    }
+   ],
+   "caveat": "Mean over 10 random draws. Part of the drop is label shift: Lin 'broken' includes skin damage, soybean 'broken' is testa cracking. For a new crop or camera, budget for labelled target data.",
+   "source": "results/r3_transfer.json"
+  },
+  {
+   "id": "r4a",
+   "title": "Counting seeds on real farmer photos",
+   "headline": "On Ghana phone photos (sun and hard shadow), our training-free segmenter is off by 1.7 seeds on average (1.1 %) against the 7 complete published counts.",
+   "numbers": [
+    {
+     "label": "mean absolute error, seeds",
+     "value": "1.7",
+     "ci95": "[0.4, 3.1]"
+    },
+    {
+     "label": "mean absolute % error",
+     "value": "1.1 %",
+     "ci95": "[0.2, 2.3]"
+    },
+    {
+     "label": "% error vs semi-automatic estimate (105 photos, not ground truth)",
+     "value": "1.0 %",
+     "ci95": "[0.7, 1.3]"
+    }
+   ],
+   "caveat": "Only 7 photos have complete published counts, all FarmerSaved/Favor and mostly in sun. Failure modes: seeds cut by the photo border, dark table edges, single seeds counted as two.",
+   "source": "results/r4_ghana_counts.json"
+  },
+  {
+   "id": "r4b",
+   "title": "Lot-level % crushed: right for the wrong reasons",
+   "headline": "On 6 held-out harvest lots the % crushed is off by 1.5 points on average, but per-seed crushed F1 is only 0.478: errors cancel near 8 % prevalence.",
+   "numbers": [
+    {
+     "label": "lot % error, mean absolute (pp)",
+     "value": "1.5",
+     "ci95": "[0.5, 3.0]"
+    },
+    {
+     "label": "per-seed crushed F1",
+     "value": "0.478",
+     "ci95": "[0.311, 0.677]"
+    },
+    {
+     "label": "true % inside the raw Wilson interval (sampling error only)",
+     "value": "6/6 lots",
+     "ci95": null
+    },
+    {
+     "label": "lots at an illustrative 5 % threshold (raw Wilson)",
+     "value": "4 inconclusive, 2 fail",
+     "ci95": null
+    }
+   ],
+   "caveat": "Intervals are raw Wilson: they cover sampling error only, not classifier bias. Per-seed crushed F1 is only 0.48, so the accurate lot % comes from errors cancelling. Oracle segmentation (the dataset's own masks): this measures classification only. On a clean lot the same classifier would report a few % crushed. Show both sampling error and classifier bias, and say 'inconclusive' when the interval straddles the threshold.",
+   "source": "results/r4_harvest_lots.json"
+  },
+  {
+   "id": "robustness",
+   "title": "Robustness to image quality",
+   "headline": "Seed counts are stable (1 of 7 counts changed), but class shares move by 5.5 pp on average (up to 10.3 pp) when the same photo is downscaled and re-compressed.",
+   "numbers": [
+    {
+     "label": "count error vs published count, mean (seeds)",
+     "value": "1.7",
+     "ci95": null
+    },
+    {
+     "label": "defect share change after re-compression, mean (pp)",
+     "value": "5.5",
+     "ci95": null
+    },
+    {
+     "label": "defect share change, max (pp)",
+     "value": "10.3",
+     "ci95": null
+    },
+    {
+     "label": "photos",
+     "value": "7",
+     "ci95": null
+    }
+   ],
+   "caveat": "Class shares on Ghana photos are uncalibrated: this camera setup was never seen in training. Re-compression = downscale to 2000 px and save as JPEG quality 95.",
+   "source": "results/demo_smoke.json"
+  }
+ ],
+ "provenance_url": "https://github.com/fede-bello/soymate/blob/main/results/README.md"
+}
