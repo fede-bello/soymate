@@ -1,0 +1,145 @@
+{
+  "name": "r4_harvest_lots",
+  "how": "Oracle segmentation: seeds located with the hwdtghttp7 dataset masks (not human-verified), so only classification error is measured. Crushed vs intact, impurity excluded. FrozenLogReg (DINOv2-small frozen features of masked crops, balanced weights) trained on 28 train originals (augs 01/06/10); C in [0.01, 0.03, 0.1, 0.3, 1.0] and P(crushed) threshold in 0.05..0.95 picked on 6 val originals (aug 01) by crushed F1 (C=0.3, thr=0.79); val Se/Sp at that threshold feed Rogan-Gladen. 6 test originals (aug 01) scored once. Per lot: true % = crushed/(crushed+intact) over the classified crops; raw % = predicted crushed / seeds; Wilson 95 % on raw; corrected interval two ways: RG applied to the Wilson endpoints (sampling only, Se/Sp treated as known) and a parametric bootstrap redrawing the lot count and val Se/Sp binomially (2000 draws). MAE CI: bootstrap over lots. Per-seed F1 CI: grouped bootstrap over originals. Decision demo at an illustrative 5 % threshold; seeds needed = smallest n at which the RG-transformed Wilson interval at the same observed rate excludes the threshold. LOO-40 is a separate protocol.",
+  "created_utc": "2026-10-31T13:20:45+00:00",
+  "code_rev": "unknown (box copy is not a git checkout)",
+  "result": {
+    "oracle_segmentation": true,
+    "selection": {
+      "grid": [
+        {
+          "C": 0.01,
+          "best_thr": 0.87,
+          "val_f1_crushed": 0.6377,
+          "val_f1_at_0.5": 0.5957
+        },
+        {
+          "C": 0.03,
+          "best_thr": 0.87,
+          "val_f1_crushed": 0.6286,
+          "val_f1_at_0.5": 0.5495
+        },
+        {
+          "C": 0.1,
+          "best_thr": 0.81,
+          "val_f1_crushed": 0.64,
+          "val_f1_at_0.5": 0.5532
+        },
+        {
+          "C": 0.3,
+          "best_thr": 0.79,
+          "val_f1_crushed": 0.6494,
+          "val_f1_at_0.5": 0.5652
+        },
+        {
+          "C": 1.0,
+          "best_thr": 0.83,
+          "val_f1_crushed": 0.6316,
+          "val_f1_at_0.5": 0.5682
+        }
+      ],
+      "C": 0.3,
+      "threshold": 0.79,
+      "criterion": "max crushed F1 on val originals (aug 01)"
+    },
+    "val_rates": {
+      "sensitivity": 0.625,
+      "specificity": 0.9716,
+      "n_pos": 40,
+      "n_neg": 422,
+      "se_wilson": [
+        0.47032439137301096,
+        0.7577702083276673
+      ],
+      "sp_wilson": [
+        0.950960173028014,
+        0.983659957905698
+      ]
+    },
+    "test_rates_for_reference": {
+      "sensitivity": 0.4444,
+      "specificity": 0.9632
+    },
+    "test_lots": {
+      "n_lots": 6,
+      "n_seeds": 444,
+      "mae_raw_pp": {
+        "mean": 1.542,
+        "ci95": [
+          0.457,
+          2.988
+        ],
+        "n_lots": 6
+      },
+      "mae_rg_pp": {
+        "mean": 3.262,
+        "ci95": [
+          1.825,
+          4.814
+        ],
+        "n_lots": 6
+      },
+      "pooled_true_pct": 8.108,
+      "pooled_raw_pct": 6.982,
+      "pooled_rg_pct": 6.937,
+      "coverage_raw_wilson": 6,
+      "coverage_rg_boot": 6
+    },
+    "per_seed_f1_crushed_test6": {
+      "f1": 0.4776,
+      "ci95": [
+        0.3111,
+        0.6774
+      ],
+      "n_items": 444,
+      "n_groups": 6
+    },
+    "per_seed_f1_crushed_valtest12_secondary": {
+      "f1": 0.5694,
+      "ci95": [
+        0.4636,
+        0.6623
+      ],
+      "n_items": 906,
+      "n_groups": 12,
+      "note": "val originals were used to pick C and threshold, so this view is optimistic"
+    },
+    "decision_demo": {
+      "threshold_pct": 5.0,
+      "illustrative": true,
+      "counts_rg_wilson": {
+        "inconclusive": 5,
+        "fail": 1
+      },
+      "counts_rg_boot": {
+        "inconclusive": 6
+      },
+      "counts_raw_wilson": {
+        "inconclusive": 4,
+        "fail": 2
+      }
+    },
+    "loo40_different_protocol": {
+      "protocol": "train on aug-01 crops of the other 39 originals, C and threshold fixed from the main protocol (picked on the 6 val originals, slight leakage for those 6), RG with main val Se/Sp",
+      "mae_raw_pp": {
+        "mean": 2.362,
+        "ci95": [
+          1.85,
+          2.889
+        ],
+        "n_lots": 40
+      },
+      "mae_rg_pp": {
+        "mean": 3.102,
+        "ci95": [
+          2.342,
+          3.995
+        ],
+        "n_lots": 40
+      },
+      "max_abs_err_raw_pp": 6.579,
+      "mean_signed_err_raw_pp": -0.15,
+      "corr_true_vs_raw": 0.571
+    }
+  }
+}

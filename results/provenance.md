@@ -12,11 +12,11 @@ Tags: **measured** = computed at the event by a committed script in this repo (r
 | Macro F1, published split, full image (dinov2-small + logreg) | 0.885 [0.832, 0.932] | measured | R1, `results/r1_leaky_vs_clean.json` |
 | Macro F1, our burst split, masked crop | 0.852 [0.801, 0.900] | measured | R1 |
 | insect_hole F1 0.99-1.00 | not a valid hole result (session confound) | measured, flagged | R1, R2 session control |
-| Per-class F1 within each dataset, with grouped CIs | pending | measured | R2 |
-| Dataset-ID probe accuracy on sound seeds | pending | measured | `eval/dataset_id.py` |
-| Transfer soybean <-> Lin with 0/10/50 labels | pending | measured | R3 |
-| Seed-count error on real Ghana photos | pending | measured | R4 |
-| Lot-level % crushed error on held-out harvest originals | pending | measured, but masks' provenance unclear | R4, harvest masks |
+| Per-class F1 within each dataset, with grouped CIs | soybean broken 0.82, sound 0.82; Lin macro 0.91 | measured | R2 |
+| Dataset-ID probe accuracy on sound seeds | 100 %, also texture-only | measured | `eval/dataset_id.py` |
+| Transfer soybean <-> Lin with 0/10/50 labels | 10 target labels beat ~1,000 other-setup images | measured | R3 |
+| Seed-count error on real Ghana photos | MAPE 1.1 % on 7 complete photos | measured | R4a |
+| Lot-level % crushed error on held-out harvest originals | MAE 1.5 pp, but per-seed F1 0.48 (errors cancel) | measured, dataset masks as reference | R4b |
 | Lot-level % error on hand-labelled real photos (~450 seeds) | pending | measured (labels by a team member at the event) | `scripts/labels/` |
 | Wilson 95 % intervals on lot percentages | formula | measured | `eval/harness.py::wilson` |
 | Ghana published per-seed boxes miss seeds in shadow | e.g. 89 boxes vs ~257 seeds in Afayak G15; 7/105 photos complete | measured | `scripts/data/ghana_index.py`, QC overlays |

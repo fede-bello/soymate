@@ -111,3 +111,22 @@ Errors are ours minus reference, 95 % CIs from a bootstrap over photos.
 - Failure modes in the 5 worst photos: seeds cut by the photo border (reference skips them), a dark table edge
   counted as 11 seeds, single seeds counted as two. 0.014 s per photo on CPU.
 - The independent check is the hand count on the labelled photos (task 5, pending).
+
+### R4b: real lot-level % crushed (`eval/r4_harvest_lots.py`, `r4_harvest_lots.json`, `__lots.csv`, `__loo.csv`)
+
+Mechanical-harvest soybean hwdtghttp7, 6 held-out originals (444 seeds, true % crushed 3.8 to 12.3 %). Seeds
+are located with the **dataset's own instance masks** (oracle segmentation), so this measures classification
+error only. Crushed vs intact, dinov2-small + logistic regression trained on 28 originals; C and threshold
+chosen on 6 val originals (sensitivity 0.625 = 25/40, specificity 0.972).
+
+- Raw lot % error: MAE **1.5 pp** [0.5, 3.0]; the true % is inside the raw Wilson interval in 6/6 lots.
+  Leave-one-original-out over all 40 lots (different protocol): MAE 2.4 pp [1.9, 2.9], max 6.6 pp.
+- **But per-seed crushed F1 is only 0.48 [0.31, 0.68].** The lot % looks accurate because false positives
+  and misses cancel near 8 % prevalence; on a clean lot the same classifier would report about 3 % crushed.
+- Rogan-Gladen correction made it worse (MAE 3.3 pp): sensitivity rests on 40 val positives and fell to 0.44
+  on test.
+- Decision demo at an illustrative 5 % threshold: 5 of 6 lots are "inconclusive, add seeds" (48 to 3,600
+  seeds needed, vs ~75 per photo), 1 fail.
+
+Takeaway for the pitch: lot-level % from one photo carries both sampling error (Wilson) and classifier bias;
+show both, and say "inconclusive" when the interval straddles the threshold.
