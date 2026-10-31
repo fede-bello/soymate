@@ -121,6 +121,26 @@ species, separated whole grains, a uniform contrasting background, and clear
 image borders. Inspect the numbered silhouettes before trusting a count.
 Touching grains may merge. See [the implementation and evaluation notes](docs/grain_pipeline_mvp.md)
 for the annotation format, capture protocol, limitations, and observed smoke results.
+An [experimental FastSAM option](docs/fastsam_grain_experiment.md) also
+produces individual masks, crops and mapped hole candidates for review. To
+review a local photo, first install the baseline group and both local checkpoints
+as described in those notes, then run:
+
+```bash
+YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl \
+  .venv/bin/python scripts/experiments/analyze_fastsam_grains.py path/to/photo.jpg \
+  --output outputs/fastsam-demo/my-photo --compare-masked 0
+```
+
+Choose a fresh output directory for each photo and open its `review.html` in a
+browser. Uncheck false candidates to update the retained and visible-hole flag
+totals; download review decisions as a separate JSON backup. Browser storage is
+local to the report location and may be unavailable or cleared. Review flags,
+overlapping masks, missed grains and merged grains manually. Rejecting a mask
+does not rerun hole association or recover detections rejected for overlap.
+Visible-hole accuracy on natural multi-grain samples has not been measured.
+The pea example requires attribution, SoyCult image rights are unresolved, and
+FastSAM/Ultralytics licensing requires review before sharing; see the notes.
 
 Install the locked baseline group with `uv sync --locked --group baseline`.
 The checkpoint and datasets are ignored local files, so obtain them separately
