@@ -10,7 +10,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "experiments" / "grain_counting"))
 from grain_pipeline import (load_upright_image, make_crop, map_and_associate,
                             run_analysis, segment_grains, summarize_predictions)
 from evaluate_grain_samples import check_manifest, evaluate_manifest, evaluate_photo, summarize_group

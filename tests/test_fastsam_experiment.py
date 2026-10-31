@@ -10,7 +10,7 @@ import numpy as np
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT/'scripts/experiments'))
+sys.path.insert(0,str(ROOT/'experiments/fastsam'))
 import analyze_fastsam_grains as experiment
 
 

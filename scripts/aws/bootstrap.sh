@@ -5,7 +5,7 @@ set -euxo pipefail
 export PATH="$HOME/.local/bin:$PATH"
 export AWS_DEFAULT_REGION=us-east-1
 BUCKET="${BUCKET:-fb-soymate-team4-258601136235}"
-PROJ="$HOME/soymate"
+PROJ="${PROJ:-$HOME/soymate-next}"  # the demo unit (demo/deploy/soymate-api.service) runs from ~/soymate-next
 
 mkdir -p "$PROJ" "$PROJ/data"
 aws s3 sync "s3://$BUCKET/code/" "$PROJ/" --exclude "data/*" --only-show-errors

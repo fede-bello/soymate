@@ -2,17 +2,17 @@
 
 Every number here was computed at the event by a committed script. Each `<name>.json` holds the numbers, a
 `how` field (data, split, model, metric), the creation time and the code revision. CSV files next to it hold
-the tables. Re-run everything on the box from `~/soymate` (see `docs/aws_setup.md`).
+the tables. Re-run everything on the box from `~/soymate-next` (see `docs/aws_setup.md` and the top-level README).
 
 ## Pipeline
 
 | Step | Script | Output (on the box, git-ignored) |
 |---|---|---|
-| Download | `scripts/aws/download_datasets.py` | `data/raw/`, `data/raw/MANIFEST.json` |
-| Grouped splits | `scripts/data/make_splits.py` | `data/splits/{soybean,lin,harvest,ghana}.csv`, `SUMMARY.json` |
-| Masked seed crops | `scripts/data/make_crops.py` | `data/crops/<dataset>/*.png`, `data/crops/manifest.csv` |
-| Frozen features | `eval/features.py` | `data/features/<model>__crops.parquet` |
-| Harness | `eval/harness.py` | model interface, grouped bootstrap F1, Wilson intervals |
+| Download | `pipeline/download_datasets.py` | `data/raw/`, `data/raw/MANIFEST.json` |
+| Grouped splits | `pipeline/make_splits.py` | `data/splits/{soybean,lin,harvest,ghana}.csv`, `SUMMARY.json` |
+| Masked seed crops | `pipeline/make_crops.py` | `data/crops/<dataset>/*.png`, `data/crops/manifest.csv` |
+| Frozen features | `pipeline/features.py` | `data/features/<model>__crops.parquet` |
+| Harness | `experiments/harness.py` | model interface, grouped bootstrap F1, Wilson intervals |
 
 ## Splits (regenerated at the event)
 
@@ -31,7 +31,7 @@ the tables. Re-run everything on the box from `~/soymate` (see `docs/aws_setup.m
 
 ## Results
 
-### R1: leaky vs clean split (`eval/r1_leaky_vs_clean.py`, `r1_leaky_vs_clean.json`, `__arms.csv`)
+### R1: leaky vs clean split (`experiments/r1_leaky_vs_clean.py`, `r1_leaky_vs_clean.json`, `__arms.csv`)
 
 d97rjyk2tz, classes insect_hole / broken / sound, frozen dinov2-small + logistic regression, same 2,083
 images in every arm, trained on train only, tested on one image per original photo, 95 % CIs from 2,000
@@ -50,7 +50,7 @@ no other class was photographed (380 on black background, zoomed out so the crop
 share days and background with sound seeds (13-14/08, light). See R2 session control.
 
 
-### R2: per-class F1 and session control (`eval/r2_per_class.py`, `r2_per_class.json`, `r2_session_control.json`)
+### R2: per-class F1 and session control (`experiments/r2_per_class.py`, `r2_per_class.json`, `r2_session_control.json`)
 
 dinov2-small + logistic regression, C chosen on val, burst-level split, test = one crop per photo, multi-seed
 crops excluded, 95 % CIs from a bootstrap over bursts.
@@ -68,7 +68,7 @@ the session (capture-date probe AUC 0.99 for sound 13 vs 14/08, 0.85 for holes 9
 detector that never saw a 13-14/08 hole still finds them, so it is not only reading the session. With 7 hole
 bursts this is indicative, not conclusive.
 
-### Dataset-ID check (`eval/dataset_id.py`, `dataset_id.json`)
+### Dataset-ID check (`experiments/dataset_id.py`, `dataset_id.json`)
 
 A probe on frozen features tells soybean d97rjyk2tz from Lin with **100 % accuracy** (AUC 1.00; sound seeds
 187 test crops, Wilson 95 % [0.98, 1.00]), also on broken seeds, and also from a **texture-only central 50 %
@@ -77,8 +77,10 @@ seed surface alone (camera, magnification, lighting). Consequences: per-class nu
 each dataset**; a pooled 5-class model is not evidence of defect recognition across setups, and is
 uncalibrated on third-party photos. The pooled model flags 8.3 % [4.7, 14.2] of Lin sound seeds and 13.0 %
 [6.4, 24.4] of soybean sound seeds as defective (never as the other dataset's classes).
+These pooled-model figures were computed before the harvest crops were added to the manifest; the per-dataset
+numbers above are unaffected (re-running today reproduces them).
 
-### R3: transfer between soybean datasets (`eval/r3_transfer.py`, `r3_transfer.json`, `__curve.csv`, `r3_transfer.png`)
+### R3: transfer between soybean datasets (`experiments/r3_transfer.py`, `r3_transfer.json`, `__curve.csv`, `r3_transfer.png`)
 
 Shared classes sound vs broken, dinov2-small + logistic regression, k labelled target seeds per class (one per
 photo), 10 random draws per k (mean shown), CIs from a bootstrap over target groups. Soybean "broken" is testa
@@ -96,10 +98,10 @@ alone beat ~1,000 pooled soybean images (0.89 vs 0.68); on soybean, adding Lin g
 CIs (soybean test: 11 bursts). Part of the zero-shot drop is label shift (definition (b) is closer to testa
 cracking and scores higher). For a new crop or capture setup, budget for labelled target data.
 
-### R4a: seed counts on real multi-seed photos (`eval/r4_ghana_counts.py`, `r4_ghana_counts.json`, `__photos.csv`)
+### R4a: seed counts on real multi-seed photos (`experiments/r4_ghana_counts.py`, `r4_ghana_counts.json`, `__photos.csv`)
 
 Ghana t94nzy4ptz, 105 phone photos (~150 soybean seeds each, blue paper, sun and hard shadow), our
-training-free segmenter (`scripts/data/segment_multi.py`: Lab b* Otsu, count = round(area / median seed area)).
+training-free segmenter (`pipeline/segment_multi.py`: Lab b* Otsu, count = round(area / median seed area)).
 Errors are ours minus reference, 95 % CIs from a bootstrap over photos.
 
 - **vs the only complete published counts (7 photos, all FarmerSaved/Favor, mostly in sun):** MAE 1.7 seeds
@@ -112,7 +114,7 @@ Errors are ours minus reference, 95 % CIs from a bootstrap over photos.
   counted as 11 seeds, single seeds counted as two. 0.014 s per photo on CPU.
 - The independent check is the hand count on the labelled photos (task 5, pending).
 
-### R4b: real lot-level % crushed (`eval/r4_harvest_lots.py`, `r4_harvest_lots.json`, `__lots.csv`, `__loo.csv`)
+### R4b: real lot-level % crushed (`experiments/r4_harvest_lots.py`, `r4_harvest_lots.json`, `__lots.csv`, `__loo.csv`)
 
 Mechanical-harvest soybean hwdtghttp7, 6 held-out originals (444 seeds, true % crushed 3.8 to 12.3 %). Seeds
 are located with the **dataset's own instance masks** (oracle segmentation), so this measures classification
