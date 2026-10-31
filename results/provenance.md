@@ -11,7 +11,7 @@ Tags: **measured** = computed at the event by a committed script in this repo (r
 | Published d97rjyk2tz test images sharing an original photo with published train | 229/274 (83.6 %); 97.1 % share a 30 s capture burst | measured | `scripts/data/make_splits.py`, `data/splits/SUMMARY.json` |
 | Macro F1, published split, full image (dinov2-small + logreg) | 0.885 [0.832, 0.932] | measured | R1, `results/r1_leaky_vs_clean.json` |
 | Macro F1, our burst split, masked crop | 0.852 [0.801, 0.900] | measured | R1 |
-| insect_hole F1 0.99-1.00 | not a valid hole result (session confound) | measured, flagged | R1, R2 session control |
+| insect_hole vs sound, same days and background (13-14/08, light) | F1 0.975 [0.92, 0.99]; 0.96 when trained only on other sessions (7 hole bursts: indicative) | measured | R2 session control (the 1.00 on the fixed test is not quotable) |
 | Per-class F1 within each dataset, with grouped CIs | soybean broken 0.82, sound 0.82; Lin macro 0.91 | measured | R2 |
 | Dataset-ID probe accuracy on sound seeds | 100 %, also texture-only | measured | `eval/dataset_id.py` |
 | Transfer soybean <-> Lin with 0/10/50 labels | 10 target labels beat ~1,000 other-setup images | measured | R3 |
