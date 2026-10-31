@@ -55,7 +55,7 @@ Everything lives under `/home/ec2-user/`:
 ```
 ~/soymate/                  copy of this repo (synced from S3 at setup time, NOT a git clone)
   pyproject.toml            dependency list, resolved into ~/soymate/.venv by uv
-  .venv/                    Python 3.12 environment (use `uv run ...`, or `source .venv/bin/activate`)
+  .venv/                    Python environment (use `uv run ...`, or `source .venv/bin/activate`)
   scripts/aws/              bootstrap.sh, download_datasets.py, connect.sh, user_data.sh
   data/raw/                 downloaded datasets (git-ignored), plus MANIFEST.json
 ~/logs/                     bootstrap.log, download.log
@@ -63,7 +63,7 @@ Everything lives under `/home/ec2-user/`:
 ~/.cache/huggingface/       cached DINOv2 weights (facebook/dinov2-small and dinov2-base)
 ```
 
-Installed (see `pyproject.toml`): numpy, pandas, pyarrow, scipy, scikit-learn, statsmodels, opencv (headless), scikit-image, pillow, **torch and torchvision (CPU build)**, transformers, huggingface_hub, matplotlib, plotly, streamlit, jupyterlab, boto3, requests. System tools: git, tmux, htop, unzip, rsync, gcc. Optional extra not installed: `uv sync --extra seg` adds cellpose for touching-grain separation.
+The setup originally used Python 3.12 and headless OpenCV. The merged project now targets Python 3.14 and uses `opencv-python`; rerun the bootstrap to update the environment. Dependencies (see `pyproject.toml`) include numpy, pandas, pyarrow, scipy, scikit-learn, statsmodels, scikit-image, pillow, **torch and torchvision (CPU build on Linux)**, transformers, huggingface_hub, matplotlib, plotly, streamlit, jupyterlab, boto3, requests. System tools: git, tmux, htop, unzip, rsync, gcc. Optional extra not installed: `uv sync --extra seg` adds cellpose for touching-grain separation.
 
 The box is a copy, not a git checkout. To push code to GitHub from the box, `git init`/clone there and use a fine-grained token limited to the team repo (never store it in a file in the repo). The simplest flow is to edit on your laptop, then re-sync:
 

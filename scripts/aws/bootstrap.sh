@@ -11,8 +11,8 @@ mkdir -p "$PROJ" "$PROJ/data"
 aws s3 sync "s3://$BUCKET/code/" "$PROJ/" --exclude "data/*" --only-show-errors
 
 cd "$PROJ"
-uv python install 3.12
-uv sync                       # creates $PROJ/.venv from pyproject.toml
+uv python install 3.14
+uv sync --locked              # creates $PROJ/.venv from pyproject.toml
 
 # Cache DINOv2 weights (small, base) so first use does not stall on a download.
 uv run python - <<'PY'
