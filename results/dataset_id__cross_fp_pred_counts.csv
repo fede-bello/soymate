@@ -1,0 +1,7 @@
+dataset,pred,n,features
+lin_v6vzvfszj6,sound,122,dinov2-small
+lin_v6vzvfszj6,immature,6,dinov2-small
+lin_v6vzvfszj6,broken,4,dinov2-small
+lin_v6vzvfszj6,stained,1,dinov2-small
+soybean_d97rjyk2tz,sound,47,dinov2-small
+soybean_d97rjyk2tz,broken,7,dinov2-small

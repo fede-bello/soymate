@@ -49,3 +49,31 @@ every arm, including F: not credible as hole detection yet.** 452 of the hole cr
 no other class was photographed (380 on black background, zoomed out so the crop is upsampled); only ~297 holes
 share days and background with sound seeds (13-14/08, light). See R2 session control.
 
+
+### R2: per-class F1 and session control (`eval/r2_per_class.py`, `r2_per_class.json`, `r2_session_control.json`)
+
+dinov2-small + logistic regression, C chosen on val, burst-level split, test = one crop per photo, multi-seed
+crops excluded, 95 % CIs from a bootstrap over bursts.
+
+| Scope | Per-class F1 [95 % CI] | Macro |
+|---|---|---|
+| Soybean (132 crops, 19 bursts) | insect_hole 1.00 [1.00, 1.00], broken 0.82 [0.77, 0.88], sound 0.82 [0.73, 0.93] | 0.88 [0.85, 0.93] |
+| Lin | broken 0.93, immature 0.91, sound 0.91, stained 0.88 | 0.91 [0.88, 0.93] |
+
+Soybean errors are mostly sound called broken (14 of 54). **Session control** (grouped 5-fold CV over bursts,
+because the fixed test has a single same-day hole burst): holes vs sound on the only days with both classes
+(13-14/08, light background; 297 hole crops in 7 bursts, 895 sound in 43) give hole F1 0.975 [0.92, 0.99];
+trained only on holes from 9-11/08 and tested on holes from 13-14/08, 0.96 [0.91, 0.98]. Features do encode
+the session (capture-date probe AUC 0.99 for sound 13 vs 14/08, 0.85 for holes 9-11 vs 13-14), but a hole
+detector that never saw a 13-14/08 hole still finds them, so it is not only reading the session. With 7 hole
+bursts this is indicative, not conclusive.
+
+### Dataset-ID check (`eval/dataset_id.py`, `dataset_id.json`)
+
+A probe on frozen features tells soybean d97rjyk2tz from Lin with **100 % accuracy** (AUC 1.00; sound seeds
+187 test crops, Wilson 95 % [0.98, 1.00]), also on broken seeds, and also from a **texture-only central 50 %
+patch** of sound seeds (98-100 % seed pixels, so no outline or background). The datasets are separable from the
+seed surface alone (camera, magnification, lighting). Consequences: per-class numbers are reported **within
+each dataset**; a pooled 5-class model is not evidence of defect recognition across setups, and is
+uncalibrated on third-party photos. The pooled model flags 8.3 % [4.7, 14.2] of Lin sound seeds and 13.0 %
+[6.4, 24.4] of soybean sound seeds as defective (never as the other dataset's classes).
