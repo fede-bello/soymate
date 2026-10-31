@@ -71,3 +71,27 @@ Install [uv](https://docs.astral.sh/uv/), then run `uv sync --locked` from the r
 ## Team
 
 Three people, Hack the Fork Paris 2026. Repository is private.
+
+### Soybean hole-only baseline
+
+Install the optional training dependencies with `uv sync --locked --group baseline`. Prepare the data with `uv run --group baseline python scripts/prepare_soybean_holes.py`. The script refuses to overwrite an existing `data/processed/soybean_hole/`; move an old output aside to rebuild. It validates the manifest, source image mapping and retained labels before writing. It retains every training variant and selects the lexicographically smallest retained v2 filename per original group for validation and test: v2 metadata does not identify an unaugmented original. Empty Hole labels are **candidate negatives**, not verified hole-free images. The output includes `selected_images.csv`, `counts.yaml`, `data.yaml` (with a machine-specific absolute path), and `prepared_examples.png`. Regenerate it after moving the repository. The raw dataset is unchanged; image filenames still reflect their published folders, not their new grouped split.
+
+The following commands were run from the repository root with Ultralytics 8.4.194 and PyTorch 2.15.0 on Apple M5 Pro MPS. The seed does not guarantee bitwise reproducibility: PyTorch warned that some MPS operations are nondeterministic. For a machine without MPS, use `device=cpu`. Get the pretrained weights with:
+
+```bash
+mkdir -p data/weights
+curl -fL -o data/weights/yolo11n.pt https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt
+```
+
+The downloaded file's SHA-256 was `0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1`. Training commands (the smoke test uses only 5% of training images; both validate only on the grouped validation split):
+
+```bash
+mkdir -p runs/soybean_hole
+set -o pipefail
+YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl .venv/bin/yolo detect train model=data/weights/yolo11n.pt data=data/processed/soybean_hole/data.yaml epochs=1 fraction=0.05 imgsz=640 batch=8 device=mps workers=0 seed=42 project=runs/soybean_hole name=smoke exist_ok=False plots=True 2>&1 | tee runs/soybean_hole/smoke.log
+YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl .venv/bin/yolo detect train model=data/weights/yolo11n.pt data=data/processed/soybean_hole/data.yaml epochs=8 imgsz=640 batch=8 device=mps workers=0 seed=42 project="$PWD/runs/soybean_hole" name=baseline exist_ok=False plots=True 2>&1 | tee runs/soybean_hole/baseline.log
+```
+
+The smoke run's relative `project` path was resolved by Ultralytics under `runs/detect/runs/soybean_hole/smoke/`; the baseline is in `runs/soybean_hole/baseline/`. Each run saves `args.yaml`, `results.csv`, weights and validation plots, while the console logs are in `runs/soybean_hole/`. Data, weights and runs are Git-ignored. Do not interpret the validation metrics as test or French-pulse performance: missing and ambiguous boxes and background/date shortcuts remain concerns. The held-out grouped test set is not used by these commands.
+
+The eight-epoch run took 289 seconds through its final epoch. On the 175 grouped validation images (124 annotated holes), the best checkpoint's reported precision was 0.823, recall 0.563, mAP@0.50 0.640 and mAP@0.50:0.95 0.427. These are validation results against the existing labels, not verified ground truth. For example, `val_batch0_labels.jpg` and `val_batch0_pred.jpg` show a missed annotated hole in `train_0832.jpg` (a published filename now assigned to validation). The earlier audit also reported missing Hole boxes and ambiguous labels, so apparent false positives and negatives need human review. Background and date correlations may inflate apparent performance. The smoke run only checked that the pipeline works and is not the baseline result.
