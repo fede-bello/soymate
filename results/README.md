@@ -60,7 +60,9 @@ crops excluded, 95 % CIs from a bootstrap over bursts.
 | Soybean (132 crops, 19 bursts) | insect_hole 1.00 [1.00, 1.00], broken 0.82 [0.77, 0.88], sound 0.82 [0.73, 0.93] | 0.88 [0.85, 0.93] |
 | Lin | broken 0.93, immature 0.91, sound 0.91, stained 0.88 | 0.91 [0.88, 0.93] |
 
-Soybean errors are mostly sound called broken (14 of 54). **Session control** (grouped 5-fold CV over bursts,
+Soybean errors are mostly sound called broken (14 of 54). **The fixed test has only 19 bursts and is optimistic:**
+grouped 5-fold CV over all 131 bursts (same features and model, `experiments/mask_quality/evaluate.py`) gives
+broken 0.67 [0.60, 0.74], sound 0.82 [0.79, 0.85], insect_hole 0.99, macro 0.83 [0.80, 0.85]. Quote the CV numbers. **Session control** (grouped 5-fold CV over bursts,
 because the fixed test has a single same-day hole burst): holes vs sound on the only days with both classes
 (13-14/08, light background; 297 hole crops in 7 bursts, 895 sound in 43) give hole F1 0.975 [0.92, 0.99];
 trained only on holes from 9-11/08 and tested on holes from 13-14/08, 0.96 [0.91, 0.98]. Features do encode
@@ -132,3 +134,20 @@ chosen on 6 val originals (sensitivity 0.625 = 25/40, specificity 0.972).
 
 Takeaway for the pitch: lot-level % from one photo carries both sampling error (Wilson) and classifier bias;
 show both, and say "inconclusive" when the interval straddles the threshold.
+
+### Mask quality vs classification (`experiments/mask_quality/`, `mask_quality.json`, `__paired.csv`)
+
+Does a better seed mask help, especially for broken? Soybean d97rjyk2tz, same split and model as R2; four crop
+arms: current chroma mask, FastSAM-s mask, FastSAM mask dilated 4 %, and no mask (real background). FastSAM
+outlines differ from the chroma mask on 38.8 % of images (IoU < 0.9) and look better in about 2/3 of
+disagreements by eye (the chroma mask cuts bright seed areas and the hilum, and takes in soft shadows).
+
+| Arm vs current | Broken F1 change, 5-fold CV over 131 bursts [95 % CI] | Macro F1 change, CV | McNemar p |
+|---|---|---|---|
+| FastSAM | +0.02 [-0.01, +0.04] | +0.01 [-0.01, +0.02] | 0.36 |
+| FastSAM dilated | +0.01 [-0.03, +0.04] | +0.01 [-0.02, +0.02] | 0.60 |
+| No mask | -0.00 [-0.04, +0.04] | +0.00 [-0.02, +0.03] | 0.75 |
+
+Paired bootstrap over bursts; the fixed 19-burst split agrees (all CIs include 0). **No measurable gain:** the broken
+errors come from the classifier and the labels (testa cracking is the noisiest class), not from seed borders. The
+demo keeps the chroma mask (no AGPL dependency added).
