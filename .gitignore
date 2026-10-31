@@ -7,6 +7,7 @@ __pycache__/
 
 # Generated model artifacts and experiment outputs
 *.pt
+!models/checkpoints/soybean-hole-yolo11n-2026-10-31/*/*.pt
 *.pth
 *.onnx
 runs/
