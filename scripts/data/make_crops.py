@@ -11,7 +11,8 @@ dataset-ID probe has to work from the seed itself.
 
 Seed masks: chroma distance (Lab a*, b*) from the median border colour, Otsu threshold, morphological
 clean-up, holes filled (same idea as segment_grains in JP's scripts/grain_pipeline.py on jp/soybean-baseline).
-Harvest seeds come from the dataset's own masks; Ghana seeds from its per-seed boxes.
+Harvest seeds come from the dataset's own masks (crushed -> broken, intact -> sound, impurity kept as is;
+train uses augmentations 01, 06, 10 of each original, val/test only the original 01).
 
 Class mapping (CONTEXT.md 0 and 7): sound, broken (broken / seed-coat damage), stained, immature,
 insect_hole. d97rjyk2tz: Hole -> insect_hole; else Testa cracking -> broken; Healthy -> sound only when the
@@ -188,7 +189,56 @@ def lin() -> pd.DataFrame:
         "seg_note": m["seg_note"]})
 
 
-STEPS = {"soybean": soybean, "lin": lin}
+HARVEST_VOC = RAW / "harvest_soybean" / "Mechanical-harvest Soybean Images Dataset" / "VOC2007"
+HARVEST_PALETTE = np.array([[0, 0, 0], [128, 0, 0], [0, 128, 0], [128, 128, 0]])
+HARVEST_CLASS_ID = {"crushed": 1, "intact": 2, "impurity": 3}
+HARVEST_MAP = {"crushed": "broken", "intact": "sound", "impurity": "impurity"}
+HARVEST_TRAIN_AUGS = {1, 6, 10}  # original, one rotation, one flip; val/test use the original (01) only
+
+
+def harvest_one(args: tuple[str, list[dict]]) -> list[dict]:
+    """All seed instances of one harvest image, masked with the dataset's own (snapped) class mask."""
+    image, rows = args
+    rgb = np.asarray(Image.open(HARVEST_VOC / image).convert("RGB"))
+    m = np.asarray(Image.open(HARVEST_VOC / "SegmentationClass" / (Path(image).stem + ".png")).convert("RGB")).astype(np.int32)
+    lab = ((m[..., None, :] - HARVEST_PALETTE[None, None]) ** 2).sum(-1).argmin(-1).astype(np.uint8)
+    out = []
+    for i, r in enumerate(rows):
+        x0, y0, x1, y1 = int(r["x0"]), int(r["y0"]), int(r["x1"]), int(r["y1"])
+        sub = (lab[y0:y1, x0:x1] == HARVEST_CLASS_ID[r["class"]]).astype(np.uint8)
+        n, cc = cv2.connectedComponents(sub, connectivity=4)
+        cy, cx = min(int(r["cy"]) - y0, sub.shape[0] - 1), min(int(r["cx"]) - x0, sub.shape[1] - 1)
+        k = cc[cy, cx] or (np.bincount(cc.ravel())[1:].argmax() + 1 if n > 1 else 0)
+        mask = np.zeros(lab.shape, np.uint8)
+        mask[y0:y1, x0:x1] = (cc == k) * 255
+        if not mask.any():
+            continue
+        name = f"harvest/{Path(image).stem}_{i:03d}.png"
+        save(masked_crop(rgb, mask), OUT / name)
+        out.append({"crop": name, "source_image": image, "row": i, "mask_frac": round(float((mask > 0).mean()), 5),
+                    "seg_note": "touches border" if touches_border(mask) else ""})
+    return out
+
+
+def harvest() -> pd.DataFrame:
+    seeds = pd.read_csv(SPLITS / "harvest_seeds.csv", dtype={"group": str})
+    imgs = pd.read_csv(SPLITS / "harvest_images.csv", dtype={"group": str})
+    keep = imgs[(imgs["aug"] == 1) | ((imgs["split"] == "train") & imgs["aug"].isin(HARVEST_TRAIN_AUGS))]
+    seeds = seeds[seeds["image"].isin(keep["image"])].reset_index(drop=True)
+    seeds["row"] = seeds.groupby("image").cumcount()
+    jobs = [(img, g.to_dict("records")) for img, g in seeds.groupby("image")]
+    with ProcessPoolExecutor(14) as ex:
+        res = pd.DataFrame([r for part in ex.map(harvest_one, jobs) for r in part])
+    m = seeds.merge(res.rename(columns={"source_image": "image"}), on=["image", "row"])
+    aug = m["image"].map(imgs.set_index("image")["aug"])
+    return pd.DataFrame({
+        "crop": m["crop"], "dataset": "harvest_hwdtghttp7", "source_image": m["image"], "group": m["group"],
+        "photo": m["image"], "split": m["split"], "class": m["class"].map(HARVEST_MAP), "source_label": m["class"],
+        "eval_rep": aug == 1, "aug": aug, "n_components": 1, "mask_frac": m["mask_frac"], "seg_note": m["seg_note"],
+        "multi_seed": False, "merged_suspect": m["merged_suspect"]})
+
+
+STEPS = {"soybean": soybean, "lin": lin, "harvest": harvest}
 
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
