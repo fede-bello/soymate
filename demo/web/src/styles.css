@@ -568,10 +568,10 @@ nav a:focus-visible {
 }
 .segmented {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   background: var(--cream);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 22px;
   padding: 4px;
   gap: 4px;
 }
@@ -723,6 +723,13 @@ select {
 .badge-batch {
   background: var(--deep);
   color: var(--cream);
+}
+.badge-bulk {
+  background: #8a5a00;
+  color: var(--cream);
+}
+.bulk-banner {
+  margin: 0 0 12px;
 }
 .badge-single {
   background: var(--light);

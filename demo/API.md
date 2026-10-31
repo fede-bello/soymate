@@ -10,7 +10,14 @@ orientation is applied. All percentages are 0-100.
 ## `POST /api/analyze` (multipart/form-data)
 Fields:
 - `file`: JPEG/PNG, up to 15 MB.
-- `mode`: `auto` (default) | `single` | `batch`. `auto` picks `single` when one dominant seed is found.
+- `mode`: `auto` (default) | `single` | `batch` | `bulk`. `auto` picks `single` when one dominant seed is found,
+  otherwise `batch`; it never picks `bulk`.
+- `bulk` (experimental): seeds packed edge to edge. Seeds are found with FastSAM-s plus the post-processing of
+  `experiments/bulk_segmentation/` (settings from `results/bulk_segmentation.json`), then classified and graded as
+  in batch. `model.warnings` starts with "Experimental bulk mode: count error about 5 % and per-seed match F1 0.94
+  on held-out packed photos; only the top layer is visible" (numbers read from the results file). When FastSAM
+  returns its 300-mask cap, it is re-run with a cap of 1000 and a warning says so (and another if 1000 is hit).
+  503 when the server lacks ultralytics or the weights.
 - `threshold_pct`: float, default `5`. Illustrative decision threshold on the defect share.
 - `defect`: `any` (default; every class except `sound`) or one class name.
 
@@ -43,16 +50,20 @@ Response 200:
   "timing_ms": {"segment": 40, "classify": 3100, "total": 3200}
 }
 ```
+- `mode` in the response is `single`, `batch` or `bulk`.
 - `seeds[].n_est` > 1 means a blob counted as several touching seeds (classified once, counted n_est times).
 - `seeds_needed`: total seeds needed for the Wilson interval at the observed share to exclude the threshold
   (null when already decided or when the share equals the threshold).
 - Errors: 400 `{"detail": "..."}` (no seed found, bad file), 413 too large.
 
 ## `GET /api/examples`
-`[{"id": "ghana_g17", "label": "Ghana farmer-saved lot (164 seeds)", "kind": "batch|single",
+`[{"id": "ghana_g17", "label": "Ghana farmer-saved lot (164 seeds)", "kind": "batch|single|bulk",
    "dataset": "Ghana t94nzy4ptz (CC BY 4.0)", "url": "/api/examples/files/ghana_g17.jpg",
    "note": "Held-out photo; hand count available", "ground_truth": {"n_seeds": 164} }]`
-Only test-split or evaluation-only images, never training images.
+Only test-split or evaluation-only images, never training images, except the `lin_bulk` bulk photo (its note says it
+is not held-out). `bulk` examples: `ground_truth` is `{"n_seeds", "n_crushed", "n_impurity", "pct_crushed"}` from
+the dataset's masks (n_seeds = crushed + intact; impurities are separate), or null. The web app switches to bulk
+mode when a `bulk` example is picked.
 Optional `thumb_url` (about 480 px JPEG, from `demo/api/make_thumbs.py`) is added when the thumbnail exists; the
 gallery shows it, analysis always uses `url`.
 

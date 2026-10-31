@@ -45,6 +45,7 @@ export default function Analyze() {
   const stageRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef({ mode, threshold, defect });
   settingsRef.current = { mode, threshold, defect };
+  const skipRerun = useRef(false); // set when picking an example switches the mode itself
 
   const run = useCallback(async (src: Source, rerun: boolean) => {
     abortRef.current?.abort();
@@ -96,6 +97,14 @@ export default function Analyze() {
       try {
         const api = await getApi();
         const file = await api.fetchExampleFile(ex);
+        // Bulk examples only make sense in bulk mode; other examples leave bulk mode for auto.
+        const want: Mode | null =
+          ex.kind === "bulk" ? "bulk" : settingsRef.current.mode === "bulk" ? "auto" : null;
+        if (want && want !== settingsRef.current.mode) {
+          settingsRef.current = { ...settingsRef.current, mode: want };
+          skipRerun.current = true;
+          setMode(want);
+        }
         startWith(file, ex);
       } catch (e) {
         setPhase({
@@ -115,6 +124,10 @@ export default function Analyze() {
   useEffect(() => {
     if (firstRun.current) {
       firstRun.current = false;
+      return;
+    }
+    if (skipRerun.current) {
+      skipRerun.current = false;
       return;
     }
     if (!source) return;
@@ -173,6 +186,15 @@ export default function Analyze() {
 
           {result && resultUrl && (phase.kind === "done" || rerunning) && (
             <>
+              {result.mode === "bulk" && (
+                <div className="notice notice-warn bulk-banner" role="note">
+                  <span>
+                    <strong>Experimental bulk mode.</strong>{" "}
+                    {result.model.warnings?.find((w) => w.startsWith("Experimental bulk mode"))?.replace(/^Experimental bulk mode:\s*/, "") ??
+                      "Packed seeds found with FastSAM; treat counts and shares as indicative."}
+                  </span>
+                </div>
+              )}
               {result.mode === "single" ? (
                 <SingleBean result={result} imageUrl={resultUrl} />
               ) : (

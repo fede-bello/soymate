@@ -133,6 +133,13 @@ export default function About() {
           Image features: DINOv2 (Meta AI, Apache 2.0), frozen, with a simple classifier on top. Built at Hack the Fork
           Paris 2026, Track 3.
         </p>
+        <p className="muted small">
+          Experimental bulk mode: seeds are found with FastSAM-s (CASIA-IVA-Lab) through{" "}
+          <a href="https://github.com/ultralytics/ultralytics" target="_blank" rel="noreferrer">
+            Ultralytics
+          </a>
+          , licensed AGPL-3.0 (its network clause applies to a service that uses it).
+        </p>
       </section>
     </div>
   );

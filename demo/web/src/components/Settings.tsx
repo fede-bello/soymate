@@ -16,6 +16,7 @@ const MODES: { id: Mode; label: string; hint: string }[] = [
   { id: "auto", label: "Auto", hint: "picks single bean when one seed fills the photo" },
   { id: "single", label: "Single bean", hint: "one seed, close up" },
   { id: "batch", label: "Batch", hint: "a sample with many seeds" },
+  { id: "bulk", label: "Bulk (experimental)", hint: "seeds packed edge to edge, as on a harvester camera; about 5 % count error" },
 ];
 
 export default function Settings(p: Props) {

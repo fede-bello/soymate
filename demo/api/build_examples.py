@@ -1,7 +1,8 @@
 """Copy the demo example images into demo/api/examples/ and write examples.json.
 
 Run on the box:  cd ~/soymate-next && uv run python demo/api/build_examples.py
-Only evaluation-only (Ghana) or test-split images (d97rjyk2tz, Lin), picked by rule, never by prediction.
+Only evaluation-only (Ghana) or test-split images (d97rjyk2tz, Lin, harvest hwdtghttp7), picked by rule, never by
+prediction.
 Originals are copied byte for byte, never re-encoded (files over BIG_MB are kept and get a size note).
 """
 import json
@@ -16,10 +17,14 @@ RAW = ROOT / "data" / "raw"
 SOY_V2 = RAW / "soybean_v2" / "Soybean_Seed_Dataset" / "Soybean_Seed_Dataset"
 LIN = RAW / "soybean_seeds_5classes"
 GHANA = RAW / "ghana_soybean"
+HARVEST = RAW / "harvest_soybean" / "Mechanical-harvest Soybean Images Dataset" / "VOC2007"
+N_BULK = 2
+LIN_BULK = "Image_20220425150627909.jpg"
 BIG_MB = 6
 CREDIT = {"ghana": "Ghana soybean seeds t94nzy4ptz, Mendeley Data (CC BY 4.0)",
           "soy": "Soybean seed defects d97rjyk2tz v2, Mendeley Data (CC BY 4.0)",
-          "lin": "Soybean seeds 5 classes (Lin) v6vzvfszj6, Mendeley Data (CC BY 4.0)"}
+          "lin": "Soybean seeds 5 classes (Lin) v6vzvfszj6, Mendeley Data (CC BY 4.0)",
+          "harvest": "Mechanical-harvest soybean images hwdtghttp7, Mendeley Data (CC BY 4.0)"}
 
 
 def save(src: Path, name: str) -> tuple[str, float]:
@@ -81,10 +86,36 @@ def singles() -> list[dict]:
     return out
 
 
+def bulk() -> list[dict]:
+    """Packed harvester-camera photos for the experimental bulk mode: the first N_BULK test-split originals (aug 01)
+    by image name. Ground truth from the dataset's per-pixel masks (data/splits/harvest_images.csv)."""
+    im = pd.read_csv(ROOT / "data" / "splits" / "harvest_images.csv", dtype={"group": str})
+    im = im[(im["split"] == "test") & im["is_original"]].sort_values("image").head(N_BULK)
+    out = []
+    for k, r in enumerate(im.itertuples(), 1):
+        eid = f"harvest_bulk_{k}"
+        n_seeds = int(r.n_crushed + r.n_intact)
+        out.append({"id": eid, "label": f"Harvester camera, packed lot {k}", "kind": "bulk",
+                    "dataset": CREDIT["harvest"], "url": save(HARVEST / r.image, eid)[0],
+                    "note": "Held-out test photo (bulk mode is experimental); seed counts from the dataset's masks.",
+                    "ground_truth": {"n_seeds": n_seeds, "n_crushed": int(r.n_crushed),
+                                     "n_impurity": int(r.n_impurity), "pct_crushed": float(r.pct_crushed_count)},
+                    "source": r.image})
+    # A whole-frame Lin bulk photo (~370 seeds touching). Lin's single-seed crops may come from these photos, so it
+    # is not held-out; no reference count. Image_20220426214755980 and 20220430064718171 were used in labelling.
+    src = LIN / "Part of the original soybean images" / LIN_BULK
+    out.append({"id": "lin_bulk", "label": "Packed soybean lot, hundreds of seeds (Lin bulk photo)", "kind": "bulk",
+                "dataset": CREDIT["lin"], "url": save(src, "lin_bulk")[0],
+                "note": "Original 3072x2048 bulk photo; not held-out (Lin seed crops may come from these photos), no "
+                        "reference count.",
+                "ground_truth": None, "source": f"Part of the original soybean images/{LIN_BULK}"})
+    return out
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     for f in OUT.glob("*"):
         f.unlink()
-    ex = ghana() + singles()
+    ex = ghana() + singles() + bulk()
     (OUT / "examples.json").write_text(json.dumps(ex, indent=1, default=int))
     print(json.dumps([{k: e[k] for k in ("id", "url", "source")} for e in ex], indent=1))

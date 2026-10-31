@@ -7,8 +7,10 @@ Config: `demo/deploy/nginx_soymate.conf`, installed as `/etc/nginx/conf.d/soymat
 Port 80 is open: the live demo is http://18.206.176.19 (public IPv4, changes if the instance is stopped and
 started). The Session Manager tunnel below still works for private testing.
 
-The API runs from `~/soymate-next` on the box (repo layout with `pipeline/`, `experiments/`, `demo/`; Python 3.12
-venv in `~/soymate-next/.venv`). Its `data/` is a symlink to `~/soymate/data`, the original copy that holds the
+The API runs from `~/soymate-rel2` on the box (release 2, with the experimental bulk mode; repo layout with
+`pipeline/`, `experiments/`, `demo/`; Python 3.12 venv in `~/soymate-rel2/.venv`, built with
+`uv sync --locked --group baseline`; needs `mesa-libGL` for Ultralytics' opencv). The previous release
+`~/soymate-next` and its venv are left untouched for rollback. Its `data/` is a symlink to `~/soymate/data`, the original copy that holds the
 datasets, crops, features and `data/models/soymate-pooled-v1.joblib`. Unit: `demo/deploy/soymate-api.service`,
 installed as `/etc/systemd/system/soymate-api.service`.
 
@@ -17,6 +19,20 @@ installed as `/etc/systemd/system/soymate-api.service`.
 | `deploy.sh` | build, upload through S3, install nginx config and unit, restart, health check |
 | `nginx_soymate.conf` | nginx site: static build at `/`, `/api/` proxied to 127.0.0.1:8000 |
 | `soymate-api.service` | systemd unit: uvicorn `demo.api.main:app` from `~/soymate-next` |
+
+## New release dir (how `~/soymate-rel2` was built)
+
+Never modify the live code dir or its venv in place. Build a new one, test it on port 8001, then switch:
+
+```bash
+# box: repo copy (tarball through s3://.../code/rel2/), data symlink, own venv, examples, test instance
+mkdir ~/soymate-rel2 && cd ~/soymate-rel2 && tar -xzf /tmp/repo.tgz && ln -sfn ~/soymate/data data
+sudo dnf install -y mesa-libGL && uv sync --locked --group baseline
+.venv/bin/python demo/api/build_examples.py && .venv/bin/python demo/api/make_thumbs.py
+.venv/bin/uvicorn demo.api.main:app --host 127.0.0.1 --port 8001   # test, then stop it
+# laptop: switch the unit and web build to the new dir
+APP_DIR=soymate-rel2 AWS_PROFILE=soymate demo/deploy/deploy.sh
+```
 
 ## Redeploy
 
@@ -40,7 +56,16 @@ only ships the files listed in `BACKEND_FILES`.
 
 ## Rollback
 
-Frontend (instant, no restart):
+**One command** (restores the unit and web release that were live before the last `deploy.sh` run; the script is
+written on the box by `deploy.sh` just before it switches):
+
+```bash
+AWS_PROFILE=soymate scripts/aws/run_remote.sh 'bash ~/rollback-soymate.sh'
+```
+
+After the release-2 switch this points the service back to `~/soymate-next` and the previous web build.
+
+Frontend only (instant, no restart):
 
 ```bash
 scripts/aws/run_remote.sh 'ls -1 /var/www/soymate/releases; readlink /var/www/soymate/current'

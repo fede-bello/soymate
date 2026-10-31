@@ -1,6 +1,6 @@
 // Client for the SoyMate demo API (contract: demo/API.md). Relative URLs, same origin.
 
-export type Mode = "auto" | "single" | "batch";
+export type Mode = "auto" | "single" | "batch" | "bulk";
 export type Status = "pass" | "fail" | "inconclusive";
 
 export interface Seed {
@@ -20,7 +20,7 @@ export interface ClassShare {
 }
 
 export interface AnalyzeResult {
-  mode: "single" | "batch";
+  mode: "single" | "batch" | "bulk";
   image: { width: number; height: number };
   model: { name: string; classes: string[]; trained_on: string[]; warnings: string[] };
   seeds: Seed[];
@@ -41,14 +41,15 @@ export interface AnalyzeResult {
 export interface Example {
   id: string;
   label: string;
-  kind: "batch" | "single";
+  kind: "batch" | "single" | "bulk";
   dataset: string;
   url: string;
   /** ~480 px gallery thumbnail; analysis always uses `url`. */
   thumb_url?: string;
   note?: string;
   source?: string;
-  /** Batch: {n_seeds} hand count. Single seed: {class, n_seeds: 1} dataset label. Null when unknown. */
+  /** Batch: {n_seeds} hand count. Single seed: {class, n_seeds: 1} dataset label. Bulk: {n_seeds, pct_crushed,
+   *  n_crushed, n_impurity} from the dataset's masks. Null when unknown. */
   ground_truth?: { n_seeds?: number; class?: string; [k: string]: unknown } | null;
 }
 

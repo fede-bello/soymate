@@ -97,5 +97,45 @@
    "n_seeds": 1
   },
   "source": "Immature soybeans/101.jpg"
+ },
+ {
+  "id": "harvest_bulk_1",
+  "label": "Harvester camera, packed lot 1",
+  "kind": "bulk",
+  "dataset": "Mechanical-harvest soybean images hwdtghttp7, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/harvest_bulk_1.jpg",
+  "note": "Held-out test photo (bulk mode is experimental); seed counts from the dataset's masks.",
+  "ground_truth": {
+   "n_seeds": 80,
+   "n_crushed": 3,
+   "n_impurity": 2,
+   "pct_crushed": 3.75
+  },
+  "source": "JPEGImages/000401.jpg"
+ },
+ {
+  "id": "harvest_bulk_2",
+  "label": "Harvester camera, packed lot 2",
+  "kind": "bulk",
+  "dataset": "Mechanical-harvest soybean images hwdtghttp7, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/harvest_bulk_2.jpg",
+  "note": "Held-out test photo (bulk mode is experimental); seed counts from the dataset's masks.",
+  "ground_truth": {
+   "n_seeds": 79,
+   "n_crushed": 8,
+   "n_impurity": 2,
+   "pct_crushed": 10.13
+  },
+  "source": "JPEGImages/000901.jpg"
+ },
+ {
+  "id": "lin_bulk",
+  "label": "Packed soybean lot, hundreds of seeds (Lin bulk photo)",
+  "kind": "bulk",
+  "dataset": "Soybean seeds 5 classes (Lin) v6vzvfszj6, Mendeley Data (CC BY 4.0)",
+  "url": "/api/examples/files/lin_bulk.jpg",
+  "note": "Original 3072x2048 bulk photo; not held-out (Lin seed crops may come from these photos), no reference count.",
+  "ground_truth": null,
+  "source": "Part of the original soybean images/Image_20220425150627909.jpg"
  }
 ]

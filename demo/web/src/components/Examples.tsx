@@ -64,7 +64,7 @@ export default function Examples({ onPick, loadingId, disabled }: Props) {
                     decoding="async"
                     onError={(e) => (e.currentTarget.style.visibility = "hidden")}
                   />
-                  <span className={`badge badge-${ex.kind}`}>{ex.kind === "single" ? "Single bean" : "Batch"}</span>
+                  <span className={`badge badge-${ex.kind}`}>{ex.kind === "single" ? "Single bean" : ex.kind === "bulk" ? "Bulk" : "Batch"}</span>
                   {loadingId === ex.id && (
                     <span className="example-loading">
                       <span className="spinner" aria-hidden="true" /> Loading

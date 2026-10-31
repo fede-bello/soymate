@@ -1,15 +1,16 @@
 # systemd unit for the demo API. Installed by demo/deploy/deploy.sh as /etc/systemd/system/soymate-api.service.
-# Code and venv live in ~/soymate-next (new repo layout); its data/ is a symlink to ~/soymate/data.
+# Code and venv live in ~/soymate-rel2 (release 2: bulk mode; deploy.sh rewrites the dir from APP_DIR); its data/
+# is a symlink to ~/soymate/data.
 [Unit]
 Description=SoyMate demo API (FastAPI, demo/api/main.py)
 After=network-online.target
 
 [Service]
 User=ec2-user
-WorkingDirectory=/home/ec2-user/soymate-next
+WorkingDirectory=/home/ec2-user/soymate-rel2
 Environment=HF_HUB_OFFLINE=1
 Environment=TOKENIZERS_PARALLELISM=false
-ExecStart=/home/ec2-user/soymate-next/.venv/bin/uvicorn demo.api.main:app --host 127.0.0.1 --port 8000 --workers 1
+ExecStart=/home/ec2-user/soymate-rel2/.venv/bin/uvicorn demo.api.main:app --host 127.0.0.1 --port 8000 --workers 1
 Restart=always
 RestartSec=3
 

@@ -44,6 +44,7 @@ CACHE = ROOT / "outputs" / "bulk_segmentation"
 WEIGHTS = ROOT / "weights" / "FastSAM-s.pt"
 FASTSAM_URL = "https://github.com/ultralytics/assets/releases/download/v8.3.0/FastSAM-s.pt"
 FASTSAM_SHA = "c9f78716a81c7aff0d608ccc73e1b82ab3aaad86005049f6a92106a0be6d0844"
+MAX_DET = 300  # FastSAM raw-mask cap; hitting it can undercount dense photos
 SHEET_FRAC = 0.25  # any mask above this fraction of the image is the sheet/background, always dropped
 IOU_MATCH = 0.5
 BF_TOL = 3  # px, boundary F-score tolerance at native resolution
@@ -150,19 +151,19 @@ def image_path(stem: str) -> Path:
 
 
 # --------------------------------------------------------------------------- methods (raw predictions)
-def fastsam_model():
+def fastsam_model(weights: Path = WEIGHTS):
     import hashlib
     from ultralytics import FastSAM
-    if not WEIGHTS.exists():
+    if not weights.exists():
         import urllib.request
-        WEIGHTS.parent.mkdir(parents=True, exist_ok=True)
-        urllib.request.urlretrieve(FASTSAM_URL, WEIGHTS)
-    assert hashlib.sha256(WEIGHTS.read_bytes()).hexdigest() == FASTSAM_SHA, "FastSAM-s.pt SHA-256 mismatch"
-    return FastSAM(str(WEIGHTS))
+        weights.parent.mkdir(parents=True, exist_ok=True)
+        urllib.request.urlretrieve(FASTSAM_URL, weights)
+    assert hashlib.sha256(weights.read_bytes()).hexdigest() == FASTSAM_SHA, "FastSAM-s.pt SHA-256 mismatch"
+    return FastSAM(str(weights))
 
 
 def fastsam_predict(model, rgb: np.ndarray, imgsz: int, retina: bool, iou: float, long_side: int | None = None,
-                    conf: float = 0.1) -> tuple[list[Mask], np.ndarray]:
+                    conf: float = 0.1, max_det: int = MAX_DET) -> tuple[list[Mask], np.ndarray]:
     """Raw FastSAM masks at native resolution (score-ordered) and their confidences. conf is filtered later."""
     from ultralytics.utils.ops import scale_masks
     H, W = rgb.shape[:2]
@@ -171,7 +172,7 @@ def fastsam_predict(model, rgb: np.ndarray, imgsz: int, retina: bool, iou: float
         s = long_side / max(H, W)
         inp = cv2.resize(rgb, (int(W * s), int(H * s)))
     r = model(cv2.cvtColor(inp, cv2.COLOR_RGB2BGR), device="cpu", retina_masks=retina, imgsz=imgsz, conf=conf,
-              iou=iou, max_det=300, verbose=False)[0]
+              iou=iou, max_det=max_det, verbose=False)[0]
     if r.masks is None:
         return [], np.zeros(0)
     scores = r.boxes.conf.cpu().numpy()
@@ -348,6 +349,21 @@ def postprocess(d: dict, conf=0.0, a_lo=0.0, a_hi=np.inf, dedup_iou=1.0, contain
     return np.array(kept, int)
 
 
+def postprocess_masks(ms: list[Mask], scores, rgb: np.ndarray, post: dict) -> np.ndarray:
+    """postprocess() on masks of a new image (no GT): builds the summary it needs. Also used by the demo bulk mode."""
+    n = len(ms)
+    ipp = np.zeros((n, n))
+    if n:
+        b = np.array([m.box for m in ms])  # only pairs whose boxes overlap can intersect
+        ov = ((b[:, None, 0] < b[None, :, 2]) & (b[None, :, 0] < b[:, None, 2]) &
+              (b[:, None, 1] < b[None, :, 3]) & (b[None, :, 1] < b[:, None, 3]))
+        for i, j in zip(*np.nonzero(np.triu(ov, 1))):
+            ipp[i, j] = ipp[j, i] = inter(ms[i], ms[j])
+    d = {"areas": np.array([m.area for m in ms], float), "scores": np.asarray(scores, float), "ipp": ipp,
+         "light": mean_lightness(ms, rgb), "img_area": float(rgb.shape[0] * rgb.shape[1])}
+    return postprocess(d, **post)
+
+
 def match(d: dict, kept: np.ndarray) -> list[tuple[int, int, float]]:
     """Greedy one-to-one matching at IoU >= 0.5: (pred index, gt index, IoU)."""
     if not len(kept) or not d["ig"].shape[1]:
@@ -496,13 +512,7 @@ def ghana(raw_name, post, model, r_seed, overlay_dir) -> pd.DataFrame:
         ms, scores = predict_masks(method_of(raw_name), raw_cfg(raw_name), rgb, model, r_seed)
         secs = time.perf_counter() - t
         n = len(ms)
-        ipp = np.zeros((n, n))
-        for i in range(n):
-            for j in range(i + 1, n):
-                ipp[i, j] = ipp[j, i] = inter(ms[i], ms[j])
-        d = {"areas": np.array([m.area for m in ms], float), "scores": scores, "ipp": ipp,
-             "light": mean_lightness(ms, rgb), "img_area": float(rgb.shape[0] * rgb.shape[1])}
-        kept = postprocess(d, **post)
+        kept = postprocess_masks(ms, scores, rgb, post)
         inst, _ = segment(rgb)
         rows.append({"example": eid, "photo": ex[eid]["source"], "gt_status": p["gt_status"],
                      "published_count": int(p["n_seeds_gt"]), "semi_auto_estimate": int(p["n_seeds_est"]),

@@ -16,6 +16,9 @@ export default function ResultFacts({
   const label = example?.ground_truth?.class;
   const predicted = result.mode === "single" ? largestSeed(result)?.class : undefined;
   const found = result.summary.n_seeds;
+  const pctCrushed = example?.ground_truth?.pct_crushed as number | undefined;
+  const impurity = example?.ground_truth?.n_impurity as number | undefined;
+  const broken = result.summary.classes?.broken;
   const t = result.timing_ms ?? {};
   const timing = [
     seconds(t.segment) && `found seeds in ${seconds(t.segment)}`,
@@ -44,6 +47,35 @@ export default function ResultFacts({
             {found === hand
               ? "Same count."
               : `${fmtInt(Math.abs(found - hand))} ${found > hand ? "more" : "fewer"} than the hand count.`}{" "}
+            Reference from {example?.dataset}.
+          </p>
+        </section>
+      )}
+
+      {part === "truth" && result.mode === "bulk" && typeof hand === "number" && (
+        <section className="card truth" aria-labelledby="truth-title">
+          <h2 id="truth-title" className="card-title">
+            Checked against the dataset masks
+          </h2>
+          <div className="truth-figures">
+            <div>
+              <span className="truth-n">{fmtInt(hand)}</span>
+              <span className="truth-l">
+                seeds in the masks
+                {typeof pctCrushed === "number" ? `, ${pctCrushed.toFixed(1)} % crushed` : ""}
+              </span>
+            </div>
+            <div>
+              <span className="truth-n">{fmtInt(found)}</span>
+              <span className="truth-l">
+                found by SoyMate{broken ? `, ${broken.pct.toFixed(1)} % broken` : ""}
+              </span>
+            </div>
+          </div>
+          <p className="muted small">
+            Dataset masks: {fmtInt(hand)} seeds, {typeof pctCrushed === "number" ? `${pctCrushed.toFixed(1)} % crushed` : "share unknown"}
+            {typeof impurity === "number" && impurity > 0 ? ` (plus ${fmtInt(impurity)} stems or pods)` : ""}; we found{" "}
+            {fmtInt(found)} objects, {broken ? `${broken.pct.toFixed(1)} % classified broken` : "none classified broken"}.
             Reference from {example?.dataset}.
           </p>
         </section>
