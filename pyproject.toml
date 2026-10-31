@@ -1,16 +1,37 @@
 [project]
 name = "soymate"
 version = "0.1.0"
-description = "SoyMate dataset exploration"
+description = "SoyMate: pulse quality control from a single photo (Hack the Fork Paris 2026)"
 requires-python = ">=3.14,<3.15"
 dependencies = [
+    "boto3",
+    "huggingface_hub",
     "ipykernel>=7.2.0",
     "jupyterlab>=4.0",
     "matplotlib>=3.10.9",
+    "numpy>=2.5.4",
+    "opencv-python>=5.0.0.93",
+    "openpyxl",
     "pandas>=3.0.2",
     "pillow>=12.2.0",
+    "plotly",
+    "pyarrow",
     "pyyaml>=6.0.3",
+    "requests",
+    "safetensors",
+    "scikit-image",
+    "scikit-learn",
+    "scipy",
+    "statsmodels",
+    "streamlit",
+    "torch",
+    "torchvision",
+    "tqdm",
+    "transformers",
 ]
+
+[project.optional-dependencies]
+seg = ["cellpose"]
 
 [dependency-groups]
 baseline = [
@@ -18,3 +39,15 @@ baseline = [
     "opencv-python>=5.0.0.93",
     "ultralytics>=8.4.194",
 ]
+
+[tool.uv]
+package = false
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]

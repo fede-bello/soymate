@@ -31,6 +31,24 @@ Written: 30/10/2026, before the event. Last source review: 30/10/2026.
 
 ---
 
+## 0. Current plan (31/10/2026, during the event)
+
+**This section supersedes §1, §5, §8, §10, §11 and §12 wherever they conflict.** Those sections describe the pre-event plan (photograph our own peas and lentils at the event). The team cannot get its own beans, so the plan changed. §2, §3, §4, §6, §7, §13 to §18 remain valid; §9 applies only if own photos become possible.
+
+**Proof of concept on soybean, business case on lentil.**
+- **Why soybean:** it is the only bean with public labelled photos of damaged seeds (~8,000 across d97rjyk2tz and v6vzvfszj6). A second search on 31/10 again found nothing for pea, lentil, faba bean, chickpea or beans [S41]. French food soy is real (45 kt/yr, tofu and soy drinks [S21]; in 2025, 37 % of lots had >1 % green seeds, "pénalisant" for food) but its food vs feed premium is small (<25 to ~70 €/t), so soy alone is not a business.
+- **Product:** the intake technician takes a few phone photos of a soybean sample; the app finds every seed, classifies it (sound, broken / seed-coat damage, stained, immature / green, insect hole), and gives % per class with a Wilson interval and a verdict: pass, take more photos, or fail. The insect-hole class comes from an Indian storage pest that is not a French soy problem; it is kept as a method demo for the lentil route.
+- **Data:** §6.1 and §6.2, including the multi-seed sets added on 31/10 (Ghana t94nzy4ptz, mechanical-harvest hwdtghttp7, Indonesian c733bjz4m3, Lin v6 originals). Pipeline: `scripts/aws/download_datasets.py`.
+- **Results to produce at the event:** R1 leaky vs clean split; R2 per-class F1 on the clean test set, plus a dataset-ID check (does the model recognise the source dataset instead of the defect?); R3 transfer from one soybean dataset to another with 0/5/10/25/50 labels per class; R4 seed-count error on real multi-seed photos and lot-level error on hand-labelled real photos (simulated lots only as a declared synthetic supplement); a working demo.
+- **Value story (see the brief):** the tool does not remove damage; it makes the grade fast, consistent, and visible to both farmer and cooperative. Value comes from decisions that change (sort or not, which cell or contract), disputes avoided, speed at harvest, and a grade the farmer can check (Track 3: farmer income). It is **not** "€ per point of correction": at 25 % damage a 200-grain count is ±6 points, and corrections mostly move money between farmer and collector.
+- **Why lentil next:** ~550 €/t between food and feed outlets, 2025 mean damage 24.4 % per lot (highest of 2021-2025), up to 5 to 8 M€ of sorting loss in 2025 (upper bound), 38 kt net imports. It becomes a solution if: French lentil photos labelled by graders, ~1,000 grains per grade, calibration against the visual reference count, and a pilot showing it changes decisions (assumption A3/A12 in the brief).
+- **Correction to §11, §12 and claim #48:** "we found nothing in pulses" is wrong. Cropify (Australia) sells AI lentil and chickpea grading and was judged worth "commercial consideration" by Grain Trade Australia (Aug. 2026); Ground Truth Ag (Canada) has peas, lentils, soybean and faba "in development". Nobody publicly covers French soy or pulses; Inarix covers cereals only. Source: `research/viability/grading_and_competition.md`.
+- **Still open:** written confirmation from the organisers on the "Insects" and "animal feed" exclusions; how often a faster grade changes a decision (A3).
+
+**Where things are:** viability brief `docs/soymate_viability_brief.pdf` (generator `scripts/docs/build_viability_brief.py`); market and competition research `research/viability/`; adversarial review `research/critique.md`; dataset search `research/other_datasets/new_candidates.md`; pitch deck `pitch/`; AWS box `docs/aws_setup.md`.
+
+---
+
 ## 1. Summary
 
 **What it is:** a tool for the intake technician of a cooperative or grain collector. They take a phone photo of a sample of pea, lentil or faba bean on a plain background, and the system:
@@ -215,7 +233,10 @@ Content figures come from our audits (cited as "own audit") and metadata (title,
 | **Radio_lentille** (Terres Inovia) | https://huggingface.co/datasets/JeanEudesH/Radio_lentille | MIT; access "gated: auto" (you must log in to HuggingFace and accept) [S33] [V] | 807 JPG X-rays of bruchid-damaged lentils from trials (BRI_21, KAIROL, QAL 2021-2023) + 2 Excel files of counts, 1.47 GB [S37] [F, metadata read by our own audit; content not opened, NV] | French validation, argument for the pitch and link with Terres Inovia |
 | **Segmented pea** (Ünal and Gulzar) | https://zenodo.org/records/21110940 | CC BY 4.0 [S34] [V] | Demonstration subset of 5 photos (from a dataset of 100) with LabelMe polygons per pea [S34] [V]; 2,155 peas drawn in total [S37] [F, own audit] | Test grain separation on pea |
 | **Faba bean Lethbridge (Canada)** | https://zenodo.org/records/18226381 | CC BY 4.0 [S35] [V] | 78 photos of faba bean seeds from greenhouse lines, with a 24-patch colour chart [S35] [V]; 3 to 10 faba beans per photo, blue background, no damage labels [S37] [F] | Unlabelled test photos |
-| **Soybean Seeds 5 classes** (Lin et al., v6, 30/5/2023) | https://data.mendeley.com/datasets/v6vzvfszj6 (mirror on Kaggle) | CC BY 4.0 [S30] [V] | 5,513 crops 227×227: intact, spotted, immature, broken, skin-damaged, according to Chinese standard GB1352-2009 [S30] [V]; 290 duplicate groups [S37] [F, own audit] | Broken and stained |
+| **Soybean Seeds 5 classes** (Lin et al., v6, 30/5/2023) | https://data.mendeley.com/datasets/v6vzvfszj6 (mirror on Kaggle) | CC BY 4.0 [S30] [V] | 5,513 crops 227×227: intact, spotted, immature, broken, skin-damaged, according to Chinese standard GB1352-2009 [S30] [V]; 290 duplicate groups [S37] [F, own audit]. v6 also has a folder "Part of the original soybean images" with 5 multi-seed photos (7.7 MB) [S41] [V] | Broken and stained; the 5 originals as an in-domain multi-seed test |
+| **Ghana seed varieties** (soybean part) | https://data.mendeley.com/datasets/t94nzy4ptz (v2) | CC BY 4.0 [S41] [V] | 105 group phone photos (Google Pixel 9a, blue paper, daylight, ~150 seeds each; 123 MB) and `_crop_metadata.csv` with one box per seed; labels are variety only (Afayak, FarmerSaved, Favor, Jenguma) [S41] [V]. Boxes come from colour segmentation plus manual audit; FarmerSaved may hold unlabelled defects [S41] [F] | Real multi-seed photos: segmentation and count error, sound-seed false-positive test |
+| **Mechanical-harvest soybean** | https://data.mendeley.com/datasets/hwdtghttp7 (v2); HF mirror `Project-AgML/soybean_harvest_damage_segmentation` | CC BY 4.0 [S41] [V] | 800 multi-seed images from a harvester camera with VOC masks: background, crushed, intact, impurity [S41] [V]. Only 40 originals, each augmented 20 times [S41] [V]: **split by the 4-digit id prefix**, not with the shipped lists. A third-party HF card says the masks are model output [S41] [F, contradicts the paper] | Broken and foreign-material classes; second capture setup; multi-seed segmentation |
+| **Indonesian soybean varieties** | https://data.mendeley.com/datasets/c733bjz4m3 (v3) | CC BY 4.0 [S41] [V] | Flatbed scans of many seeds, 3 varieties (Scanned_* zips, 294 MB) plus single-seed crops (Segmented_*, 680 MB, not downloaded) [S41] [V]; variety labels only | Second multi-seed segmentation test; sound class from another setup |
 
 **Discarded** (own audit [S37] [F]): WheatVision (massive train/test leakage, unnamed classes), phone soybean Mendeley 65rzpcgbp4 (the zip does not include the labels it promises), Brazilian soybean Mendeley xnx9bfbh6b (its "damaged" class is stains, not holes), CornViT (blurry crops), coffee 17 defects (unknown licence). Roboflow Universe could not be audited (requires an account; there are small lentil and soybean projects).
 
@@ -382,6 +403,7 @@ Our own design [NV], except where marked.
 ## 14. Prior resources to declare
 
 - Soybean dataset (Mendeley d97rjyk2tz, CC BY 4.0), GrainSet (CC BY 4.0), corn1000 (CC BY-NC 4.0), Radio_lentille (MIT), Zenodo pea 21110940 and Zenodo faba bean 18226381 (CC BY 4.0), Soybean Seeds (CC BY 4.0). Licences verified today [S29]-[S35] [V].
+- Added 31/10/2026: Ghana seed varieties (Mendeley t94nzy4ptz), Mechanical-harvest soybean (Mendeley hwdtghttp7), Indonesian soybean varieties (Mendeley c733bjz4m3), all CC BY 4.0 [S41] [V].
 - Pretrained models: DINOv2 (Meta) and, if used, SAM or Cellpose.
 - The clean split `resplit_by_original.csv` and the analyses in `research/`, done before the event (exploration, no training).
 
@@ -457,6 +479,7 @@ All opened on 30/10/2026 unless stated. "What was verified" says exactly what wa
 | S38 | Own desk research: `research/context/findings.md` | Negative searches (pulse datasets, Inarix in pulses, current contracts, manual inspection costs) |
 | S39 | INRAE, *Mots de l'agronomie*, "Antoine Gardarin". https://mots-agronomie.inrae.fr/index.php/Antoine_Gardarin | AgroParisTech, UMR Agronomie, Palaiseau |
 | S40 | Recherche Data Gouv, dataset doi:10.57745/HPEMYW (API). https://entrepot.recherche.data.gouv.fr/api/datasets/:persistentId/?persistentId=doi:10.57745/HPEMYW | Contact: Antoine Gardarin (Agronomie; INRAE, AgroParisTech, UPSaclay); licence Etalab 2.0 |
+| S41 | Second dataset search, 31/10/2026: `research/other_datasets/new_candidates.md`; Mendeley public API for t94nzy4ptz (v2), hwdtghttp7 (v2), c733bjz4m3 (v3), v6vzvfszj6 (v6), file and folder listings reopened 31/10/2026 | Licences, versions, file counts and sizes, folder names, class names of the harvest masks |
 
 Full audits with plots: `research/README.md`, `research/soybean_bruchid/findings.md`, `research/other_datasets/findings.md`, `research/context/findings.md`.
 
@@ -513,7 +536,7 @@ Full audits with plots: `research/README.md`, `research/soybean_bruchid/findings
 | 45 | Cost of manual inspection | §3 | not found | S38 | [NV] | |
 | 46 | Inarix: barley, silos, DINOv2 | §12 | ~40 %, >600 silos, >10 countries | S24 | [V] | As stated by Meta/Inarix |
 | 47 | Inarix: soybean Canada | §12 | 1,237,145 $, 2025-2026 | S25 | [V] | Variety identification, not damage; currency not stated |
-| 48 | Inarix without pulses | §11, §12 | | S26, S38 | [NV] | Negative search |
+| 48 | Inarix without pulses | §11, §12 | | S26, S38 | [NV] | Negative search. Inarix itself: still no pulses. But "nobody does pulses" is wrong: Cropify, Ground Truth Ag (see §0) |
 | 49 | EyeFoss | §12 | wheat, barley, durum; 10,000 grains in 4 min | S27 | [V] | |
 | 50 | GrainSense | §12 | 3,900 € excl. VAT + 250 €/year | S28 | [V] | 2019 price |
 | 51 | Mendeley soybean: licence and citation | §6.1 | CC BY 4.0, v2 17/7/2026 | S29 | [V] | |
