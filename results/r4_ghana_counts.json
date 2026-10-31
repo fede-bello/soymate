@@ -1,0 +1,319 @@
+{
+  "name": "r4_ghana_counts",
+  "how": "Training-free segmenter scripts/data/segment_multi.py (Lab b* Otsu on a 1600 px copy, open/close, count per component = round(area / median single-seed area)) run on all 105 Ghana group photos (c7i.4xlarge box, OMP_NUM_THREADS=4). Errors are ours minus reference; MAE, mean signed error and MAPE (|err|/ref) with 95 % percentile bootstrap CIs over photos (2000 draws, seed 0). (a) reference = published box count on the gt_status=ok photos only, the only complete published counts. (b) reference = n_seeds_est from scripts/data/ghana_index.py = published boxes + missed-seed blobs from its colour-blob QC detector: a semi-automatic estimate and lower bound, NOT ground truth. (c) vs all published boxes, which are known to be incomplete (shown only for scale). Box recall: share of published box centres lying on one of our kept components (lower bound, boxes are incomplete); Wilson CI ignores clustering by photo. Unmatched components = ours with no box centre; shadow if the median L* of a 9px paper ring around it is below 0.75 x the photo's 90th-percentile paper L*. Timing is wall-clock per photo: JPEG load + EXIF transpose, and segment().",
+  "created_utc": "2026-10-31T13:12:43+00:00",
+  "code_rev": "unknown (box copy is not a git checkout)",
+  "result": {
+    "n_photos": 105,
+    "mapping_confidence": {
+      "high": 105
+    },
+    "a_vs_published_boxes_gt_ok": {
+      "overall": {
+        "mae": {
+          "value": 1.714,
+          "ci95": [
+            0.429,
+            3.143
+          ]
+        },
+        "mean_signed_error": {
+          "value": 1.714,
+          "ci95": [
+            0.429,
+            3.143
+          ]
+        },
+        "mape_pct": {
+          "value": 1.134,
+          "ci95": [
+            0.249,
+            2.259
+          ]
+        },
+        "n_photos": 7
+      },
+      "photos": [
+        {
+          "photo": "seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_135711992.jpg",
+          "n_boxes": 164,
+          "n_seeds_est": 164,
+          "n_ours": 164
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_140519746.jpg",
+          "n_boxes": 127,
+          "n_seeds_est": 127,
+          "n_ours": 132
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/FarmerSaved/PXL_20260315_140527445.jpg",
+          "n_boxes": 143,
+          "n_seeds_est": 143,
+          "n_ours": 143
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/Favor/PXL_20260314_142758752.jpg",
+          "n_boxes": 195,
+          "n_seeds_est": 195,
+          "n_ours": 196
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/Favor/PXL_20260314_144204670.jpg",
+          "n_boxes": 186,
+          "n_seeds_est": 186,
+          "n_ours": 186
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/Favor/PXL_20260314_144245222.jpg",
+          "n_boxes": 172,
+          "n_seeds_est": 172,
+          "n_ours": 175
+        },
+        {
+          "photo": "seed_data/Soyabean/group_capture/Favor/PXL_20260314_144258573.jpg",
+          "n_boxes": 172,
+          "n_seeds_est": 172,
+          "n_ours": 175
+        }
+      ]
+    },
+    "b_vs_n_seeds_est_SEMI_AUTOMATIC_ESTIMATE": {
+      "overall": {
+        "mae": {
+          "value": 1.876,
+          "ci95": [
+            1.324,
+            2.562
+          ]
+        },
+        "mean_signed_error": {
+          "value": 1.819,
+          "ci95": [
+            1.257,
+            2.495
+          ]
+        },
+        "mape_pct": {
+          "value": 0.973,
+          "ci95": [
+            0.689,
+            1.318
+          ]
+        },
+        "n_photos": 105
+      },
+      "per_variety": {
+        "Afayak": {
+          "mae": {
+            "value": 2.821,
+            "ci95": [
+              1.321,
+              5.072
+            ]
+          },
+          "mean_signed_error": {
+            "value": 2.821,
+            "ci95": [
+              1.321,
+              5.072
+            ]
+          },
+          "mape_pct": {
+            "value": 1.285,
+            "ci95": [
+              0.578,
+              2.411
+            ]
+          },
+          "n_photos": 28
+        },
+        "FarmerSaved": {
+          "mae": {
+            "value": 0.75,
+            "ci95": [
+              0.321,
+              1.321
+            ]
+          },
+          "mean_signed_error": {
+            "value": 0.607,
+            "ci95": [
+              0.143,
+              1.214
+            ]
+          },
+          "mape_pct": {
+            "value": 0.538,
+            "ci95": [
+              0.214,
+              0.967
+            ]
+          },
+          "n_photos": 28
+        },
+        "Favor": {
+          "mae": {
+            "value": 2.095,
+            "ci95": [
+              1.238,
+              3.095
+            ]
+          },
+          "mean_signed_error": {
+            "value": 2.0,
+            "ci95": [
+              1.095,
+              3.048
+            ]
+          },
+          "mape_pct": {
+            "value": 1.276,
+            "ci95": [
+              0.723,
+              1.9
+            ]
+          },
+          "n_photos": 21
+        },
+        "Jenguma": {
+          "mae": {
+            "value": 1.893,
+            "ci95": [
+              1.321,
+              2.536
+            ]
+          },
+          "mean_signed_error": {
+            "value": 1.893,
+            "ci95": [
+              1.321,
+              2.536
+            ]
+          },
+          "mape_pct": {
+            "value": 0.868,
+            "ci95": [
+              0.593,
+              1.162
+            ]
+          },
+          "n_photos": 28
+        }
+      }
+    },
+    "c_vs_published_boxes_all_photos_incomplete": {
+      "overall": {
+        "mae": {
+          "value": 45.762,
+          "ci95": [
+            39.143,
+            52.794
+          ]
+        },
+        "mean_signed_error": {
+          "value": 45.762,
+          "ci95": [
+            39.143,
+            52.794
+          ]
+        },
+        "mape_pct": {
+          "value": 32.755,
+          "ci95": [
+            27.021,
+            39.037
+          ]
+        },
+        "n_photos": 105
+      }
+    },
+    "box_recall_lower_bound": {
+      "pooled": 0.9978,
+      "wilson95_ignoring_clustering": [
+        0.9969808855553793,
+        0.9984377653223234
+      ],
+      "n_boxes": 16114,
+      "per_photo_mean": 0.9978,
+      "per_photo_min": 0.932,
+      "per_variety_pooled": {
+        "Afayak": 0.9973,
+        "FarmerSaved": 0.9953,
+        "Favor": 0.9992,
+        "Jenguma": 0.9993
+      }
+    },
+    "unmatched_components": {
+      "n_components": 20871,
+      "n_unmatched": 4799,
+      "n_unmatched_shadow": 3717,
+      "n_unmatched_sun": 1082,
+      "n_components_shadow": 3856
+    },
+    "timing_s_per_photo": {
+      "t_load_s": {
+        "median": 0.047,
+        "p90": 0.059,
+        "max": 0.097
+      },
+      "t_segment_s": {
+        "median": 0.014,
+        "p90": 0.017,
+        "max": 0.104
+      }
+    },
+    "worst_vs_est": [
+      {
+        "photo": "seed_data/Soyabean/group_capture/Afayak/PXL_20260315_114009410.jpg",
+        "n_ours": 222,
+        "n_seeds_est": 195,
+        "n_boxes": 135,
+        "err_vs_est": 27,
+        "n_multi_components": 0,
+        "n_unmatched_sun": 14,
+        "n_unmatched_shadow": 73
+      },
+      {
+        "photo": "seed_data/Soyabean/group_capture/Afayak/PXL_20260315_115017700.jpg",
+        "n_ours": 271,
+        "n_seeds_est": 259,
+        "n_boxes": 135,
+        "err_vs_est": 12,
+        "n_multi_components": 2,
+        "n_unmatched_sun": 12,
+        "n_unmatched_shadow": 116
+      },
+      {
+        "photo": "seed_data/Soyabean/group_capture/Favor/PXL_20260314_145700905.jpg",
+        "n_ours": 211,
+        "n_seeds_est": 203,
+        "n_boxes": 182,
+        "err_vs_est": 8,
+        "n_multi_components": 0,
+        "n_unmatched_sun": 29,
+        "n_unmatched_shadow": 0
+      },
+      {
+        "photo": "seed_data/Soyabean/group_capture/Afayak/PXL_20260315_114035139.jpg",
+        "n_ours": 226,
+        "n_seeds_est": 219,
+        "n_boxes": 198,
+        "err_vs_est": 7,
+        "n_multi_components": 3,
+        "n_unmatched_sun": 7,
+        "n_unmatched_shadow": 20
+      },
+      {
+        "photo": "seed_data/Soyabean/group_capture/Jenguma/PXL_20260315_124543150.jpg",
+        "n_ours": 228,
+        "n_seeds_est": 222,
+        "n_boxes": 157,
+        "err_vs_est": 6,
+        "n_multi_components": 4,
+        "n_unmatched_sun": 4,
+        "n_unmatched_shadow": 63
+      }
+    ]
+  }
+}

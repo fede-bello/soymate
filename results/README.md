@@ -95,3 +95,19 @@ Macro F1. **Another setup's data does not substitute for target labels:** on Lin
 alone beat ~1,000 pooled soybean images (0.89 vs 0.68); on soybean, adding Lin gives +0.02 to +0.05, inside the
 CIs (soybean test: 11 bursts). Part of the zero-shot drop is label shift (definition (b) is closer to testa
 cracking and scores higher). For a new crop or capture setup, budget for labelled target data.
+
+### R4a: seed counts on real multi-seed photos (`eval/r4_ghana_counts.py`, `r4_ghana_counts.json`, `__photos.csv`)
+
+Ghana t94nzy4ptz, 105 phone photos (~150 soybean seeds each, blue paper, sun and hard shadow), our
+training-free segmenter (`scripts/data/segment_multi.py`: Lab b* Otsu, count = round(area / median seed area)).
+Errors are ours minus reference, 95 % CIs from a bootstrap over photos.
+
+- **vs the only complete published counts (7 photos, all FarmerSaved/Favor, mostly in sun):** MAE 1.7 seeds
+  [0.4, 3.1], MAPE 1.1 % [0.2, 2.3], never under.
+- **vs a semi-automatic estimate on all 105 photos** (published boxes + seed-coloured blobs they miss; also
+  colour-based, so not independent of our method, **not ground truth**): MAPE 0.97 % [0.69, 1.32].
+- The published per-seed boxes are incomplete (they miss most seeds in shadow): we find 99.8 % of them plus
+  4,799 unboxed components, 3,717 of them in shadow.
+- Failure modes in the 5 worst photos: seeds cut by the photo border (reference skips them), a dark table edge
+  counted as 11 seeds, single seeds counted as two. 0.014 s per photo on CPU.
+- The independent check is the hand count on the labelled photos (task 5, pending).
