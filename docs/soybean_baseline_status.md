@@ -1,6 +1,6 @@
 # SoyMate computer-vision status
 
-Audit of the repository and locally saved artifacts on 31 October 2026. **The working result is a soybean Hole bounding-box detector, not the proposed end-to-end grain-intake product.** No model was trained or evaluated for this audit. Experiment outputs and datasets under `runs/` and `data/` are Git-ignored; links to them below work only where those local artifacts exist ([.gitignore](../.gitignore)). The preparation script and dependency changes are currently uncommitted; status can change after this audit.
+Audit of the repository and locally saved artifacts on 31 October 2026. **The working result is a soybean Hole bounding-box detector, not the proposed end-to-end grain-intake product.** No model was trained or evaluated for this audit. Experiment outputs and datasets under `runs/` and `data/` are Git-ignored; links to them below work only where those local artifacts exist ([.gitignore](../.gitignore)).
 
 ## Intended workflow
 
@@ -68,3 +68,64 @@ The saved arguments specify `conf: null`, `iou: 0.7`, `split: val`. In the local
 **Useful today:** manually inspect validation misses and apparent false positives against the original images; record ambiguous cases and select a validation operating point appropriate to the demo. Capture and label a small, clearly sourced set of mixed pea/lentil sample photos, and prototype grain separation/counting and hole-to-grain association with manual counts. Keep the existing test split held out while making development choices ([photo protocol and evaluation plan](../CONTEXT.md#8-evaluation)).
 
 **Future validation:** independently verify group provenance and annotation completeness, evaluate shortcuts and performance by capture condition, and assess grain-level and sample-level errors on independently collected French-pulse photos, grouped by source photo or lot. After choices are frozen, evaluate the held-out soybean test set once; report its limits and a transfer curve only when measured ([CONTEXT.md §8](../CONTEXT.md#8-evaluation), [audit §9](../research/soybean_bruchid/findings.md)).
+
+## Focused validation review and longer comparison
+
+### Eight-epoch baseline review
+
+The baseline's train box loss fell from 1.529 to 1.408 and classification loss from 11.368 to 1.545 over eight epochs; validation mAP@0.50 rose overall from 0.380 to 0.640 and mAP@0.50:0.95 from 0.210 to 0.427, but both dipped at epoch 4 before recovering. The logged precision/recall rose from 0.479/0.411 to 0.823/0.563, with substantial fluctuations. Each epoch's precision/recall uses that epoch's validation-selected smoothed maximum-F1 operating point, so changes do not describe a fixed-confidence curve ([results](../runs/soybean_hole/baseline/results.csv), [training plot](../runs/soybean_hole/baseline/results.png), [metric definitions above](#run-and-evaluation)).
+
+The reproducible [review script](../scripts/review_soybean_holes.py) runs **only** the manifest-selected validation images through a specified checkpoint. It stores raw predictions and counts in the ignored output directory and produces a compact [baseline HTML review](../runs/soybean_hole/review_baseline_v2/review.html). Green boxes are annotations; red boxes are model predictions labelled with confidence. The review uses IoU ≥ 0.50, NMS IoU 0.70 and confidence ≥ 0.10; it shows up to the first 12 filename-sorted examples with apparent false positives and the first 12 with apparent false negatives, deduplicated. It includes image name, original-group identifier, background and per-image assessment/notes; use the download button to save the assessments. Browser-local notes are not a shared database. [apparent_errors.csv](../runs/soybean_hole/review_baseline_v2/apparent_errors.csv) covers all apparent-error images, not just the illustrated examples. Unmatched boxes are **not automatically true errors**: incomplete or ambiguous labels require human judgment. For example, the apparent mismatch in `test_0072.jpg` should be reviewed as an image/annotation question, not automatically classified from the count ([overlay](../runs/soybean_hole/review_baseline_v2/images/test_0072.jpg)).
+
+```bash
+YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl .venv/bin/python scripts/review_soybean_holes.py --weights runs/soybean_hole/baseline/weights/best.pt --output runs/soybean_hole/review_baseline_v2 --device cpu --review-confidence 0.10
+```
+
+The output directory must be new. For reliable browser-local notes, serve it locally with `python -m http.server 8000 --bind 127.0.0.1 --directory runs/soybean_hole/review_baseline_v2` and open `http://127.0.0.1:8000/review.html`. The script records checkpoint and selection-manifest hashes, all low-confidence predictions, threshold counts and subgroup counts in [metrics.json](../runs/soybean_hole/review_baseline_v2/metrics.json) and `predictions.jsonl`. CPU inference and explicit confidence-ordered matching are a separate reproducible re-evaluation, not the logged MPS interpolation at its F1-selected point. No test images are loaded.
+
+At fixed confidence 0.10 and IoU 0.50, the baseline re-evaluation gives the following label-relative box counts by the **earlier audit's background category**. Positive images have at least one annotated Hole; they are not necessarily all truly positive images.
+
+| Background | Images | Positive images | Annotated holes | Matched | Apparent FP | Apparent FN | Precision | Recall |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| White/light | 135 | 26 | 64 | 43 | 29 | 21 | 0.597 | 0.672 |
+| Black | 35 | 30 | 59 | 34 | 53 | 25 | 0.391 | 0.576 |
+| Intermediate | 5 | 1 | 1 | 1 | 1 | 0 | 0.500 | 1.000 |
+
+These small, compositionally different groups contain only 26 and 30 annotated-positive images in the larger categories; the intermediate group is too small for a meaningful comparison. Boxes within an image are correlated, labels are incomplete, and background is confounded with capture session and type. Differences suggest questions for review, not a causal measurement of the background shortcut ([selection manifest](../data/processed/soybean_hole/selected_images.csv), [background audit](../research/soybean_bruchid/findings.md), [computed counts](../runs/soybean_hole/review_baseline_v2/metrics.json)). No reliable rotation/flip/crop **variant type** is stored in the selected manifest; its `type` field describes damage category, not augmentation. A variant-type breakdown cannot be inferred from it ([audit §5](../research/soybean_bruchid/findings.md)).
+
+### Longer run: measured comparison
+
+One comparison was run from the same pretrained YOLO11n weights and the same prepared paths, with the baseline settings unchanged except `epochs=40`, `patience=7` and a separate output name. It completed all 40 epochs in 1,424.43 seconds (23m 44s through the last epoch); early stopping did not trigger. In this installed Ultralytics version, checkpoint fitness and early stopping use validation mAP@0.50:0.95. The final [best checkpoint](../runs/soybean_hole/long40/weights/best.pt) was selected at epoch 40. Commands and output:
+
+```bash
+set -o pipefail
+YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl .venv/bin/yolo detect train model=data/weights/yolo11n.pt data=data/processed/soybean_hole/data.yaml epochs=40 patience=7 imgsz=640 batch=8 device=mps workers=0 seed=42 project="$PWD/runs/soybean_hole" name=long40 exist_ok=False plots=True 2>&1 | tee runs/soybean_hole/long40.log
+YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl .venv/bin/python scripts/review_soybean_holes.py --weights runs/soybean_hole/long40/weights/best.pt --output runs/soybean_hole/review_long40 --device cpu --review-confidence 0.10
+```
+
+The [long-run configuration](../runs/soybean_hole/long40/args.yaml), [log](../runs/soybean_hole/long40.log), [per-epoch CSV](../runs/soybean_hole/long40/results.csv), [learning curves](../runs/soybean_hole/long40/results.png), [validation PR curve](../runs/soybean_hole/long40/BoxPR_curve.png), [long-run review](../runs/soybean_hole/review_long40/review.html) and [review metrics](../runs/soybean_hole/review_long40/metrics.json) are local, ignored artifacts. The original run was not overwritten. Both review outputs record the same selection-manifest SHA-256 `984e2852de965f2bf5912e5d463b08c0127dae451bd3a7695bc0b4259c9d0ad1`. The longer run used the same prepared validation path and did not change the selection; the old run did not record a historical content hash, so its exact input bytes cannot be independently established from its log. A [fingerprint of current validation images and labels](../runs/soybean_hole/long40/validation_fingerprint.txt) was recorded during the longer run.
+
+| Final validation of selected checkpoint | 8 epochs | 40 epochs |
+|---|---:|---:|
+| Precision | 0.823 | 0.882 |
+| Recall | 0.563 | 0.581 |
+| mAP@0.50 | 0.640 | 0.709 |
+| mAP@0.50:0.95 | 0.427 | 0.481 |
+
+The longer run's train box/class losses went from 1.601/11.857 at epoch 1 to 1.189/0.978 at epoch 40; validation mAP@0.50:0.95 rose overall from 0.290 to 0.480 with fluctuations, including 0.224 at epoch 2. Its best-checkpoint final revalidation reports 0.481 (epoch CSV rounds the training-time evaluation to 0.480); final reported precision is 0.882 versus 0.874 in the epoch CSV. The saved F1 plots select approximately 0.245 confidence for the old checkpoint and 0.418 for the longer checkpoint, so the precision/recall pairs above are **not at a common threshold** ([baseline log](../runs/soybean_hole/baseline.log), [long log](../runs/soybean_hole/long40.log), [long F1 curve](../runs/soybean_hole/long40/BoxF1_curve.png)).
+
+This is one development-set comparison, not a controlled estimate of the effect of duration alone: Ultralytics' unchanged `close_mosaic=10` disables mosaic throughout an eight-epoch run but only for the last ten epochs of a 40-epoch run; its learning-rate schedule also depends on total epochs. The MPS nondeterminism warnings remain. The gain could depend on these schedule differences, data composition, label noise or chance; none has been isolated ([configuration](../runs/soybean_hole/long40/args.yaml), [log](../runs/soybean_hole/long40.log)).
+
+### Fixed-confidence screening trade-off
+
+The following are **CPU re-inference**, confidence-ordered greedy one-to-one box matching at IoU ≥ 0.50, with NMS IoU 0.70. Counts are against 124 annotated holes on the same 175 validation images. Precision and recall here use explicit hard thresholds, rather than the library's interpolated F1-selected reporting; compare them within this table. FP/FN are *apparent* relative to incomplete annotations ([baseline metrics](../runs/soybean_hole/review_baseline_v2/metrics.json), [longer-run metrics](../runs/soybean_hole/review_long40/metrics.json)).
+
+| Confidence | Baseline precision / recall | Baseline matched / apparent FP / FN | Longer precision / recall | Longer matched / apparent FP / FN |
+|---:|---:|---:|---:|---:|
+| 0.05 | 0.311 / 0.702 | 87 / 193 / 37 | 0.405 / 0.758 | 94 / 138 / 30 |
+| 0.10 | 0.484 / 0.629 | 78 / 83 / 46 | 0.524 / 0.702 | 87 / 79 / 37 |
+| 0.20 | 0.758 / 0.581 | 72 / 23 / 52 | 0.669 / 0.669 | 83 / 41 / 41 |
+| 0.40 | 0.912 / 0.419 | 52 / 5 / 72 | 0.864 / 0.613 | 76 / 12 / 48 |
+| 0.60 | 1.000 / 0.242 | 30 / 0 / 94 | 0.938 / 0.492 | 61 / 4 / 63 |
+
+For a **human-reviewed screening demonstration**, use the longer checkpoint at provisional confidence **0.10**: on this validation set it matches 87 annotated boxes versus 83 at 0.20, with 79 rather than 41 unmatched predictions to review. Lowering to 0.05 matches seven more but raises unmatched predictions to 138. This choice prioritizes finding candidate holes while limiting review burden; it was selected using this same validation set and is not independently validated or a safe acceptance threshold. Even at 0.10, 37 annotated holes were unmatched. Confirm labels and choose an operating point with the intended reviewer before relying on it; detection confidence is not a probability of grain safety, and the system cannot infer hidden infestation or assess French pulses from these results.
