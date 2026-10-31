@@ -95,3 +95,19 @@ YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl .venv/bin/yolo detect tr
 The smoke run's relative `project` path was resolved by Ultralytics under `runs/detect/runs/soybean_hole/smoke/`; the baseline is in `runs/soybean_hole/baseline/`. Each run saves `args.yaml`, `results.csv`, weights and validation plots, while the console logs are in `runs/soybean_hole/`. Data, weights and runs are Git-ignored. Do not interpret the validation metrics as test or French-pulse performance: missing and ambiguous boxes and background/date shortcuts remain concerns. The held-out grouped test set is not used by these commands.
 
 The eight-epoch run took 289 seconds through its final epoch. On the 175 grouped validation images (124 annotated holes), the best checkpoint's reported precision was 0.823, recall 0.563, mAP@0.50 0.640 and mAP@0.50:0.95 0.427. These are validation results against the existing labels, not verified ground truth. For example, `val_batch0_labels.jpg` and `val_batch0_pred.jpg` show a missed annotated hole in `train_0832.jpg` (a published filename now assigned to validation). The earlier audit also reported missing Hole boxes and ambiguous labels, so apparent false positives and negatives need human review. Background and date correlations may inflate apparent performance. The smoke run only checked that the pipeline works and is not the baseline result.
+
+### Validation comparison gallery
+
+Open `runs/soybean_hole/validation_review_comparison_v2/review.html` locally to compare annotations and predictions side by side. The gallery uses the 40-epoch checkpoint on the 175 grouped validation images; the source filename prefix does not identify the new split. Matching uses confidence 0.10 and IoU 0.50. An unmatched box can indicate a model or annotation issue, and these fixed-confidence review counts are not the reported Ultralytics precision and recall. The test split is not used.
+
+The following command refreshes that gallery **without rerunning inference**, using the ignored local cache at `runs/soybean_hole/validation_prediction_cache/`. It verifies the checkpoint and manifest hashes, image dimensions and labels. The cache, prepared images and checkpoint must exist locally. To create a new gallery instead, omit `--refresh` and use a new `--output` directory; without `--predictions`, the script runs validation inference again.
+
+```bash
+YOLO_CONFIG_DIR=/tmp/soy-yolo MPLCONFIGDIR=/tmp/soy-mpl .venv/bin/python scripts/review_soybean_holes.py \
+  --weights runs/soybean_hole/long40/weights/best.pt \
+  --predictions runs/soybean_hole/validation_prediction_cache/predictions.jsonl \
+  --output runs/soybean_hole/validation_review_comparison_v2 --refresh \
+  --review-confidence 0.10 --match-iou 0.50 --sample-size 25 --seed 42
+```
+
+Choose a review status and add notes for each image, then use **Export reviews as CSV** for a portable backup. The page reports whether local browser storage is available; if it is not, export before closing. Browser storage is tied to the browser, origin and gallery path: refreshing at the same path keeps the same storage key, but moving the file or switching between `file://` and a local server can make notes inaccessible. Export before moving or changing how you open it; the CSV is a backup, not an import mechanism. Browser data clearing can remove stored notes.
