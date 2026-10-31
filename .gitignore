@@ -12,3 +12,6 @@ __pycache__/
 *.onnx
 runs/
 outputs/
+
+# Organisers' participant guide: contains personal contact details, keep local only
+event/participant_guide.*

@@ -53,4 +53,4 @@ Exact model IDs: see the `aws-bedrock-converse` skill (discover them live, do no
 - `ThrottlingException` on Bedrock: add `time.sleep(1)` and cache.
 - Cannot launch EC2: instance too big, GPU, or Marketplace AMI.
 - Teammates cannot see your resources: confirm same access code, same account number, us-east-1.
-- Organizer contact for access problems: Morgane Paris (WhatsApp +33 6 44 95 54 05).
+- Organizer contact for access problems: see the participant guide (kept locally, not in git).
