@@ -10,7 +10,7 @@ Order: cover, problem, measurement, stakes, chain, whysoy, solution, demo (60 s)
 market, close; `change` moved after the close as a backup slide for questions. Timings are in each slide's
 speaker notes. All numbers on the slides come from `results/README.md` or the sources named on each slide.
 
-**Still to fill before submitting:** team names and contact (cover, close), the code link (close; the GitHub
+**Still to fill before submitting** (team names and contact are done): the code link (close; the GitHub
 repo is private), and the backup video link (demo). Record the video from the live app while it runs.
 
 **Demo script:** open http://18.206.176.19, click the Ghana farmer-saved example (counting: 164 of 164),
