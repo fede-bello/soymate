@@ -73,7 +73,9 @@ All numbers, CIs and caveats are in [`results/README.md`](results/README.md); so
 
 ## Team and workstreams
 
-Workstreams in this repository (from the git history):
+Team: **Fede Bello**, **Juan Pedro Maestrone** and **Pedro Pertusso**.
+
+Code workstreams in this repository (from the git history):
 
 - **Data, evaluation and demo** (Fede Bello): `pipeline/`, `experiments/` (R1 to R4), `models/`, `demo/`, `labelling/`, `results/`, research and pitch.
 - **YOLO hole baseline, grain counting and FastSAM prototypes** (Juan Pedro Maestrone): `experiments/yolo_holes/`, `experiments/grain_counting/`, `experiments/fastsam/`, `notebooks/`, `tests/`, and the notes in `docs/soybean_baseline_status.md`, `docs/grain_pipeline_mvp.md`, `docs/fastsam_grain_experiment.md`. Summary below.
